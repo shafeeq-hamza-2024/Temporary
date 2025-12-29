@@ -88,20 +88,16 @@ export default function PostsPage() {
 
           <div className="p-2 border-bottom bg-light d-flex align-items-center">
             
-            <button
-              className="btn btn-link p-0 text-decoration-none"
-              onClick={() => nav("/user")}
-            >
-              <i className="ri-arrow-left-line me-2"></i>
-              Go Back to My Neuron
-            </button>
+            <button className="btn btn-outline-secondary mb-3" onClick={() => window.history.back()}>
+        <i className="ri-arrow-left-line me-1"></i> Back
+      </button>
           </div>
 
 
           <div className="card shadow-sm border-0 p-3">
             <h5 className="fw-bold mb-3">Impulse Menu</h5>
 
-            <div className="list-group small">
+            {/* <div className="list-group small">
               <a className="list-group-item list-group-item-action">
                 <i className="ri-rss-line me-2"></i> All Posts
               </a>
@@ -114,7 +110,7 @@ export default function PostsPage() {
               <a className="list-group-item list-group-item-action">
                 <i className="ri-user-voice-line me-2"></i> Shared with me
               </a>
-            </div>
+            </div> */}
           </div>
 
           {/* NEW IMPULSE BUTTON */}
@@ -289,7 +285,7 @@ export default function PostsPage() {
         <div className="col-12 col-md-3 fade-item">
 
           {/* TRENDING TAGS */}
-          <div className="card shadow-sm border-0 p-3 mb-4">
+          {/* <div className="card shadow-sm border-0 p-3 mb-4">
             <h5 className="fw-bold mb-3">Trending Tags</h5>
             <div>
               <span className="badge bg-primary me-2 mb-2">#quantum</span>
@@ -297,10 +293,10 @@ export default function PostsPage() {
               <span className="badge bg-danger me-2 mb-2">#machinelearning</span>
               <span className="badge bg-warning text-dark me-2 mb-2">#myneuron</span>
             </div>
-          </div>
+          </div> */}
 
           {/* ONLINE USERS */}
-          <div className="card shadow-sm border-0 p-3 mb-4 online-card">
+          {/* <div className="card shadow-sm border-0 p-3 mb-4 online-card">
             <h5 className="fw-bold mb-3">Online Users</h5>
 
             {[
@@ -328,7 +324,7 @@ export default function PostsPage() {
                 <div className="small fw-semibold">{u.name}</div>
               </div>
             ))}
-          </div>
+          </div> */}
 
         </div>
       </div>

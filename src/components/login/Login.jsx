@@ -53,15 +53,14 @@ export default function Login() {
           alt="MyNeuron Logo"
           className="logo"
         />
-        <h1>Revolutionizing Health Science Connections</h1>
+        <h1>Connect | Collaborate | Create</h1>
         <p>
-          Connecting brilliant minds to advance healthtech research and
-          solutions.
+          Connecting bright minds to advance health research & innovation
         </p>
       </div>
 
       {/* Right Section (Login Form) */}
-      <div className="form-box">
+      <div className="form-box1">
         <h2>Login</h2>
 
         <form onSubmit={handleSubmit}>

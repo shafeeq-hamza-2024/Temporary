@@ -44,7 +44,7 @@ export default function GatcDashboard() {
 
               <div className="user-basic-info">
                 <h2 className="user-name">{user.first_name} {user.last_name}</h2>
-                <p className="user-category">{user.profile_title || "Researcher • Speaker"}</p>
+                {/* <p className="user-category">{user.profile_title || "Researcher • Speaker"}</p> */}
               </div>
             </div>
 

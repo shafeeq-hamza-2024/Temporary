@@ -49,10 +49,9 @@ const RegisterForm = () => {
 
       <div className="left-text">
         <img src="images/Logo-Color.png" alt="MyNeuron Logo" className="logo" />
-        <h1>Revolutionizing Health Science Connections</h1>
+        <h1>Connect | Collaborate | Create</h1>
         <p>
-          Connecting brilliant minds to advance healthtech research and
-          solutions.
+          Connecting bright minds to advance health research & innovation
         </p>
       </div>
 

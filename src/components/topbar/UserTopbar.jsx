@@ -1,4 +1,4 @@
-import { Link, useRevalidator } from "react-router";
+import { Link } from 'react-router';
 import './UserTopbar.css';
 import useLogout from "../../hooks/logout";
 import { useQueryClient } from "@tanstack/react-query";
