@@ -17,7 +17,7 @@ import useDebounce from '../../hooks/useDebounce';
 
 
 
-export default function UserTopbar() {
+export default function UserTopbarNew() {
 
 
   const [search, setSearch] = useState("");
@@ -70,7 +70,7 @@ export default function UserTopbar() {
         </div>
 
         {/* Center */}
-        {/* <div className="flex-grow-1 d-flex justify-content-center">
+        <div className="flex-grow-1 d-flex justify-content-center">
           <div
             className="search-wrapper position-relative"
             ref={searchRef}
@@ -134,7 +134,7 @@ export default function UserTopbar() {
             )}
 
           </div>
-        </div> */}
+        </div>
 
 
         {/* Right */}
@@ -154,6 +154,7 @@ export default function UserTopbar() {
             <i className="ri-refresh-line"></i>
           </button> */}
 
+
           <Link to="/user" className="btn btn-light rounded-circle icon-btn">
             <i className="ri-home-5-line fs-4"></i>
           </Link>
@@ -161,7 +162,6 @@ export default function UserTopbar() {
           <Link to="/posts" className="btn btn-light rounded-circle icon-btn">
             <i className="ri-pulse-line text-dark fs-4"></i>
           </Link>
-
 
           <Link to="/my-bookshelf" className="btn btn-light rounded-circle icon-btn">
             <i className="ri-book-open-line fs-4"></i>
@@ -173,7 +173,6 @@ export default function UserTopbar() {
 
 
           <NotificationBell />
-
 
           {/* Profile + Name */}
           <div className="dropdown">

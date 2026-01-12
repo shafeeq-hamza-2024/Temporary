@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import "./Registerform.css";
+import { useLocation } from "react-router";
 
 import { useRegister } from "../../hooks/useRegister";
 
 const RegisterForm = () => {
   const { mutate: registerUser, isLoading } = useRegister();
+const location = useLocation();
+const params = new URLSearchParams(location.search);
+const registration = params.get("registration");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -31,7 +35,8 @@ const RegisterForm = () => {
     registerUser(formData, {
       onSuccess: () => {
         alert("Registration successful!");
-        window.location.href = "/login";
+        if (registration == "gatc")  window.location.href = "/login?registration=gatc";
+        else window.location.href = "/login";
       },
       onError: (err) => {
         alert(

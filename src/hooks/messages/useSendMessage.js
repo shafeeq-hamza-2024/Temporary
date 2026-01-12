@@ -9,6 +9,7 @@ export const useSendMessage = (userId) => {
     mutationFn: sendMessage,
 
     onSuccess: (newMessage) => {
+      console.log("userId", userId, newMessage)
       // update chat history cache
       queryClient.setQueryData(
         ["chatHistory", userId],
@@ -19,6 +20,11 @@ export const useSendMessage = (userId) => {
       queryClient.invalidateQueries({
         queryKey: ["conversations"],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["chatHistory", userId],
+      });
+
     },
   });
 };

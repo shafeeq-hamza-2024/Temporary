@@ -1,13 +1,18 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { validateLogin } from "../../api/authApi";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import "./Login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const registration = params.get("registration");
+
 
   // -------------------------
   // LOGIN MUTATION
@@ -22,11 +27,20 @@ export default function Login() {
 
       const role = data.user.role;
 
-      if (role === "speaker") {
-        navigate("/user", { replace: true });
-      } else {
-        navigate("/user", { replace: true });
+      // if (role === "speaker") {
+      //   navigate("/user", { replace: true });
+      // } else {
+      //   navigate("/user", { replace: true });
+      // }
+      console.log("reg",registration)
+      if (registration === "gatc") {
+
+        navigate("/gatc2026", { replace: true });
+        return;
       }
+
+      // default redirect
+      navigate("/user", { replace: true });
     },
     onError: (err) => {
       alert(err.response?.data?.detail || "Invalid email or password");
@@ -93,7 +107,7 @@ export default function Login() {
           </button>
 
           <p className="login-link">
-            Don’t have an account? <a href="/register">Register</a>
+            Don’t have an account? <a href="/register">Register</a> :: <a href="/register?registration=gatc">GATC Registration</a>
           </p>
         </form>
       </div>

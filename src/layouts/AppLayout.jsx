@@ -31,7 +31,7 @@ export default function AppLayout() {
       <Topbar />
       
       <div className="app-body">
-        <Sidebar />
+       <Sidebar />
         <main className="content">
           <Outlet />
         </main>

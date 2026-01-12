@@ -3,6 +3,8 @@ import { useCreatePost } from "../../hooks/posts/useCreatePost";
 import "./NewPostPage.css"
 import { Editor } from "@tinymce/tinymce-react";
 import PostCard from "./PostCard";
+import { useNavigate } from "react-router";
+
 
 
 export default function NewPostPage() {
@@ -11,7 +13,7 @@ export default function NewPostPage() {
   const [files, setFiles] = useState([]);
   const MAX_IMAGES = 5;
   const [showPreview, setShowPreview] = useState(false);
-
+  const navigate = useNavigate()
 
 
   const createPost = useCreatePost();
@@ -55,6 +57,7 @@ export default function NewPostPage() {
           setText("");
           setFiles([]);
           setTitle("");
+          navigate("/posts")
         },
       }
     );

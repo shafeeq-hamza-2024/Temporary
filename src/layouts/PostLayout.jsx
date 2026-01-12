@@ -6,6 +6,7 @@ import UserTopbar from "../components/topbar/UserTopbar";
 import { useEffect } from "react";
 
 import './AppLayout.css';
+import UserTopbarNew from "../components/topbar/UserTopbarNew";
 
 export default function PostLayout() {
   const user = useLoaderData(); // injected by router
@@ -13,7 +14,7 @@ export default function PostLayout() {
   
   const Topbar = {
     speaker: SpeakerTopbar,
-    user: UserTopbar
+    user: UserTopbarNew
   }[user.role];
 
   useEffect(()=>{

@@ -6,6 +6,7 @@ import { useProfessionalDetail } from "../../hooks/profile/useProfessionalDetail
 import { useEducationList } from "../../hooks/profile/useEducationList";
 import { useUserProfile } from "../../hooks/profile/useUserProfile"; // fetch latest user
 import { useUploadProfileImage } from "../../hooks/profile/useProfileImage";
+import { siteURL } from "../../api/api";
 
 export default function Profile() {
   const { data: user, isLoading: uLoading } = useUserProfile();
@@ -61,9 +62,6 @@ export default function Profile() {
   /* ================= PROFILE ================= */
   return (
     <div className="container py-4">
-      <button className="btn btn-outline-secondary mb-3" onClick={() => window.history.back()}>
-        <i className="ri-arrow-left-line me-1"></i> Back
-      </button>
       <div className="row g-4">
 
         {/* ================= LEFT ================= */}
@@ -81,7 +79,7 @@ export default function Profile() {
                     user?.profile_image
                       ? user.profile_image.startsWith("http")
                         ? user.profile_image
-                        : `http://127.0.0.1:8000${user.profile_image}`
+                        : `${siteURL}/${user.profile_image}`
                       : "images/Avatar 1.png"
                   }
                   alt="Profile"
@@ -125,6 +123,16 @@ export default function Profile() {
                         <i className="ri-linkedin-box-fill"></i>
                       </a>
                     )}
+
+                    {/* {personal?.linkedin && (
+                      <a
+                        href={`https://www.linkedin.com/in/${personal.linkedin}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <i className="ri-linkedin-box-fill"></i>
+                      </a>
+                    )} */}
 
                     {personal?.x_handle && (
                       <a href={`https://x.com/${personal.x_handle}`} target="_blank" rel="noreferrer">

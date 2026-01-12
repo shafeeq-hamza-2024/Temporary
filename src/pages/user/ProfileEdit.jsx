@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./ProfileEdit.css";
 import {
   useUserProfile,
@@ -29,7 +29,7 @@ import {
   useDeletePastExperience,
 } from "../../hooks/profile/usePastExperience";
 
-
+import { useScientificInterest, useUpdateScientificInterest } from "../../hooks/profile/useScientificInterest";
 
 
 
@@ -43,6 +43,11 @@ export default function EditProfile() {
   const { data: professionalData } = useProfessionalDetail();
   const { data: educationData } = useEducationList();
   const { data: pastData } = usePastExperienceList();
+  const { data: scientificData } = useScientificInterest();
+  const updateScientific = useUpdateScientificInterest();
+
+
+  const dropdownRef = useRef(null);
 
 
   const updateUser = useUpdateUserProfile();
@@ -54,8 +59,236 @@ export default function EditProfile() {
   const addPastMutation = useAddPastExperience();
   const updatePastMutation = useUpdatePastExperience();
   const deletePastMutation = useDeletePastExperience();
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [searchText, setSearchText] = useState("");
+
+  // ---------------- HELPER ----------------
+  const filterOptions = (options) => {
+    return options.filter((opt) =>
+      opt.toLowerCase().includes(searchText.toLowerCase())
+    );
+  };
 
 
+
+
+
+  /* 1️⃣ Research Area of Expertise (single) */
+  const RESEARCH_AREA_OPTIONS = [
+    "Aging and Cancer",
+    "Behavioral and Implementation Science",
+    "Biochemistry and Biophysics",
+    "Bioengineering and Biomaterials",
+    "Bioinformatics, Computational Biology, and Systems Biology",
+    "Biostatistics",
+    "Cancer Disparities Research",
+    "Cancer Evolution",
+    "Cancer Metabolism",
+    "Cancer Modeling",
+    "Cancer Prevention Research",
+    "Cell Biology",
+    "Chemistry and Chemical Biology",
+    "Clinical Research",
+    "Clinical Trials",
+    "Convergence Cancer Science",
+    "Data Science and Artificial Intelligence",
+    "Developmental Biology",
+    "Diagnostics and Biomarkers",
+    "Drug Discovery and Development",
+    "Early Detection and Interception",
+    "Endocrinology",
+    "Epigenetics",
+    "Experimental and Molecular Therapeutics",
+    "Genetics",
+    "Genomics",
+    "Immunology",
+    "Microenvironment",
+    "Molecular Biology",
+    "Pathology",
+    "Pharmacology and Toxicology",
+    "Population Sciences",
+    "Radiation Science and Medicine",
+    "Surgical Oncology",
+    "Survivorship Research",
+    "Translational Research",
+    "Tumor Biology / Tumor Microenvironment",
+    "Other",
+  ];
+
+
+  /* 2️⃣ Major Focus */
+  const MAJOR_FOCUS_OPTIONS = [
+    "Advocacy",
+    "Basic Science",
+    "Business Development",
+    "Clinical Practice",
+    "Clinical Research",
+    "Population Science",
+    "Regulatory Science and Health Policy",
+    "Research Administration",
+    "Science Education",
+    "Science Education and Training",
+    "Translational Research",
+  ];
+
+  /* 3️⃣ Specific Research Areas (LARGE – searchable) */
+  const SPECIFIC_RESEARCH_AREA_OPTIONS = [
+    "Aging",
+    "AIDS and Cancer",
+    "Angiogenesis",
+    "Animal Models",
+    "Apoptosis",
+    "Biochemical Modulators of Therapy and Toxicity",
+    "Biological Response Modifiers",
+    "Biomarkers",
+    "Bone Marrow Transplantation",
+    "Cachexia",
+    "Cancer Control and Screening",
+    "Cancer Disparities",
+    "Cancer Epidemiology",
+    "Cancer Genetics",
+    "Cancer Immunology",
+    "Cancer Metabolism",
+    "Cancer Stem Cells",
+    "Cancer Vaccines",
+    "Carcinogenesis",
+    "Cell Adhesion Molecules",
+    "Cell and Tissue Culture",
+    "Cell Cycle Regulation",
+    "Cell Death (Apoptosis)",
+    "Chemoprevention",
+    "Chemotherapy",
+    "Chromatin Structure and Function",
+    "Clinical Trials",
+    "Combined Modalities of Therapy",
+    "Computational Biology",
+    "DNA Damage and Repair",
+    "DNA Methylation",
+    "Drug Delivery Systems",
+    "Drug Metabolism",
+    "Drug Resistance",
+    "Early Detection",
+    "Epigenetics and Epigenomics",
+    "Experimental Immunotherapy",
+    "Extracellular Matrix",
+    "Flow Cytometry",
+    "Gene Expression",
+    "Gene Therapy",
+    "Genetic Predisposition and Cancer Risk",
+    "Imaging",
+    "Immunobiology",
+    "Immunotherapy (Clinical)",
+    "Immunotherapy (Experimental)",
+    "Inflammation",
+    "Invasion and Metastasis",
+    "Microbiome Research",
+    "MicroRNAs",
+    "Molecular Carcinogenesis",
+    "Nanotechnology",
+    "Oncogenes",
+    "Population-Based Studies",
+    "Precision Medicine",
+    "Radiation Biology",
+    "Radiation Therapy",
+    "Signal Transduction",
+    "Single-Cell Analysis",
+    "Stem Cells",
+    "Systems Biology",
+    "Tumor Angiogenesis",
+    "Tumor Heterogeneity",
+    "Tumor Immunology",
+    "Tumor Microenvironment",
+    "Tumor Progression",
+    "Tumor Suppressor Genes",
+    "Viral Carcinogenesis",
+    "Other",
+  ];
+
+
+  /* 4️⃣ Organ Sites */
+  const ORGAN_SITE_OPTIONS = [
+    "Bone",
+    "Brain and Central Nervous System",
+    "Breast",
+    "Colon and Rectum",
+    "Esophagus",
+    "Eye",
+    "Gastrointestinal",
+    "Head and Neck",
+    "Kidney",
+    "Larynx",
+    "Leukemia",
+    "Liver",
+    "Lung and Bronchus",
+    "Lymphoma",
+    "Melanoma",
+    "Multiple Myeloma",
+    "Neuroblastoma",
+    "Ovary",
+    "Pancreas",
+    "Pediatric",
+    "Prostate",
+    "Sarcoma and Soft Tissue",
+    "Skin",
+    "Stomach",
+    "Testis",
+    "Thyroid",
+    "Urinary Bladder",
+    "Uterine Cervix",
+    "Uterine Corpus",
+  ];
+
+
+  /* 5️⃣ Additional Research Areas */
+  const ADDITIONAL_RESEARCH_AREA_OPTIONS = [
+    "Aging and Cancer",
+    "Behavioral and Implementation Science",
+    "Biochemistry and Biophysics",
+    "Bioengineering and Biomaterials",
+    "Bioinformatics, Computational Biology, and Systems Biology",
+    "Biostatistics",
+    "Cancer Disparities Research",
+    "Cancer Evolution",
+    "Cancer Metabolism",
+    "Cancer Modeling",
+    "Cancer Prevention Research",
+    "Cell Biology",
+    "Chemistry and Chemical Biology",
+    "Clinical Research",
+    "Clinical Trials",
+    "Convergence Cancer Science",
+    "Data Science and Artificial Intelligence",
+    "Developmental Biology",
+    "Diagnostics and Biomarkers",
+    "Drug Discovery and Development",
+    "Early Detection and Interception",
+    "Endocrinology",
+    "Epigenetics",
+    "Experimental and Molecular Therapeutics",
+    "Genetics",
+    "Genomics",
+    "Immunology",
+    "Microenvironment",
+    "Molecular Biology",
+    "Pathology",
+    "Pharmacology and Toxicology",
+    "Population Sciences",
+    "Radiation Science and Medicine",
+    "Surgical Oncology",
+    "Survivorship Research",
+    "Translational Research",
+    "Tumor Biology / Tumor Microenvironment",
+    "Other",
+  ];
+
+
+  const [scientific, setScientific] = useState({
+    research_area_of_expertise: "",
+    major_focus: [],
+    specific_research_areas: [],
+    organ_sites: [],
+    additional_research_areas: [],
+  });
 
 
   // --------------------- STATE ---------------------
@@ -102,61 +335,97 @@ export default function EditProfile() {
 
 
 
+
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdown(null);
+        setSearchText(""); // optional: clear search when closing
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+
+
   // --------------------- LOAD DATA INTO STATE ---------------------
-useEffect(() => {
-  if (userData) {
-    setBasic({
-      title: userData.title || "",
-      first_name: userData.first_name || "",
-      middle_name: userData.middle_name || "",
-      last_name: userData.last_name || "",
-      profile_title: userData.profile_title || "",
-    });
-  }
+  useEffect(() => {
+    if (userData) {
+      setBasic({
+        title: userData.title || "",
+        first_name: userData.first_name || "",
+        middle_name: userData.middle_name || "",
+        last_name: userData.last_name || "",
+        profile_title: userData.profile_title || "",
+      });
+    }
 
-  if (personalData) {
-    setPersonal({
-      city: personalData.city || "",
-      country: personalData.country || "",
-      gender: personalData.gender || "",
-      dob: personalData.dob || "",
-      biosketch: personalData.biosketch || "",
-      linkedin: personalData.linkedin || "",
-      x_handle: personalData.x_handle || "",
-      articles_journals: personalData.articles_journals || "",
-      book_chapters: personalData.book_chapters || "",
-      research_links: personalData.research_links || [],
-    });
-  }
+    if (personalData) {
+      setPersonal({
+        city: personalData.city || "",
+        country: personalData.country || "",
+        gender: personalData.gender || "",
+        dob: personalData.dob || "",
+        biosketch: personalData.biosketch || "",
+        linkedin: personalData.linkedin || "",
+        x_handle: personalData.x_handle || "",
+        articles_journals: personalData.articles_journals || "",
+        book_chapters: personalData.book_chapters || "",
+        research_links: personalData.research_links || [],
+      });
+    }
 
-  if (professionalData) {
-    setProfessional({
-      current_role: professionalData.current_role || "",
-      current_organization: professionalData.current_organization || "",
-      current_department: professionalData.current_department || "",
-      current_start_month: professionalData.current_start_month || "",
-      current_start_year: professionalData.current_start_year || "",
-      current_description: professionalData.current_description || "",
-      work_email: professionalData.work_email || "",
-      contact_number: professionalData.contact_number || "",
-      website: professionalData.website || "",
-      lab: professionalData.lab || "",
-      work_address: professionalData.work_address || "",
-      skill_set: professionalData.skill_set || "",
-      languages_spoken: professionalData.languages_spoken || "",
-    });
-  }
+    if (professionalData) {
+      setProfessional({
+        current_role: professionalData.current_role || "",
+        current_organization: professionalData.current_organization || "",
+        current_department: professionalData.current_department || "",
+        current_start_month: professionalData.current_start_month || "",
+        current_start_year: professionalData.current_start_year || "",
+        current_description: professionalData.current_description || "",
+        work_email: professionalData.work_email || "",
+        contact_number: professionalData.contact_number || "",
+        website: professionalData.website || "",
+        lab: professionalData.lab || "",
+        work_address: professionalData.work_address || "",
+        skill_set: professionalData.skill_set || "",
+        languages_spoken: professionalData.languages_spoken || "",
+      });
+    }
 
-  if (educationData) {
-    setEducationList(educationData);
-  }
-}, [userData, personalData, professionalData, educationData]);
+    if (educationData) {
+      setEducationList(educationData);
+    }
+  }, [userData, personalData, professionalData, educationData]);
 
-useEffect(() => {
-  if (pastData) {
-    setPastList(pastData);
-  }
-}, [pastData]);
+  useEffect(() => {
+    if (pastData) {
+      setPastList(pastData);
+    }
+  }, [pastData]);
+
+  useEffect(() => {
+    if (scientificData) {
+      setScientific({
+        research_area_of_expertise:
+          scientificData.research_area_of_expertise || "",
+        major_focus: scientificData.major_focus || [],
+        specific_research_areas:
+          scientificData.specific_research_areas || [],
+        organ_sites:
+          scientificData.organ_sites || [],
+        additional_research_areas:
+          scientificData.additional_research_areas || [],
+      });
+    }
+  }, [scientificData]);
+
+
 
 
   // --------------------- HANDLERS ---------------------
@@ -233,6 +502,8 @@ useEffect(() => {
         x_handle: personal.x_handle,
         gender: personal.gender,
         dob: personal.dob,
+        city: personal.city,
+        country: personal.country,
       });
       alert("Basic details saved");
     } catch (err) {
@@ -281,36 +552,109 @@ useEffect(() => {
   //   }
   // };
 
-const saveWork = async () => {
-  try {
-    // Save ONLY current professional info
-    await updateProfessional.mutateAsync({
-      current_role: professional.current_role,
-      current_organization: professional.current_organization,
-      current_department: professional.current_department,
-      current_start_month: professional.current_start_month,
-      current_start_year: professional.current_start_year,
-      current_description: professional.current_description,
-    });
 
-    // Save past experiences separately
-    for (const exp of pastList) {
-      if (exp.id) {
-        await updatePastMutation.mutateAsync({
-          id: exp.id,
-          data: exp,
-        });
-      } else {
-        await addPastMutation.mutateAsync(exp);
+
+
+
+
+  // const saveWork = async () => {
+  //   try {
+  //     // Save ONLY current professional info
+  //     await updateProfessional.mutateAsync({
+  //       current_role: professional.current_role,
+  //       current_organization: professional.current_organization,
+  //       current_department: professional.current_department,
+  //       current_start_month: professional.current_start_month,
+  //       current_start_year: professional.current_start_year,
+  //       current_description: professional.current_description,
+  //       skill_set: professional.skill_set,
+  //         languages_spoken: professional.languages_spoken,
+  //     });
+
+  //     // Save past experiences separately
+  //     for (const exp of pastList) {
+  //       if (exp.id) {
+  //         await updatePastMutation.mutateAsync({
+  //           id: exp.id,
+  //           data: exp,
+  //         });
+  //       } else {
+  //         await addPastMutation.mutateAsync(exp);
+  //       }
+  //     }
+
+  //     alert("Work experience saved");
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Failed to save work experience");
+  //   }
+  // };
+
+
+
+
+
+  const saveWork = async () => {
+    try {
+      // 🔹 Save past experiences FIRST (independent)
+      for (const exp of pastList) {
+        const isEmpty = !exp.role && !exp.organization && !exp.description;
+
+        if (isEmpty) continue; // skip empty blocks
+
+        if (exp.id) {
+          await updatePastMutation.mutateAsync({
+            id: exp.id,
+            data: exp,
+          });
+        } else {
+          await addPastMutation.mutateAsync(exp);
+        }
       }
-    }
 
-    alert("Work experience saved");
-  } catch (err) {
-    console.error(err);
-    alert("Failed to save work experience");
-  }
-};
+      // 🔹 Save current experience ONLY if user entered something
+      const hasCurrent =
+        professional.current_role ||
+        professional.current_organization ||
+        professional.current_description ||
+        professional.skill_set ||
+        professional.languages_spoken;
+
+      if (hasCurrent) {
+        await updateProfessional.mutateAsync({
+          current_role: professional.current_role,
+          current_organization: professional.current_organization,
+          current_department: professional.current_department,
+          current_start_month: professional.current_start_month,
+          current_start_year: professional.current_start_year,
+          current_description: professional.current_description,
+          skill_set: professional.skill_set,
+          languages_spoken: professional.languages_spoken,
+        });
+      }
+
+      alert("Work experience saved");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save work experience");
+    }
+  };
+
+  const saveScientific = async () => {
+    try {
+      await updateScientific.mutateAsync({
+        research_area_of_expertise: scientific.research_area_of_expertise,
+        major_focus: scientific.major_focus,
+        specific_research_areas: scientific.specific_research_areas,
+        organ_sites: scientific.organ_sites,
+        additional_research_areas: scientific.additional_research_areas,
+      });
+      alert("Scientific interests saved");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save scientific interests");
+    }
+  };
 
 
 
@@ -324,8 +668,7 @@ const saveWork = async () => {
         website: professional.website,
         lab: professional.lab,
         work_address: professional.work_address,
-        skill_set: professional.skill_set,
-        languages_spoken: professional.languages_spoken,
+
       });
       alert("Contact details saved");
     } catch (err) {
@@ -340,10 +683,31 @@ const saveWork = async () => {
   // --------------------- RENDER ---------------------
   return (
     <div className="container py-4">
-      <button className="btn btn-outline-secondary mb-3" onClick={() => window.history.back()}>
-        <i className="ri-arrow-left-line me-1"></i> Back
-      </button>
-      <h2 className="mb-4">Edit Profile</h2>
+      <nav aria-label="breadcrumb" className="mb-4">
+        <ol className="breadcrumb">
+
+          {/* Profile (clickable, gray, NOT active) */}
+          <li className="breadcrumb-item">
+            <a
+              href="/user/profile"
+              className="text-decoration-none text-secondary"
+            >
+              Profile
+            </a>
+          </li>
+
+          {/* Edit Profile (ACTIVE, blue) */}
+          <li
+            className="breadcrumb-item active fw-semibold "
+            aria-current="page"
+            style={{ color: "#0d6efd" }}     // Bootstrap primary blue
+          >
+            Edit Profile
+          </li>
+
+        </ol>
+      </nav>
+
       <div className="profile-edit-wrapper">
         {/* TAB HEADERS */}
         <ul className="nav nav-tabs mb-3 modern-tabs">
@@ -373,6 +737,15 @@ const saveWork = async () => {
           </li>
           <li className="nav-item">
             <button
+              className={`nav-link ${activeTab === "science" ? "active" : ""}`}
+              onClick={() => setActiveTab("science")}
+            >
+              Scientific Interests
+            </button>
+          </li>
+
+          <li className="nav-item">
+            <button
               className={`nav-link ${activeTab === "contact" ? "active" : ""}`}
               onClick={() => setActiveTab("contact")}
             >
@@ -395,10 +768,12 @@ const saveWork = async () => {
                       value={basic.title}
                       onChange={(e) => handleBasicChange("title", e.target.value)}
                     >
-                      <option>Dr.</option>
-                      <option>Prof.</option>
-                      <option>Mr.</option>
-                      <option>Ms.</option>
+                      <option>Dr</option>
+                      <option>Prof</option>
+                      <option>Mr</option>
+                      <option>Mrs</option>
+                      <option>Ms</option>
+
                     </select>
                   </div>
                   <div className="col-md-3">
@@ -437,7 +812,7 @@ const saveWork = async () => {
                     <label className="form-label">Biosketch / Summary</label>
                     <textarea
                       className="form-control"
-                      rows={4}
+                      rows={1}
                       value={personal.biosketch}
                       onChange={(e) => handlePersonalChange("biosketch", e.target.value)}
                     />
@@ -602,7 +977,7 @@ const saveWork = async () => {
             <div className="tab-content-section">
               {/* ===== CURRENT EXPERIENCE ===== */}
               <div className="border rounded-3 p-3 mb-3 bg-light-subtle">
-                <h5>Current Experience</h5>
+                <h5>Current Position</h5>
                 <div className="row g-3">
                   <div className="col-md-6">
                     <label className="form-label">Role / Position</label>
@@ -660,6 +1035,33 @@ const saveWork = async () => {
                       onChange={(e) => handleProfessionalChange("current_description", e.target.value)}
                     />
                   </div>
+
+                  <div className="col-12">
+                    <label>Skills</label>
+                    <textarea
+                      className="form-control"
+                      rows={2}
+                      value={professional.skill_set || ""}
+                      onChange={(e) =>
+                        handleProfessionalChange("skill_set", e.target.value)
+                      }
+                      placeholder="e.g. React, Django, Machine Learning"
+                    />
+                  </div>
+
+                  <div className="col-12 mt-2">
+                    <label>Languages Spoken</label>
+                    <textarea
+                      className="form-control"
+                      rows={2}
+                      value={professional.languages_spoken || ""}
+                      onChange={(e) =>
+                        handleProfessionalChange("languages_spoken", e.target.value)
+                      }
+                      placeholder="e.g. English, Hindi, French"
+                    />
+                  </div>
+
                 </div>
               </div>
 
@@ -766,6 +1168,8 @@ const saveWork = async () => {
                         onChange={(e) => handlePastChange(index, "description", e.target.value)}
                       />
                     </div>
+
+
                   </div>
                 </div>
               ))}
@@ -780,6 +1184,239 @@ const saveWork = async () => {
 
             </div>
           )}
+
+
+          {/* ---------------- SCIENTIFIC INTERESTS TAB ---------------- */}
+          {/* ---------------- SCIENTIFIC INTERESTS TAB ---------------- */}
+          {activeTab === "science" && (
+            <div className="tab-content-section">
+
+              {/* 1️⃣ Research Area (single) */}
+              <div className="mb-3 position-relative" ref={openDropdown === "ra" ? dropdownRef : null}>
+                <label className="form-label">Research Area of Expertise</label>
+                <input
+                  className="form-control"
+                  value={
+                    openDropdown === "ra"
+                      ? searchText
+                      : scientific.research_area_of_expertise
+                  }
+                  placeholder="Select research area"
+                  onClick={() => {
+                    setOpenDropdown("ra");
+                    setSearchText("");
+                  }}
+                  onChange={(e) => {
+                    setSearchText(e.target.value);
+                    setOpenDropdown("ra");
+                  }}
+                />
+
+                {openDropdown === "ra" && (
+                  <div className="dropdown-menu show w-100" style={{ maxHeight: 250, overflowY: "auto" }}>
+                    {filterOptions(RESEARCH_AREA_OPTIONS).map((opt) => (
+                      <button
+                        key={opt}
+                        className="dropdown-item"
+                        onClick={() => {
+                          setScientific(prev => ({
+                            ...prev,
+                            research_area_of_expertise: opt,
+                          }));
+                          setOpenDropdown(null);
+                          setSearchText("");
+                        }}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 2️⃣ Major Focus */}
+              <div className="mb-3 position-relative" ref={openDropdown === "mf" ? dropdownRef : null}>
+                <label className="form-label">Major Focus</label>
+                <input
+                  className="form-control"
+                  value={
+                    openDropdown === "mf"
+                      ? searchText
+                      : scientific.major_focus.join(", ")
+                  }
+                  placeholder="Select major focus"
+                  onClick={() => {
+                    setOpenDropdown("mf");
+                    setSearchText("");
+                  }}
+                  onChange={(e) => {
+                    setSearchText(e.target.value);
+                    setOpenDropdown("mf");
+                  }}
+                />
+
+                {openDropdown === "mf" && (
+                  <div className="dropdown-menu show w-100" style={{ maxHeight: 250, overflowY: "auto" }}>
+                    {filterOptions(MAJOR_FOCUS_OPTIONS).map((opt) => (
+                      <button
+                        key={opt}
+                        className={`dropdown-item ${scientific.major_focus.includes(opt) ? "active" : ""}`}
+                        onClick={() =>
+                          setScientific(prev => ({
+                            ...prev,
+                            major_focus: prev.major_focus.includes(opt)
+                              ? prev.major_focus.filter(v => v !== opt)
+                              : [...prev.major_focus, opt],
+                          }))
+                        }
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 3️⃣ Specific Research Areas */}
+              <div className="mb-3 position-relative" ref={openDropdown === "sr" ? dropdownRef : null}>
+                <label className="form-label">Specific Research Areas</label>
+                <input
+                  className="form-control"
+                  value={
+                    openDropdown === "sr"
+                      ? searchText
+                      : scientific.specific_research_areas.join(", ")
+                  }
+                  placeholder="Type to search"
+                  onClick={() => {
+                    setOpenDropdown("sr");
+                    setSearchText("");
+                  }}
+                  onChange={(e) => {
+                    setSearchText(e.target.value);
+                    setOpenDropdown("sr");
+                  }}
+                />
+
+                {openDropdown === "sr" && (
+                  <div className="dropdown-menu show w-100" style={{ maxHeight: 250, overflowY: "auto" }}>
+                    {filterOptions(SPECIFIC_RESEARCH_AREA_OPTIONS).map((opt) => (
+                      <button
+                        key={opt}
+                        className={`dropdown-item ${scientific.specific_research_areas.includes(opt) ? "active" : ""}`}
+                        onClick={() =>
+                          setScientific(prev => ({
+                            ...prev,
+                            specific_research_areas: prev.specific_research_areas.includes(opt)
+                              ? prev.specific_research_areas.filter(v => v !== opt)
+                              : [...prev.specific_research_areas, opt],
+                          }))
+                        }
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 4️⃣ Organ Sites */}
+              <div className="mb-3 position-relative" ref={openDropdown === "os" ? dropdownRef : null}>
+                <label className="form-label">Organ Sites</label>
+                <input
+                  className="form-control"
+                  value={
+                    openDropdown === "os"
+                      ? searchText
+                      : scientific.organ_sites.join(", ")
+                  }
+                  placeholder="Select organ sites"
+                  onClick={() => {
+                    setOpenDropdown("os");
+                    setSearchText("");
+                  }}
+                  onChange={(e) => {
+                    setSearchText(e.target.value);
+                    setOpenDropdown("os");
+                  }}
+                />
+
+                {openDropdown === "os" && (
+                  <div className="dropdown-menu show w-100" style={{ maxHeight: 250, overflowY: "auto" }}>
+                    {filterOptions(ORGAN_SITE_OPTIONS).map((opt) => (
+                      <button
+                        key={opt}
+                        className={`dropdown-item ${scientific.organ_sites.includes(opt) ? "active" : ""}`}
+                        onClick={() =>
+                          setScientific(prev => ({
+                            ...prev,
+                            organ_sites: prev.organ_sites.includes(opt)
+                              ? prev.organ_sites.filter(v => v !== opt)
+                              : [...prev.organ_sites, opt],
+                          }))
+                        }
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 5️⃣ Additional Research Areas */}
+              <div className="mb-4 position-relative" ref={openDropdown === "ar" ? dropdownRef : null}>
+                <label className="form-label">Additional Research Areas</label>
+                <input
+                  className="form-control"
+                  value={
+                    openDropdown === "ar"
+                      ? searchText
+                      : scientific.additional_research_areas.join(", ")
+                  }
+                  placeholder="Select additional areas"
+                  onClick={() => {
+                    setOpenDropdown("ar");
+                    setSearchText("");
+                  }}
+                  onChange={(e) => {
+                    setSearchText(e.target.value);
+                    setOpenDropdown("ar");
+                  }}
+                />
+
+                {openDropdown === "ar" && (
+                  <div className="dropdown-menu show w-100" style={{ maxHeight: 250, overflowY: "auto" }}>
+                    {filterOptions(ADDITIONAL_RESEARCH_AREA_OPTIONS).map((opt) => (
+                      <button
+                        key={opt}
+                        className={`dropdown-item ${scientific.additional_research_areas.includes(opt) ? "active" : ""}`}
+                        onClick={() =>
+                          setScientific(prev => ({
+                            ...prev,
+                            additional_research_areas: prev.additional_research_areas.includes(opt)
+                              ? prev.additional_research_areas.filter(v => v !== opt)
+                              : [...prev.additional_research_areas, opt],
+                          }))
+                        }
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="text-end">
+                <button className="btn btn-primary" onClick={saveScientific}>
+                  Save Scientific Interests
+                </button>
+              </div>
+            </div>
+          )}
+
+
+
+
 
 
           {/* ---------------- CONTACT TAB ---------------- */}
@@ -828,31 +1465,7 @@ const saveWork = async () => {
                     onChange={(e) => handleProfessionalChange("work_address", e.target.value)}
                   />
                 </div>
-                <div className="col-12">
-                  <label>Skills</label>
-                  <textarea
-                    className="form-control"
-                    rows={2}
-                    value={professional.skill_set || ""}
-                    onChange={(e) =>
-                      handleProfessionalChange("skill_set", e.target.value)
-                    }
-                    placeholder="e.g. React, Django, Machine Learning"
-                  />
-                </div>
 
-                <div className="col-12 mt-2">
-                  <label>Languages Spoken</label>
-                  <textarea
-                    className="form-control"
-                    rows={2}
-                    value={professional.languages_spoken || ""}
-                    onChange={(e) =>
-                      handleProfessionalChange("languages_spoken", e.target.value)
-                    }
-                    placeholder="e.g. English, Hindi, French"
-                  />
-                </div>
 
               </div>
               <div className="mt-4 text-end">

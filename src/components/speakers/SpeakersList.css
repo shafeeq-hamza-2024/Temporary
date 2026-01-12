@@ -3,7 +3,7 @@
   height: 130px;
   object-fit: cover;
   border-radius: 50%;
-  box-shadow: 0px 8px 25px rgba(0,0,0,0.15);
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15);
   transition: transform 0.25s ease;
 }
 
@@ -24,11 +24,12 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
-  
+
 }
 
 .squircle {
@@ -73,6 +74,25 @@
 }
 
 @keyframes pop {
-  0% { transform: scale(0.5); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+.initials-avatar {
+  border-radius: 50%;
+  background: #70a83e;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  text-transform: uppercase;
 }

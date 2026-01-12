@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet, redirect } from "react-router";
+import { createBrowserRouter, createHashRouter, Outlet, redirect } from "react-router";
 import Login from "../components/login/Login";
 import { SpeakerDashboard } from "../pages/dashboard/SpeakerDashboard";
 import AuthLayout from "../layouts/AuthLayout";
@@ -22,8 +22,11 @@ import Profile from "../pages/user/Profile";
 import Bookmark from "../components/bookmark/Bookmark";
 import PostLayout from "../layouts/PostLayout";
 import RegisterForm from "../components/register/RegisterForm";
-import GatcDashboard from "../components/gatcdashboard/GatcDashboard";
-
+import GatcDashboard from "../components/gatc/GatcDashboard";
+import PublicProfile from "../pages/user/PublicProfile";
+// import UserDashboardNew from "../pages/dashboard/user/UserDashboardNew";
+import GATC2026 from "../components/gatc/GATC2026";
+import GATCRegistration from "../components/gatc/GATC-Registration";
 export const router = createBrowserRouter
   ([
     {
@@ -117,10 +120,10 @@ export const router = createBrowserRouter
         { path: "/admin", element: <div>Admin Dashboard</div> },
         { path: "/about", element: <div>About</div> },
 
-        { path: "/user", element: <UserDashboard /> },
+        { path: "/user1", element: <UserDashboard /> },
         { path: "/speaker", element: <UserDashboard /> },
         { path: "/gatc/participants", element: <Participants /> },
-        { path: "/scholar", element: <ScholarSearch /> },
+        { path: "/user", element: <ScholarSearch /> },
         { path: "/my-bookshelf", element: <MyBookShelf /> },
         { path: "/user/profile/edit", element: <ProfileEdit /> },
         { path: "/gatc/speakers", element: <SpeakerDashboard /> },
@@ -136,6 +139,21 @@ export const router = createBrowserRouter
         { path: "/user/profile", element: <Profile /> },
         { path: "/my-bookmarks", element: <Bookmark /> },
         { path: "/gatc/dashboard", element: <GatcDashboard /> },
+        { path: "/gatc2026", element: <GATC2026 /> },
+        { path: "/gatc2026/registration", element: <GATCRegistration /> },
+        {
+          path: "/public/users/:id",
+          loader: ({ params }) => {
+            const id = Number(params.id);
+
+            if (!id) {
+              throw new Response("Invalid User ID", { status: 400 });
+            }
+
+            return null;
+          },
+          element: <PublicProfile />,
+        },
 
         {
           path: "/speakers/:id",

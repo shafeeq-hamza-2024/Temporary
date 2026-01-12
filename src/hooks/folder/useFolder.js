@@ -11,19 +11,18 @@ import {
 } from "../../api/folderApi";
 
 // Fetch folder tree
-export const useFolderTree = () => {
-  return useQuery({
+export const useFolderTree = () =>
+  useQuery({
     queryKey: ["folders"],
     queryFn: fetchFolderTree,
   });
-};
 
-// create folder
+// Create folder
 export const useCreateFolder = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: createFolder,
-    onSuccess: () => qc.invalidateQueries(["folders", "tree"]),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["folders"] }),
   });
 };
 
@@ -32,7 +31,7 @@ export const useRenameFolder = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: renameFolder,
-    onSuccess: () => qc.invalidateQueries(["folders"]),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["folders"] }),
   });
 };
 
@@ -41,16 +40,16 @@ export const useDeleteFolder = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: deleteFolder,
-    onSuccess: () => qc.invalidateQueries(["folders","tree"]),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["folders"] }),
   });
 };
 
-// create file
+// Create file
 export const useCreateFile = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: createFile,
-    onSuccess: () => qc.invalidateQueries(["folders","tree"]),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["folders"] }),
   });
 };
 
@@ -59,7 +58,7 @@ export const useRenameFile = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: renameFile,
-    onSuccess: () => qc.invalidateQueries(["folders","tree"]),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["folders"] }),
   });
 };
 
@@ -68,6 +67,6 @@ export const useDeleteFile = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: deleteFile,
-    onSuccess: () => qc.invalidateQueries(["folders","tree"]),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["folders"] }),
   });
 };

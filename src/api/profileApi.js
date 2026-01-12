@@ -106,3 +106,19 @@ export const deletePastExperience = async (id) => {
   const res = await api.delete(`/profile/past-experience/${id}/delete/`);
   return res.data;
 };
+
+
+
+/* =================================================
+   🔬 SCIENTIFIC INTEREST
+================================================= */
+
+export const getScientificInterest = async () => {
+  const res = await api.get("/profile/scientific-interest/");
+  return res.data;
+};
+
+export const updateScientificInterest = async (data) => {
+  const res = await api.patch("/profile/scientific-interest/update/", data);
+  return res.data;
+};

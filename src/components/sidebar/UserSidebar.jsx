@@ -2,9 +2,17 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
 import "./UserSidebar.css";
 import useLogout from "../../hooks/logout";
-
+import { useUser } from "../../hooks/users/useUsers";
 
 export default function UserSidebar() {
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const userId = storedUser?.id;
+
+  const { data: user, isLoading } = useUser(userId);
+
+
+  const isVerified = user?.is_verified === true;
+
   const nav = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
@@ -15,6 +23,7 @@ export default function UserSidebar() {
   const toggle = (label) =>
     setOpenMap((old) => ({ ...old, [label]: !old[label] }));
 
+
   // MENU TREE
   const menuTree = [
     {
@@ -23,29 +32,51 @@ export default function UserSidebar() {
       color: "#0d6efd",
       path: "/",
     },
+
+
+    {
+      label: "GATC",
+      icon: "ri-building-4-line",
+      color: "#0abde3",
+      children: [
+        // Always visible
+        { label: "GATC 2026", path: "/gatc2026" },
+
+        // 🔐 Visible ONLY after payment verification
+        ...(isVerified
+          ? [
+            { label: "Dashboard", path: "/gatc/dashboard" },
+            { label: "Programs", path: "/gatc/program" },
+            { label: "Speakers", path: "/gatc/speakers" },
+            { label: "Participants", path: "/gatc/participants" },
+          ]
+          : []),
+      ],
+    },
+
     // {
     //   label: "Profile",
     //   icon: "ri-user-3-line",
     //   color: "#6f42c1",
     //   path: "/user/profile",
     // },
-    {
-      label: "Messages",
-      icon: "ri-message-3-line",
-      color: "#20c997",
-      path: "/inbox",
-    },
+    // {
+    //   label: "Messages",
+    //   icon: "ri-message-3-line",
+    //   color: "#20c997",
+    //   path: "/inbox",
+    // },
 
     // My Neuron
-    {
-      label: "My Neuron",
-      icon: "ri-brain-line",
-      color: "#ff8c00",
-      children: [
-        { label: "My Handshakes", path: "/handshakes" },
-        // { label: "My Bookmarks", path: "/my-bookmarks" },
-      ],
-    },
+    // {
+    //   label: "My Neuron",
+    //   icon: "ri-brain-line",
+    //   color: "#ff8c00",
+    //   children: [
+    //     { label: "My Handshakes", path: "/handshakes" },
+    //     // { label: "My Bookmarks", path: "/my-bookmarks" },
+    //   ],
+    // },
 
     {
       label: "My Bookshelf",
@@ -53,12 +84,12 @@ export default function UserSidebar() {
       color: "#b5651d",
       path: "/my-bookshelf",
     },
-    {
-      label: "Plasma Search",
-      icon: "ri-search-eye-line",
-      color: "#d63384",
-      path: "/scholar",
-    },
+    // {
+    //   label: "Plasma Search",
+    //   icon: "ri-search-eye-line",
+    //   color: "#d63384",
+    //   path: "/scholar",
+    // },
     {
       label: "Impulse",
       icon: "ri-flashlight-line",
@@ -67,28 +98,25 @@ export default function UserSidebar() {
     },
 
     // GATC
-    {
-      label: "GATC",
-      icon: "ri-building-4-line",
-      color: "#0abde3",
-      children: [
-        { label: "Dashboard", path: "/gatc/dashboard" },
-        { label: "Programs", path: "/gatc/program" },
-        { label: "Speakers", path: "/gatc/speakers" },
-        { label: "Participants", path: "/gatc/participants" },
-      ],
-    },
+
 
     // Divider
     { type: "divider" },
 
-    {
-      label: "Logout",
-      icon: "ri-logout-box-line",
-      color: "red",
-      path: "/logout",
-    },
+    // {
+    //   label: "Logout",
+    //   icon: "ri-logout-box-line",
+    //   color: "red",
+    //   path: "/logout",
+    // },
   ];
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+  }, [user]);
+
 
   // AUTO-OPEN ANY PARENT WHOSE CHILD MATCHES THE URL
   useEffect(() => {
@@ -107,6 +135,11 @@ export default function UserSidebar() {
     setOpenMap((prev) => ({ ...prev, ...openState }));
   }, [currentPath]);
 
+
+  if (isLoading) return null; // or loader
+
+
+
   return (
     <aside className="sidebar p-3">
       <h5 className="text-muted mb-4">Menu</h5>
@@ -116,6 +149,7 @@ export default function UserSidebar() {
           <MenuItem
             key={item.label || `divider-${i}`}
             item={item}
+
             nav={nav}
             openMap={openMap}
             toggle={toggle}

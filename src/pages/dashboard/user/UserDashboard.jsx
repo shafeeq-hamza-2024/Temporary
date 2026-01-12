@@ -2,6 +2,8 @@ import { Link } from "react-router";
 import "./UserDashboard.css";
 import { useLatestMessages } from "../../../hooks/messages/useLatestMessages";
 import { useLatestConversations } from "../../../hooks/messages/useLatestConversations";
+import { siteURL } from "../../../api/api";
+
 
 export default function UserDashboard() {
 
@@ -36,7 +38,7 @@ export default function UserDashboard() {
             {/* RIGHT SIDE: PHOTO */}
             {user.profile_image ? (
   <img
-    src={`http://127.0.0.1:8000${user.profile_image}`}
+    src ={`${siteURL}/${user.profile_image}`}
     alt="Profile"
     className="rounded-circle shadow-sm dashboard-avatar"
     style={{ width: 180, height: 180, objectFit: "cover" }}
@@ -282,3 +284,5 @@ export default function UserDashboard() {
     </div>
   );
 }
+
+

@@ -120,7 +120,7 @@ export default function ScholarSearch() {
       <div className="row">
 
         {/* LEFT */}
-        <div className="col-md-8 left-pane">
+        <div className="col-md- left-pane">
 
           {/* SEARCH BOX */}
           <div className="search-section text-center mb-5">

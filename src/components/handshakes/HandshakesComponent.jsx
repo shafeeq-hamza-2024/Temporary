@@ -104,7 +104,7 @@ export default function HandshakesComponent() {
 
   return (
     <>
-      <div className="event-bar-fullwidth py-3 mb-4">
+      {/* <div className="event-bar-fullwidth py-3 mb-4">
         <div className="container d-flex gap-2 flex-wrap">
           {events.map((ev) => (
             <div
@@ -116,7 +116,7 @@ export default function HandshakesComponent() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       <div className="container py-4 handshakes-page">
         <div className="row">

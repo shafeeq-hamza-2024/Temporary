@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import "./GatcDashboard.css";
-
+import { siteURL } from "../../api/api";
 export default function GatcDashboard() {
   const user = JSON.parse(localStorage.getItem("user")) || {};
 
@@ -20,7 +20,7 @@ export default function GatcDashboard() {
             <div className="profile-header">
               {user.profile_image ? (
                 <img
-                  src={`http://127.0.0.1:8000${user.profile_image}`}
+                  src={`${siteURL}/${user.profile_image}`}
                   alt="Profile"
                   className="user-photo"
                 />
@@ -58,7 +58,7 @@ export default function GatcDashboard() {
                   <i className="ri-map-pin-line info-icon"></i>
                   <div>
                     <div className="info-label">Venue Details</div>
-                    <div className="info-value">Main Auditorium, Hall A</div>
+                    <div className="info-value">Upcoming....</div>
                   </div>
                 </div>
 
@@ -76,7 +76,7 @@ export default function GatcDashboard() {
                   <i className="ri-building-line info-icon"></i>
                   <div>
                     <div className="info-label">Institute/Organization</div>
-                    <div className="info-value">{user.organization || "IISc Bangalore"}</div>
+                    <div className="info-value">{user.organization || "Upcoming...."}</div>
                   </div>
                 </div>
 
@@ -113,7 +113,7 @@ export default function GatcDashboard() {
                 <h5>Brief Agenda</h5>
               </div>
 
-              <div className="agenda-items">
+              {/* <div className="agenda-items">
                 <div className="agenda-item">
                   <div className="agenda-time">09:00 AM</div>
                   <div className="agenda-details">
@@ -137,7 +137,7 @@ export default function GatcDashboard() {
                     <div className="agenda-location">Hall B - Multiple Speakers</div>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               {/* <Link to="/agenda" className="view-full-agenda-btn">
                 <span>View Full Agenda</span>

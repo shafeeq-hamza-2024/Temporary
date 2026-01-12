@@ -35,7 +35,24 @@ export default function MyBookShelf() {
     }
   }, [shelf]);
 
+  useEffect(() => {
+    setPath((prev) => {
+      if (prev.length === 0) return prev;
+
+      // update ROOT with latest shelf
+      return prev.map((p) =>
+        p.id === "ROOT"
+          ? {
+            ...p,
+            subfolders: shelf,
+          }
+          : p
+      );
+    });
+  }, [shelf]);
+
   const currentFolder = path[path.length - 1];
+
 
   const enterFolder = (folder) => setPath([...path, folder]);
   const goTo = (index) => setPath(path.slice(0, index + 1));
@@ -45,8 +62,8 @@ export default function MyBookShelf() {
     const name = prompt("Folder name?");
     if (!name) return;
 
-    const parent = currentFolder?.id || null;
-
+    let parent = currentFolder?.id || null;
+    if (parent == "ROOT") parent = null;
     createFolderMut.mutate({ name, parent });
   };
 

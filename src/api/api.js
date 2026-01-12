@@ -1,7 +1,16 @@
 import axios from "axios";
 
+export const siteURL = "http://68.178.168.255:9006"
+
+
+// export const siteURL =
+//   window.__ENV__?.API_BASE_URL || "http://127.0.0.1:8000"
+
+
+// export const siteURL = "http://127.0.0.1:8000"
+
 const api = axios.create({
-  baseURL: "http://68.178.168.255:9006/api",  
+  baseURL: `${siteURL}/api`,  
 });
 
 

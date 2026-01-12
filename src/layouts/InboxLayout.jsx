@@ -4,7 +4,7 @@ import UserSidebar from "../components/sidebar/UserSidebar";
 import SpeakerTopbar from "../components/topbar/SpeakerTopbar";
 import UserTopbar from "../components/topbar/UserTopbar";
 import { useEffect } from "react";
-
+import UserTopbarNew from "../components/topbar/UserTopbarNew";
 import './AppLayout.css';
 
 export default function InboxLayout() {
@@ -13,7 +13,7 @@ export default function InboxLayout() {
   
   const Topbar = {
     speaker: SpeakerTopbar,
-    user: UserTopbar
+    user: UserTopbarNew
   }[user.role];
 
   useEffect(()=>{

@@ -76,7 +76,7 @@ export default function ParticipantProfile() {
 
                 {/* Social Icons + Message Button */}
                 <div className="d-flex align-items-center justify-content-between mb-3">
-                  
+
                   {/* Social Icons */}
                   <div className="d-flex gap-3 fs-4 text-secondary">
                     <a href={speaker.socials.linkedin} className="text-dark">
@@ -94,10 +94,10 @@ export default function ParticipantProfile() {
                   <Link
                     to="/inbox"
                     className="btn btn-dark rounded-pill px-3 d-flex align-items-center gap-1"
-                    >
+                  >
                     <i className="ri-chat-1-line"></i>
                     Message
-                    </Link>
+                  </Link>
 
                 </div>
 
@@ -137,98 +137,98 @@ export default function ParticipantProfile() {
 
 
           {/* ---------------- EDUCATION + PROFESSIONAL (SIDE BY SIDE) ---------------- */}
-            <div className="row mt-4">
+          <div className="row mt-4">
 
             {/* EDUCATION */}
             <div className="col-md-6">
-                <div className="card shadow-sm border-0 fade-up h-100">
+              <div className="card shadow-sm border-0 fade-up h-100">
                 <div className="card-header bg-white">
-                    <h5 className="mb-0">Education Qualifications</h5>
+                  <h5 className="mb-0">Education Qualifications</h5>
                 </div>
                 <div className="card-body">
 
-                    <ul className="list-group list-group-flush">
+                  <ul className="list-group list-group-flush">
                     <li className="list-group-item px-0">
-                        <h6 className="fw-bold mb-1">Ph.D. in Artificial Intelligence</h6>
-                        <p className="text-muted small mb-0">Stanford University • 2017</p>
+                      <h6 className="fw-bold mb-1">Ph.D. in Artificial Intelligence</h6>
+                      <p className="text-muted small mb-0">Stanford University • 2017</p>
                     </li>
 
                     <li className="list-group-item px-0">
-                        <h6 className="fw-bold mb-1">M.S. in Computer Science</h6>
-                        <p className="text-muted small mb-0">UC Berkeley • 2014</p>
+                      <h6 className="fw-bold mb-1">M.S. in Computer Science</h6>
+                      <p className="text-muted small mb-0">UC Berkeley • 2014</p>
                     </li>
 
                     <li className="list-group-item px-0">
-                        <h6 className="fw-bold mb-1">B.S. in Computational Engineering</h6>
-                        <p className="text-muted small mb-0">MIT • 2012</p>
+                      <h6 className="fw-bold mb-1">B.S. in Computational Engineering</h6>
+                      <p className="text-muted small mb-0">MIT • 2012</p>
                     </li>
-                    </ul>
+                  </ul>
 
                 </div>
-                </div>
+              </div>
             </div>
 
             {/* PROFESSIONAL */}
             <div className="col-md-6">
-                <div className="card shadow-sm border-0 fade-up h-100">
+              <div className="card shadow-sm border-0 fade-up h-100">
                 <div className="card-header bg-white">
-                    <h5 className="mb-0">Professional Qualifications</h5>
+                  <h5 className="mb-0">Professional Qualifications</h5>
                 </div>
                 <div className="card-body">
 
-                    <ul className="list-group list-group-flush">
+                  <ul className="list-group list-group-flush">
 
                     <li className="list-group-item px-0 py-3">
-                        <i className="ri-check-line text-success me-2"></i>
-                        Senior Research Scientist – DeepMind (2020–present)
+                      <i className="ri-check-line text-success me-2"></i>
+                      Senior Research Scientist – DeepMind (2020–present)
                     </li>
 
                     <li className="list-group-item px-0 py-3">
-                        <i className="ri-check-line text-success me-2"></i>
-                        Lead AI Ethics Evaluator – OpenAI (2018–2020)
+                      <i className="ri-check-line text-success me-2"></i>
+                      Lead AI Ethics Evaluator – OpenAI (2018–2020)
                     </li>
 
                     <li className="list-group-item px-0 py-3">
-                        <i className="ri-check-line text-success me-2"></i>
-                        Visiting Faculty – Caltech AI Lab (2023)
+                      <i className="ri-check-line text-success me-2"></i>
+                      Visiting Faculty – Caltech AI Lab (2023)
                     </li>
 
-                    </ul>
+                  </ul>
 
                 </div>
-                </div>
+              </div>
             </div>
 
-            </div>
+          </div>
 
-            {/* ---------------- AWARDS (FULL WIDTH) ---------------- */}
-            <div className="card shadow-sm border-0 fade-up mt-4 mb-4">
+          {/* ---------------- AWARDS (FULL WIDTH) ---------------- */}
+          <div className="card shadow-sm border-0 fade-up mt-4 mb-4">
             <div className="card-header bg-white">
-                <h5 className="mb-0">Awards & Achievements</h5>
+              <h5 className="mb-0">Awards & Achievements</h5>
             </div>
             <div className="card-body">
 
-                <ul className="list-group list-group-flush">
+              <ul className="list-group list-group-flush">
 
                 <li className="list-group-item px-0 py-3">
-                    <i className="ri-award-fill text-warning me-2"></i>
-                    ACM Distinguished Researcher Award – 2024
+                  <i className="ri-award-fill text-warning me-2"></i>
+                  ACM Distinguished Researcher Award – 2024
                 </li>
 
                 <li className="list-group-item px-0 py-3">
-                    <i className="ri-award-fill text-warning me-2"></i>
-                    NeurIPS Best Paper Award – 2022
+                  <i className="ri-award-fill text-warning me-2"></i>
+                  NeurIPS Best Paper Award – 2022
                 </li>
 
                 <li className="list-group-item px-0 py-3">
-                    <i className="ri-award-fill text-warning me-2"></i>
-                    IEEE AI Pioneer Medal – 2021
+                  <i className="ri-award-fill text-warning me-2"></i>
+                  IEEE AI Pioneer Medal – 2021
                 </li>
 
-                </ul>
+              </ul>
 
             </div>
-            </div>
+          </div>
 
         </div>
 

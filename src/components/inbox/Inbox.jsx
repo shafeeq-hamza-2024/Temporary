@@ -20,7 +20,7 @@ export default function Inbox() {
   const [active, setActive] = useState(null);
 
   const { data: chat = [] } = useChatHistory(active?.user?.id);
-  const sendMsg = useSendMessage();
+  const sendMsg = useSendMessage(parseInt(userId));
   const markAsRead = useMarkAsRead();
 
   const [text, setText] = useState("");
@@ -84,12 +84,7 @@ export default function Inbox() {
       {/* LEFT Sidebar */}
       <div className="inbox-left border-end slide-left">
 
-        <div className="p-2 border-bottom bg-light d-flex align-items-center">
 
-          <button className="btn btn-outline-secondary mb-3" onClick={() => window.history.back()}>
-            <i className="ri-arrow-left-line me-1"></i> Back
-          </button>
-        </div>
 
         {/* Inbox Header */}
         <div className="p-3 border-bottom fw-bold">Inbox</div>
@@ -103,11 +98,18 @@ export default function Inbox() {
                 }`}
               onClick={() => nav(`/inbox/${c.user.id}`)}
             >
-              <img
-                src={c.user.profile_image || "https://i.pravatar.cc/100"}
-                className="inbox-avatar"
-                alt="avatar"
-              />
+              {c.user.profile_image ? (
+                <img
+                  src={c.user.profile_image}
+                  className="inbox-avatar"
+                  alt="avatar"
+                />
+              ) : (
+                <div className="inbox-avatar initials-avatar">
+                  {(c.user.first_name?.[0] || "") + (c.user.last_name?.[0] || "").toUpperCase()}
+                </div>
+              )}
+
               <div className="flex-grow-1 ">
                 <div className="fw-semibold ps-2">
                   {c.user.first_name} {c.user.last_name}
