@@ -7,34 +7,47 @@ export const siteURL = "http://68.178.168.255:9006"
 //   window.__ENV__?.API_BASE_URL || "http://127.0.0.1:8000"
 
 
-// export const siteURL = "http://127.0.0.1:8000"
+
+// export const siteURL = "http://127.0.0.1:8000";
 
 const api = axios.create({
-  baseURL: `${siteURL}/api`,  
+  baseURL: `${siteURL}/api`,
 });
 
+// ===============================
+// REQUEST INTERCEPTOR (JWT)
+// ===============================
+api.interceptors.request.use(
+  (config) => {
+    // 1️⃣ Cache-busting for GET requests
+    if (config.method?.toLowerCase() === "get") {
+      config.params = {
+        ...(config.params || {}),
+        _t: Date.now(),
+      };
+    }
 
-// const api = axios.create({
-//   baseURL: "http://127.0.0.1:8000/api",  // <-- Correct main API root
-// });
+    // 2️⃣ Attach JWT access token (EXCEPT public routes)
+    const accessToken = localStorage.getItem("access");
 
+    const publicEndpoints = [
+      "/login/",
+      "/register/",
+      "/verify-email/",
+      "/resend-verification/",
+    ];
 
-api.interceptors.request.use((config) => {
-  // 1) Add timestamp only to GET
-  if (config.method?.toLowerCase() === "get") {
-    config.params = {
-      ...(config.params || {}),
-      _t: Date.now(),
-    };
-  }
+    const isPublic = publicEndpoints.some((url) =>
+      config.url?.includes(url)
+    );
 
-  // 2) Attach Token
-  const token = localStorage.getItem("token");
-  if (token && config.url !== "/login/") {
-    config.headers.Authorization = `Token ${token}`;
-  }
+    if (accessToken && !isPublic) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
 
-  return config;
-});
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default api;

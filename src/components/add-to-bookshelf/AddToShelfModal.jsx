@@ -53,11 +53,19 @@ export default function AddToShelfModal({ article, onClose }) {
   const handleAdd = async () => {
     if (!selectedFolderId || selectedFolderId === "ROOT") return;
 
+    // await createFileMut.mutateAsync({
+    //   folder: selectedFolderId,
+    //   title: article.title,
+    //   url: article.pdf || article.pubmed,
+    // });
+
     await createFileMut.mutateAsync({
       folder: selectedFolderId,
       title: article.title,
-      url: article.pdf,
+      url: article.pdf || article.pubmed,
+      source: article.pdf ? "pdf" : "pubmed",
     });
+
 
     onClose();
   };
@@ -83,9 +91,8 @@ export default function AddToShelfModal({ article, onClose }) {
           {path.map((p, index) => (
             <span key={p.id}>
               <span
-                className={`breadcrumb-link ${
-                  index === path.length - 1 ? "active" : ""
-                }`}
+                className={`breadcrumb-link ${index === path.length - 1 ? "active" : ""
+                  }`}
                 onClick={() => goTo(index)}
               >
                 {p.name}
@@ -105,9 +112,8 @@ export default function AddToShelfModal({ article, onClose }) {
               {currentFolder?.subfolders?.map((f) => (
                 <div key={f.id} className="item-wrapper">
                   <div
-                    className={`folder-card ${
-                      selectedFolderId === f.id ? "selected" : ""
-                    }`}
+                    className={`folder-card ${selectedFolderId === f.id ? "selected" : ""
+                      }`}
                     onClick={() => setSelectedFolderId(f.id)}
                     onDoubleClick={() => enterFolder(f)}
                   >

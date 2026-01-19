@@ -30,7 +30,7 @@ export default function ProfileImage({ src, className = "", size = 150 }) {
     return (
         <div className="position-relative d-inline-block">
             <img
-                src={preview || (src?.startsWith("http") ? src : `http://127.0.0.1:8000${src}`) || "images/Avatar 1.png"}
+                src={preview || (src?.startsWith("http") ? src : `http://127.0.0.1:8000${src}`) || "/images/Avatar.png"}
                 alt="Profile"
                 className={`rounded-circle shadow ${className}`}
                 style={{ width: size, height: size, objectFit: "cover" }}

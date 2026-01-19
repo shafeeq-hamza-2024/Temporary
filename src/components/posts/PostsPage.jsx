@@ -1,4 +1,4 @@
-import { useState, useRef, use } from "react";
+import { useState, useRef } from "react";
 
 import { Link } from "react-router";
 import DOMPurify from "dompurify";
@@ -11,6 +11,8 @@ import { useCreatePost } from "../../hooks/posts/useCreatePost";
 import { Editor } from "@tinymce/tinymce-react";
 import { useUserProfile } from "../../hooks/profile/useUserProfile";
 import { useResearchNews } from "../../hooks/news/useResearchNews";
+import { useUpdatePost } from "../../hooks/posts/useUpdatePost";
+import { useDeletePost } from "../../hooks/posts/useDeletePost";
 
 import { useNavigate } from "react-router";
 import "./PostsPage.css";
@@ -25,16 +27,63 @@ export default function PostsPage() {
     content: "",
     files: [],
   });
+  const [confirmDelete, setConfirmDelete] = useState({
+    show: false,
+    postId: null,
+  });
+
+  const updatePost = useUpdatePost();
+  const deletePost = useDeletePost();
+
+  const confirmDeletePost = () => {
+    deletePost.mutate(confirmDelete.postId, {
+      onSuccess: () => {
+        showAlert("Post deleted successfully", "success");
+        setConfirmDelete({ show: false, postId: null });
+      },
+      onError: () => {
+        showAlert("Failed to delete post", "danger");
+        setConfirmDelete({ show: false, postId: null });
+      },
+    });
+  };
+
+
+  const handleDeletePost = (postId) => {
+    setConfirmDelete({
+      show: true,
+      postId,
+    });
+  };
+
+
+
+  const [editingPost, setEditingPost] = useState(null);
+  const handleEditPost = (post) => {
+    setEditingPost(post);
+    setForm({
+      title: post.title || "",
+      content: post.content || "",
+      files: [], // do NOT preload files
+    });
+    setPostType("post");
+    setShowModal(true);
+  };
+
+
   const {
     data: news = [],
     isLoading: isNewsLoading,
   } = useResearchNews();
+
 
   const {
     data: posts = [],
     isLoading: isPostsLoading,
     isError,
   } = usePosts();
+
+
 
   const { data: profile, isLoading: profileLoading } = useUserProfile();
 
@@ -43,6 +92,8 @@ export default function PostsPage() {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerImages, setViewerImages] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [commentText, setCommentText] = useState({});
 
 
 
@@ -53,10 +104,44 @@ export default function PostsPage() {
   const bookmarkPost = useBookmarkPost();
   const commentPost = useCommentPost();
 
-  const [commentText, setCommentText] = useState({});
+  const [expandedComments, setExpandedComments] = useState({});
+  const toggleComments = (postId) => {
+    setExpandedComments(prev => ({
+      ...prev,
+      [postId]: !prev[postId],
+    }));
+  };
+
+
+  const truncateWords = (text, wordLimit = 30) => {
+    const words = text.split(/\s+/);
+    if (words.length <= wordLimit) return text;
+    return words.slice(0, wordLimit).join(" ") + "...";
+  };
+
+
+  const [alert, setAlert] = useState({
+    show: false,
+    message: "",
+    type: "success", // success | danger | warning | info
+  });
+
+
+  const showAlert = (message, type = "success") => {
+    setAlert({ show: true, message, type });
+
+    // auto-hide after 3 seconds (optional)
+    setTimeout(() => {
+      setAlert((prev) => ({ ...prev, show: false }));
+    }, 3000);
+  };
+
+
+
 
   const [files, setFiles] = useState([]); // new state for images
   const MAX_IMAGES = 6;
+
 
   const handleFileSelect = (e) => {
     const selected = Array.from(e.target.files);
@@ -65,16 +150,18 @@ export default function PostsPage() {
     const imageFiles = selected.filter(file => file.type.startsWith("image/"));
 
     if (imageFiles.length !== selected.length) {
-      alert("Only images are allowed");
+      showAlert("Only images are allowed", "warning");
     }
+
 
     setForm(prev => {
       const combined = [...prev.files, ...imageFiles];
 
       if (combined.length > 6) {
-        alert("Maximum 6 images allowed");
+        showAlert("Maximum 6 images allowed", "warning");
         return combined.slice(0, 6);
       }
+
       return combined;
     });
   };
@@ -94,7 +181,7 @@ export default function PostsPage() {
       ${og["og:image"] ? `
         <img src="${og["og:image"]}"
              alt="${og["og:title"]}"
-             style="width:100%;max-height:220px;object-fit:cover;" />
+             style="width:100%;max-height:300px;object-fit:cover;" />
       ` : ""}
 
       <div style="padding:12px;">
@@ -124,23 +211,41 @@ export default function PostsPage() {
 
 
   const handleCreatePost = () => {
-    if (!form.content?.trim() && form.files.length === 0) return;
+    if (!form.content?.trim() && form.files.length === 0) {
+      showAlert("Post cannot be empty", "warning");
+      return;
+    }
 
-    createPost.mutate(
-      {
-        title: form.title?.trim() || "",
-        content: form.content?.trim() || "",
-        files: form.files, // <-- array of files
+    const payload = {
+      postId: editingPost?.id,
+      title: form.title?.trim() || "",
+      content: form.content?.trim() || "",
+      files: form.files,
+    };
+
+    const mutation = editingPost ? updatePost : createPost;
+
+    mutation.mutate(payload, {
+      onSuccess: () => {
+        setShowModal(false);
+        setEditingPost(null);
+        setForm({ title: "", content: "", files: [] });
+
+        showAlert(
+          editingPost ? "Post updated successfully" : "Post created successfully",
+          "success"
+        );
       },
-      {
-        onSuccess: () => {
-          setShowModal(false);
-          setForm({ title: "", content: "", files: [] });
-        },
-      }
-    );
-
+      onError: () => {
+        showAlert(
+          editingPost ? "Failed to update post" : "Failed to create post",
+          "danger"
+        );
+      },
+    });
   };
+
+
 
 
 
@@ -159,16 +264,26 @@ export default function PostsPage() {
 
   const handleCommentSubmit = (postId) => {
     const text = commentText[postId];
-    if (!text?.trim()) return;
+
+    if (!text?.trim()) {
+      showAlert("Comment cannot be empty", "warning");
+      return;
+    }
 
     commentPost.mutate(
       { postId, c_content: text },
       {
-        onSuccess: () =>
-          setCommentText((prev) => ({ ...prev, [postId]: "" })),
+        onSuccess: () => {
+          setCommentText((prev) => ({ ...prev, [postId]: "" }));
+          showAlert("Comment added", "success");
+        },
+        onError: () => {
+          showAlert("Failed to add comment", "danger");
+        },
       }
     );
   };
+
 
 
 
@@ -204,6 +319,49 @@ export default function PostsPage() {
 
   return (
     <div className="container-fluid py-4" style={{ background: "#f3f2ef" }}>
+      {confirmDelete.show && (
+        <div
+          className="modal fade show d-block"
+          style={{ background: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Delete Post</h5>
+                <button
+                  className="btn-close"
+                  onClick={() => setConfirmDelete({ show: false, postId: null })}
+                />
+              </div>
+
+              <div className="modal-body">
+                Are you sure you want to delete this post?
+                <br />
+                <small className="text-muted">
+                  This action cannot be undone.
+                </small>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setConfirmDelete({ show: false, postId: null })}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="btn btn-danger"
+                  onClick={confirmDeletePost}
+                >
+                  Yes, Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="container">
         <div className="row g-4">
 
@@ -282,6 +440,19 @@ export default function PostsPage() {
 
           {/* CREATE POST (UI ONLY) */}
           <div className="col-lg-6">
+            <div className="sticky-top" style={{ zIndex: 1050 }}>
+              {alert.show && (
+                <div className={`alert alert-${alert.type} alert-dismissible fade show`} role="alert" >
+                  {alert.message}
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setAlert({ ...alert, show: false })}
+                  />
+                </div>
+              )}
+            </div>
+
             <div style={{ maxWidth: "720px" }} className="mx-auto">
 
               {/* CREATE POST */}
@@ -375,14 +546,47 @@ export default function PostsPage() {
                         </div>
                       )}
 
-                      <div>
-                        <div className="fw-semibold">
-                          {post.user.first_name} {post.user.last_name}
+                      <div className="d-flex justify-content-between align-items-start w-100">
+                        <div>
+                          <div className="fw-semibold">
+                            {post.user.first_name} {post.user.last_name}
+                          </div>
+                          <small className="text-muted">
+                            {new Date(post.created_at).toLocaleString()}
+                          </small>
                         </div>
-                        <small className="text-muted">
-                          {new Date(post.created_at).toLocaleString()}
-                        </small>
+
+                        {post.user.id === profile?.id && (
+                          <div className="dropdown">
+                            <button
+                              className="btn btn-sm btn-light"
+                              data-bs-toggle="dropdown"
+                            >
+                              <i className="ri-more-2-fill"></i>
+                            </button>
+
+                            <ul className="dropdown-menu dropdown-menu-end">
+                              <li>
+                                <button
+                                  className="dropdown-item"
+                                  onClick={() => handleEditPost(post)}
+                                >
+                                  ✏️ Edit
+                                </button>
+                              </li>
+                              <li>
+                                <button
+                                  className="dropdown-item text-danger"
+                                  onClick={() => handleDeletePost(post.id)}
+                                >
+                                  🗑 Delete
+                                </button>
+                              </li>
+                            </ul>
+                          </div>
+                        )}
                       </div>
+
                     </div>
 
                     {/* TITLE */}
@@ -398,7 +602,7 @@ export default function PostsPage() {
                       }}
                     />
 
-                    {/* 🔗 LINK PREVIEW (YouTube) */}
+                    {/* 🔗 LINK PREVIEW (YouTube)
                     {post.link_preview?.type === "youtube" && (
                       <a
                         href={post.link_preview.watch_url}
@@ -415,12 +619,17 @@ export default function PostsPage() {
                           <div className="youtube-play-btn">▶</div>
                         </div>
                       </a>
-                    )}
+                    )} */}
 
                     {/* MEDIA */}
                     {/* MEDIA GRID - LinkedIn style */}
                     {post.media?.length > 0 && (
-                      <div className="post-media-grid images-4 mt-3">
+                      <div
+                        className={`post-media-grid images-${Math.min(
+                          post.media.length,
+                          4
+                        )} mt-3`}
+                      >
                         {post.media.slice(0, 4).map((m, idx) => (
                           <div
                             key={m.id}
@@ -437,7 +646,6 @@ export default function PostsPage() {
                               alt=""
                             />
 
-                            {/* ✅ OVERLAY ONLY ON 4TH IMAGE IF MORE EXIST */}
                             {idx === 3 && post.media.length > 4 && (
                               <div className="media-overlay">
                                 +{post.media.length - 4}
@@ -458,14 +666,76 @@ export default function PostsPage() {
                       {post.like_count} likes · {post.comment_count} comments
                     </div>
 
+                    {post.comments?.length > 0 && (
+                      <div className="mt-3 comments-box">
+
+                        {(expandedComments[post.id]
+                          ? post.comments
+                          : post.comments
+                            .slice()
+                            .reverse()
+                            .slice(0, 2)
+                        ).map((comment) => (
+                          <div key={comment.id} className="d-flex gap-2 mb-2">
+
+                            {/* Avatar */}
+                            {comment.user.profile_image ? (
+                              <img
+                                src={comment.user.profile_image}
+                                className="rounded-circle"
+                                width="32"
+                                height="32"
+                                alt=""
+                              />
+                            ) : (
+                              <div
+                                className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+                                style={{ width: 32, height: 32, fontSize: 12 }}
+                              >
+                                {comment.user.first_name?.[0]}
+                              </div>
+                            )}
+
+                            {/* Comment bubble */}
+                            <div className="comment-bubble">
+                              <div className="fw-semibold small">
+                                {comment.user.first_name} {comment.user.last_name}
+                              </div>
+                              <div className="small text-secondary">
+                                {comment.c_content}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+
+                        {/* SHOW MORE / LESS */}
+                        {post.comments.length > 2 && (
+                          <button
+                            className="btn btn-link btn-sm p-0"
+                            onClick={() => toggleComments(post.id)}
+                          >
+                            {expandedComments[post.id]
+                              ? "Show less comments"
+                              : `Show more comments (${post.comments.length - 2})`}
+                          </button>
+                        )}
+                      </div>
+                    )}
+
                     <div className="d-flex border-top pt-2">
                       <button
-                        className="btn btn-light btn-sm w-100"
-                        disabled={likePost.isLoading}
+                        className={`btn btn-sm w-100 ${post.is_liked ? "btn-primary" : "btn-light"
+                          }`}
                         onClick={() => likePost.mutate(post.id)}
                       >
-                        <i className="ri-thumb-up-line me-1"></i> Like
+                        <i
+                          className={`me-1 ${post.is_liked ? "ri-thumb-up-fill" : "ri-thumb-up-line"
+                            }`}
+                        ></i>
+                        {post.like_count}
                       </button>
+
+
 
 
                       <button
@@ -493,6 +763,11 @@ export default function PostsPage() {
                         <i className="ri-eye-line me-1"></i> View
                       </Link>
                     </div>
+                    {/* COMMENTS LIST */}
+
+
+
+
 
                     {/* COMMENTS */}
                     <div className="mt-3">
@@ -525,6 +800,7 @@ export default function PostsPage() {
                       </div>
                     </div>
                   </div>
+
                 </div>
               ))}
             </div>
@@ -553,17 +829,15 @@ export default function PostsPage() {
                     rel="noopener noreferrer"
                     className="news-item-card text-decoration-none mb-3"
                   >
-                    {/* Image on top */}
+                    {/* Thumbnail on the left */}
                     <img
-                      src={item.thumbnail || "https://via.placeholder.com/250x140"}
+                      src={item.thumbnail || "https://via.placeholder.com/100x70"}
                       alt={item.title}
-                      className="rounded"
+                      className="news-thumb-img"
                     />
 
-
-
-                    {/* Content below */}
-                    <div className="news-content mb-2">
+                    {/* Content on the right */}
+                    <div className="news-content">
                       <div className="fw-semibold text-dark news-title">
                         {item.title}
                       </div>
@@ -583,13 +857,6 @@ export default function PostsPage() {
               </div>
             </div>
           </div>
-
-
-
-
-
-
-
         </div>
       </div>
       {showModal && (
@@ -602,9 +869,14 @@ export default function PostsPage() {
 
               {/* HEADER */}
               <div className="modal-header">
-                <h5 className="modal-title text-capitalize">
+                {/* <h5 className="modal-title text-capitalize">
                   Create {postType === "post" ? "Post" : postType}
+                </h5> */}
+
+                <h5 className="modal-title">
+                  {editingPost ? "Edit Post" : "Create Post"}
                 </h5>
+
                 <button
                   className="btn-close"
                   onClick={closeModal}
@@ -626,50 +898,6 @@ export default function PostsPage() {
                   />
                 )}
 
-                {/* CONTENT */}
-
-                {/* <Editor
-                  apiKey="gzbaq6k6otgk5w4c2vhnm06gksbkpyt5ahllriq2s49rj3ty"
-                  value={form.content}
-                  onEditorChange={(newValue) =>
-                    setForm({ ...form, content: newValue })
-                  }
-                  init={{
-                    height: 350,
-                    menubar: false,
-plugins: `
-  advlist
-  autolink
-  lists
-  link
-  image
-  charmap
-  preview
-  anchor
-  searchreplace
-  visualblocks
-  code
-  fullscreen
-  insertdatetime
-  media
-  table
-  help
-  wordcount
-`,
-toolbar: `
-  undo redo |
-  formatselect |
-  bold italic underline |
-  alignleft aligncenter alignright |
-  bullist numlist |
-  link image media table |
-  code preview fullscreen
-`
-
-                  }}
-                /> */}
-
-
                 <Editor
                   apiKey="gzbaq6k6otgk5w4c2vhnm06gksbkpyt5ahllriq2s49rj3ty"
                   value={form.content}
@@ -680,33 +908,33 @@ toolbar: `
                     height: 400,
                     menubar: false,
                     plugins: `
-  advlist
-  autolink
-  lists
-  link
-  image
-  charmap
-  preview
-  anchor
-  searchreplace
-  visualblocks
-  code
-  fullscreen
-  insertdatetime
-  media
-  table
-  help
-  wordcount
-`,
+                        advlist
+                        autolink
+                        lists
+                        link
+                        image
+                        charmap
+                        preview
+                        anchor
+                        searchreplace
+                        visualblocks
+                        code
+                        fullscreen
+                        insertdatetime
+                        media
+                        table
+                        help
+                        wordcount
+                      `,
                     toolbar: `
-  undo redo |
-  formatselect |
-  bold italic underline |
-  alignleft aligncenter alignright |
-  bullist numlist |
-  link image media table |
-  code preview fullscreen
-`,
+                        undo redo |
+                        formatselect |
+                        bold italic underline |
+                        alignleft aligncenter alignright |
+                        bullist numlist |
+                        link image media table |
+                        code preview fullscreen
+                      `,
                     setup: (editor) => {
                       editor.on("paste", async (e) => {
                         const clipboardData = e.clipboardData || window.clipboardData;
@@ -809,10 +1037,23 @@ toolbar: `
 
                 <button
                   className="btn btn-primary"
-                  disabled={createPost.isLoading || (!form.content && !form.files)}
+                  disabled={
+                    editingPost
+                      ? updatePost.isLoading
+                      : createPost.isLoading ||
+                      (!form.content?.trim() && form.files.length === 0)
+                  }
+
                   onClick={handleCreatePost}
                 >
-                  {createPost.isLoading ? "Posting..." : "Post"}
+                  {editingPost
+                    ? updatePost.isLoading
+                      ? "Updating..."
+                      : "Update"
+                    : createPost.isLoading
+                      ? "Posting..."
+                      : "Post"}
+
                 </button>
 
               </div>
@@ -831,6 +1072,7 @@ toolbar: `
           <div className="modal-dialog modal-lg modal-dialog-centered">
             <div className="modal-content rounded-4">
 
+              {/* HEADER */}
               <div className="modal-header">
                 <h5 className="modal-title">Post Preview</h5>
                 <button
@@ -839,38 +1081,93 @@ toolbar: `
                 />
               </div>
 
+              {/* BODY */}
               <div className="modal-body">
+                <div className="card border-0 shadow-sm rounded-4 mb-4">
+                  <div className="card-body">
 
-                {/* ARTICLE TITLE */}
-                {postType === "article" && (
-                  <h4 className="fw-bold mb-3">{form.title}</h4>
-                )}
+                    {/* HEADER - User Avatar + Name */}
+                    <div className="d-flex gap-3 mb-2">
+                      {profile?.profile_image ? (
+                        <img
+                          src={profile.profile_image}
+                          className="rounded-circle post-avatar"
+                          width="48"
+                          height="48"
+                          alt="Profile"
+                        />
+                      ) : (
+                        <div
+                          className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+                          style={{ width: 48, height: 48, fontWeight: 600 }}
+                        >
+                          {profile?.first_name?.[0]}
+                          {profile?.last_name?.[0]}
+                        </div>
+                      )}
 
-                {/* ARTICLE CONTENT */}
-                <div
-                  className="post-content"
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(form.content),
-                  }}
-                />
+                      <div>
+                        <div className="fw-semibold">
+                          {profile?.first_name} {profile?.last_name}
+                        </div>
+                        <small className="text-muted">Now</small>
+                      </div>
+                    </div>
 
-                {/* IMAGE PREVIEW */}
-                {form.files.length > 0 && (
-                  <div
-                    className={`post-media-grid images-${form.files.length} mt-3`}
-                  >
-                    {form.files.map((file, idx) => (
-                      <img
-                        key={idx}
-                        src={URL.createObjectURL(file)}
-                        className="post-media-img"
-                        alt=""
-                      />
-                    ))}
+                    {/* TITLE */}
+                    {postType === "article" && form.title && (
+                      <h6 className="mt-2">{form.title}</h6>
+                    )}
+
+                    {/* CONTENT */}
+                    <div
+                      className="text-secondary mt-2 post-content"
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(form.content),
+                      }}
+                    />
+
+                    {/* MEDIA GRID */}
+                    {form.files.length > 0 && (
+                      <div
+                        className={`post-media-grid images-${form.files.length} mt-3`}
+                      >
+                        {form.files.map((file, idx) => (
+                          <div key={idx} className="media-wrapper">
+                            <img
+                              src={URL.createObjectURL(file)}
+                              className="post-media-img"
+                              alt={`preview-${idx}`}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
                   </div>
-                )}
+
+                  {/* FOOTER - Optional actions like likes/comments */}
+                  <div className="card-body pt-2">
+                    <div className="small text-muted mb-2">
+                      0 likes · 0 comments
+                    </div>
+                    <div className="d-flex border-top pt-2">
+                      <button className="btn btn-sm w-100 btn-light">
+                        <i className="ri-thumb-up-line me-1"></i> Like
+                      </button>
+                      <button className="btn btn-sm w-100 btn-light">
+                        <i className="ri-chat-1-line me-1"></i> Comment
+                      </button>
+                      <button className="btn btn-sm w-100 btn-light">
+                        <i className="ri-bookmark-line me-1"></i> Save
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
               </div>
 
+              {/* MODAL FOOTER */}
               <div className="modal-footer">
                 <button
                   className="btn btn-light"
@@ -886,14 +1183,15 @@ toolbar: `
                     handleCreatePost();
                   }}
                 >
-                  Post
+                  {editingPost ? "Update" : "Post"}
+
                 </button>
               </div>
-
             </div>
           </div>
         </div>
       )}
+
 
 
       {viewerOpen && (

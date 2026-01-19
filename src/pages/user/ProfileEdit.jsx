@@ -45,6 +45,11 @@ export default function EditProfile() {
   const { data: pastData } = usePastExperienceList();
   const { data: scientificData } = useScientificInterest();
   const updateScientific = useUpdateScientificInterest();
+  const normalizeUrl = (url) => {
+    if (!url) return "";
+    if (/^https?:\/\//i.test(url)) return url;
+    return `https://${url}`;
+  };
 
 
   const dropdownRef = useRef(null);
@@ -68,6 +73,12 @@ export default function EditProfile() {
       opt.toLowerCase().includes(searchText.toLowerCase())
     );
   };
+
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "success", // success | danger | warning | info
+    message: "",
+  });
 
 
 
@@ -505,10 +516,26 @@ export default function EditProfile() {
         city: personal.city,
         country: personal.country,
       });
-      alert("Basic details saved");
+      setAlert({
+        show: true,
+        type: "success",
+        message: "Basic details saved",
+      });
+      setTimeout(() => {
+        setAlert(a => ({ ...a, show: false }));
+      }, 3000);
+
     } catch (err) {
       console.error(err);
-      alert("Failed to save basic details");
+      setAlert({
+        show: true,
+        type: "danger",
+        message: "Failed to save basic details",
+      });
+      setTimeout(() => {
+        setAlert(a => ({ ...a, show: false }));
+      }, 3000);
+
     }
   };
 
@@ -521,10 +548,26 @@ export default function EditProfile() {
           await addEducationMutation.mutateAsync(edu);
         }
       }
-      alert("Education saved");
+      setAlert({
+        show: true,
+        type: "success",
+        message: "Education details saved",
+      });
+      setTimeout(() => {
+        setAlert(a => ({ ...a, show: false }));
+      }, 3000);
+
     } catch (err) {
       console.error(err);
-      alert("Failed to save education");
+      setAlert({
+        show: true,
+        type: "danger",
+        message: "Failed to save Education details",
+      });
+      setTimeout(() => {
+        setAlert(a => ({ ...a, show: false }));
+      }, 3000);
+
     }
   };
 
@@ -633,10 +676,26 @@ export default function EditProfile() {
         });
       }
 
-      alert("Work experience saved");
+      setAlert({
+        show: true,
+        type: "success",
+        message: "Work Experience saved",
+      });
+      setTimeout(() => {
+        setAlert(a => ({ ...a, show: false }));
+      }, 3000);
+
     } catch (err) {
       console.error(err);
-      alert("Failed to save work experience");
+      setAlert({
+        show: true,
+        type: "danger",
+        message: "Failed to save Work Experience",
+      });
+      setTimeout(() => {
+        setAlert(a => ({ ...a, show: false }));
+      }, 3000);
+
     }
   };
 
@@ -649,10 +708,26 @@ export default function EditProfile() {
         organ_sites: scientific.organ_sites,
         additional_research_areas: scientific.additional_research_areas,
       });
-      alert("Scientific interests saved");
+      setAlert({
+        show: true,
+        type: "success",
+        message: "Scientific Interests saved",
+      });
+      setTimeout(() => {
+        setAlert(a => ({ ...a, show: false }));
+      }, 3000);
+
     } catch (err) {
       console.error(err);
-      alert("Failed to save scientific interests");
+      setAlert({
+        show: true,
+        type: "danger",
+        message: "Failed to save Scientific Interests",
+      });
+      setTimeout(() => {
+        setAlert(a => ({ ...a, show: false }));
+      }, 3000);
+
     }
   };
 
@@ -665,15 +740,31 @@ export default function EditProfile() {
       await updateProfessional.mutateAsync({
         work_email: professional.work_email,
         contact_number: professional.contact_number,
-        website: professional.website,
+        website: normalizeUrl(professional.website),
         lab: professional.lab,
         work_address: professional.work_address,
 
       });
-      alert("Contact details saved");
+      setAlert({
+        show: true,
+        type: "success",
+        message: "Contact details saved",
+      });
+      setTimeout(() => {
+        setAlert(a => ({ ...a, show: false }));
+      }, 3000);
+
     } catch (err) {
       console.error(err);
-      alert("Failed to save contact details");
+      setAlert({
+        show: true,
+        type: "danger",
+        message: "Failed to save Contact details",
+      });
+      setTimeout(() => {
+        setAlert(a => ({ ...a, show: false }));
+      }, 3000);
+
     }
   };
 
@@ -683,6 +774,25 @@ export default function EditProfile() {
   // --------------------- RENDER ---------------------
   return (
     <div className="container py-4">
+
+      {/* 🔔 GLOBAL BOOTSTRAP ALERT */}
+      <div className="sticky-top" style={{ zIndex: 1050 }}>
+        {alert.show && (
+          <div
+            className={`alert alert-${alert.type} alert-dismissible fade show`}
+            role="alert"
+          >
+            {alert.message}
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setAlert({ ...alert, show: false })}
+            />
+          </div>
+        )}
+      </div>
+
+
       <nav aria-label="breadcrumb" className="mb-4">
         <ol className="breadcrumb">
 
@@ -801,7 +911,7 @@ export default function EditProfile() {
                     />
                   </div>
                   <div className="col-md-6">
-                    <label className="form-label">Profile Title</label>
+                    <label className="form-label">Designation</label>
                     <input
                       className="form-control"
                       value={basic.profile_title}
@@ -815,6 +925,22 @@ export default function EditProfile() {
                       rows={1}
                       value={personal.biosketch}
                       onChange={(e) => handlePersonalChange("biosketch", e.target.value)}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">City</label>
+                    <input
+                      className="form-control"
+                      value={personal.city}
+                      onChange={(e) => handlePersonalChange("city", e.target.value)}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label className="form-label">Country</label>
+                    <input
+                      className="form-control"
+                      value={personal.country}
+                      onChange={(e) => handlePersonalChange("country", e.target.value)}
                     />
                   </div>
                   <div className="col-md-6">
@@ -1445,7 +1571,7 @@ export default function EditProfile() {
                     className="form-control"
                     value={professional.website || ""}
                     onChange={(e) => handleProfessionalChange("website", e.target.value)}
-                    placeholder="include https://"
+
                   />
                 </div>
                 <div className="col-md-6">

@@ -9,3 +9,16 @@ export const getMe = async () => {
   const res = await api.get("/me/");
   return res.data;
 };
+
+// -------------------------
+// VERIFY EMAIL API
+// -------------------------
+export const verifyEmail = async (token) => {
+  const response = await api.post("/verify-email/", { token });
+  return response.data;
+};
+
+export const resendVerificationEmail = async (email) => {
+  const res = await api.post("/resend-verification/", { email });
+  return res.data;
+};

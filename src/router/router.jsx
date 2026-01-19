@@ -27,6 +27,11 @@ import PublicProfile from "../pages/user/PublicProfile";
 // import UserDashboardNew from "../pages/dashboard/user/UserDashboardNew";
 import GATC2026 from "../components/gatc/GATC2026";
 import GATCRegistration from "../components/gatc/GATC-Registration";
+import VerifyEmail from "../components/auth/VerifyEmail";
+import ResendVerification from "../components/auth/ResendVerification";
+import PrivacyPolicy from "../components/documents/Privacypolicy";
+import TermsConditions from "../components/documents/TermsConditions";
+
 export const router = createBrowserRouter
   ([
     {
@@ -81,19 +86,35 @@ export const router = createBrowserRouter
       children: [
         {
           element: <Login />,
-          path: "/login"
-        }
-      ]
-    },
-    {
-      element: <AuthLayout />,
-      children: [
+          path: "/login",
+        },
         {
           element: <RegisterForm />,
-          path: "/register"
-        }
-      ]
+          path: "/register",
+        },
+        {
+          element: <VerifyEmail />,
+          path: "/verify-email",
+        },
+        {
+          element: <ResendVerification />,
+          path: "/resend-verification",
+          
+        },
+        {
+          element: <TermsConditions />,
+          path: "/Terms&Conditions",
+          
+        },
+        {
+          element: <PrivacyPolicy />,
+          path: "/PrivacyPolicy",
+          
+        },
+        
+      ],
     },
+
     {
       element: (<AppLayout />),
       loader: () => {

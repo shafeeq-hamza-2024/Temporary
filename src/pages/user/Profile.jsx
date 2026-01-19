@@ -1,11 +1,12 @@
 import { Link } from "react-router";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import "../speaker/SpeakerProfile.css";
 import { usePersonalDetail } from "../../hooks/profile/usePersonalDetail";
 import { useProfessionalDetail } from "../../hooks/profile/useProfessionalDetail";
 import { useEducationList } from "../../hooks/profile/useEducationList";
 import { useUserProfile } from "../../hooks/profile/useUserProfile"; // fetch latest user
 import { useUploadProfileImage } from "../../hooks/profile/useProfileImage";
+import { useScientificInterest } from "../../hooks/profile/useScientificInterest";
 import { siteURL } from "../../api/api";
 
 export default function Profile() {
@@ -13,10 +14,17 @@ export default function Profile() {
   const { data: personal, isLoading: pLoading } = usePersonalDetail();
   const { data: professional, isLoading: prLoading } = useProfessionalDetail();
   const { data: education, isLoading: eLoading } = useEducationList();
+  const { data: scientific, isLoading: sLoading } = useScientificInterest();
+
+  const [alert, setAlert] = useState({
+    show: false,
+    type: "danger",
+    message: "",
+  });
 
   const uploadImageMutation = useUploadProfileImage();
   const fileInputRef = useRef();
-
+  const DEFAULT_AVATAR = "/images/Avatar.png";
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -40,12 +48,22 @@ export default function Profile() {
       },
       onError: (err) => {
         console.error(err);
-        alert("Failed to upload image");
+        setAlert({
+          show: true,
+          type: "danger",
+          message: "Failed to upload image",
+        });
+
+        setTimeout(() => {
+          setAlert(a => ({ ...a, show: false }));
+        }, 3000);
       },
+
+
     });
   };
 
-  const isLoading = uLoading || pLoading || prLoading || eLoading;
+  const isLoading = uLoading || pLoading || prLoading || eLoading || sLoading;
 
   if (isLoading)
     return (
@@ -62,6 +80,22 @@ export default function Profile() {
   /* ================= PROFILE ================= */
   return (
     <div className="container py-4">
+      <div className="sticky-top" style={{ zIndex: 1050 }}>
+        {alert.show && (
+          <div
+            className={`alert alert-${alert.type} alert-dismissible fade show`}
+            role="alert"
+          >
+            {alert.message}
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setAlert({ ...alert, show: false })}
+            />
+          </div>
+        )}
+      </div>
+
       <div className="row g-4">
 
         {/* ================= LEFT ================= */}
@@ -80,11 +114,14 @@ export default function Profile() {
                       ? user.profile_image.startsWith("http")
                         ? user.profile_image
                         : `${siteURL}/${user.profile_image}`
-                      : "images/Avatar 1.png"
+                      : DEFAULT_AVATAR
                   }
                   alt="Profile"
                   className="profile-pic rounded-circle shadow"
                   style={{ width: 150, height: 150, objectFit: "cover" }}
+                  onError={(e) => {
+                    e.currentTarget.src = DEFAULT_AVATAR;
+                  }}
                 />
 
                 {/* Pen icon */}
@@ -262,6 +299,71 @@ export default function Profile() {
               )}
             </div>
           </div>
+
+
+          {/* ===== SCIENTIFIC INTERESTS ===== */}
+          {scientific && (
+            <div className="card shadow-sm border-0 fade-up mb-4">
+              <div className="card-header bg-white">
+                <h5 className="mb-0">Scientific Interests</h5>
+              </div>
+
+              <div className="card-body small text-secondary">
+
+                {/* Research Area */}
+                {scientific.research_area_of_expertise && (
+                  <p className="mb-2">
+                    <strong>Research Area:</strong><br />
+                    {scientific.research_area_of_expertise}
+                  </p>
+                )}
+
+                {/* Major Focus */}
+                {scientific.major_focus?.length > 0 && (
+                  <p className="mb-2">
+                    <strong>Major Focus:</strong><br />
+                    {scientific.major_focus.join(", ")}
+                  </p>
+                )}
+
+                {/* Specific Research Areas */}
+                {scientific.specific_research_areas?.length > 0 && (
+                  <p className="mb-2">
+                    <strong>Specific Research Areas:</strong><br />
+                    {scientific.specific_research_areas.join(", ")}
+                  </p>
+                )}
+
+                {/* Organ Sites */}
+                {scientific.organ_sites?.length > 0 && (
+                  <p className="mb-2">
+                    <strong>Organ Sites:</strong><br />
+                    {scientific.organ_sites.join(", ")}
+                  </p>
+                )}
+
+                {/* Additional Research Areas */}
+                {scientific.additional_research_areas?.length > 0 && (
+                  <p className="mb-0">
+                    <strong>Additional Research Areas:</strong><br />
+                    {scientific.additional_research_areas.join(", ")}
+                  </p>
+                )}
+
+                {/* Empty fallback */}
+                {!scientific.research_area_of_expertise &&
+                  !scientific.major_focus?.length &&
+                  !scientific.specific_research_areas?.length &&
+                  !scientific.organ_sites?.length &&
+                  !scientific.additional_research_areas?.length && (
+                    <p className="text-muted mb-0">
+                      No scientific interests added yet.
+                    </p>
+                  )}
+              </div>
+            </div>
+          )}
+
 
           {/* ===== PAST EXPERIENCE ===== */}
           <div className="card shadow-sm border-0 fade-up">

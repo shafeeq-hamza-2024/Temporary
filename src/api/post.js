@@ -76,3 +76,29 @@ export const fetchBookmarks = async () => {
   const res = await api.get("/posts/my_bookmarks/");
   return res.data;
 };
+
+
+// Update post (edit)
+export const updatePost = async ({ postId, title, content, files = [] }) => {
+  const formData = new FormData();
+
+  if (title !== undefined) formData.append("title", title);
+  if (content !== undefined) formData.append("content", content);
+
+  files.forEach((file) => {
+    formData.append("files", file);
+  });
+
+  const res = await api.patch(`/posts/${postId}/`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return res.data;
+};
+
+
+// Delete post
+export const deletePost = async (postId) => {
+  const res = await api.delete(`/posts/${postId}/`);
+  return res.data;
+};

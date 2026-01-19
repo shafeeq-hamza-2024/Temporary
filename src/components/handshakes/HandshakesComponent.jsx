@@ -4,7 +4,7 @@ import "./HandshakesComponent.css";
 import { useGetMyHandshakes } from "../../hooks/handshake/useGetMyHandshakes";
 import { useNavigate } from "react-router";
 import { useUpdateHandshakeStatus } from "../../hooks/handshake/useUpdateHandshake";
-import AsyncButton from "../ui/AsyncButton";
+
 import { useCreateHandshake } from "../../hooks/handshake/useCreateHandshake";
 import { useCancelHandshake } from "../../hooks/handshake/useCancelHandshake";
 
@@ -17,19 +17,26 @@ export default function HandshakesComponent() {
   }, []);
 
   const { data: handshakes = [] } = useGetMyHandshakes();
-  const createHook = useCreateHandshake();
+
   const { cancelMut, undoCreateMut } = useCancelHandshake();
   const { mutate: updateHandshakeStatus } = useUpdateHandshakeStatus();
 
   const [tab, setTab] = useState("all");
-  const [selectedEvent, setSelectedEvent] = useState("gatc2025");
+  
   const navigate = useNavigate();
 
-  const events = [
-    { id: "gatc2025", name: "GATC 2025" },
-    { id: "gatc2024", name: "GATC 2024" },
-    { id: "gatc2023", name: "GATC 2023" },
-  ];
+  const [message, setMessage] = useState({
+    type: "",
+    text: "",
+    undoHandshake: null,
+  });
+
+
+  const [confirmModal, setConfirmModal] = useState({
+    show: false,
+    handshake: null,
+  });
+
 
   const tabs = ["all", "pending", "accepted", "rejected"];
 
@@ -77,23 +84,48 @@ export default function HandshakesComponent() {
   const filtered = tab === "all" ? normalized : normalized.filter((h) => h.status === tab);
 
   // Cancel flow with undo
-  const handleCancel = async (handshake) => {
-    // confirm then cancel
-    if (!window.confirm("Cancel this handshake request? You can undo from the toast.")) return;
+  const handleCancel = (handshake) => {
+    setConfirmModal({ show: true, handshake });
+  };
+
+
+  const confirmCancel = () => {
+    const handshake = confirmModal.handshake;
 
     cancelMut.mutate(handshake.id, {
       onSuccess: () => {
-        // show a simple undo prompt (replace with toast in your app)
-        const undo = window.confirm("Handshake canceled. Undo?");
-        if (undo) {
-          // recreate handshake with receiver id
-          const receiverId = handshake.raw.receiver; // raw has original fields
-          undoCreateMut.mutate({ receiver_id: receiverId });
-        }
+        setMessage({
+          type: "warning",
+          text: "Handshake canceled. Click undo to restore.",
+          undoHandshake: handshake,
+        });
       },
-      onError: (err) => alert("Failed to cancel: " + (err?.response?.data?.detail || err.message)),
+      onError: (err) => {
+        setMessage({
+          type: "danger",
+          text: err?.response?.data?.detail || "Failed to cancel handshake",
+        });
+      },
     });
+
+    setConfirmModal({ show: false, handshake: null });
   };
+
+  const undoCancel = () => {
+    if (!message.undoHandshake) return;
+
+    const receiverId = message.undoHandshake.raw.receiver;
+    undoCreateMut.mutate({ receiver_id: receiverId });
+
+    setMessage({
+      type: "success",
+      text: "Handshake restored successfully.",
+      undoHandshake: null,
+    });
+
+  };
+
+
 
   const handleAccept = (id) => {
     updateHandshakeStatus({ id, status: "accepted" });
@@ -121,6 +153,28 @@ export default function HandshakesComponent() {
       <div className="container py-4 handshakes-page">
         <div className="row">
           <div className="col-md-9 col-lg-9">
+            {message.text && (
+              <div className={`alert alert-${message.type} alert-dismissible fade show`}>
+                <div className="d-flex justify-content-between align-items-center">
+                  <span>{message.text}</span>
+
+                  {message.undoHandshake && (
+                    <button className="btn btn-sm btn-outline-dark ms-3" onClick={undoCancel}>
+                      Undo
+                    </button>
+                  )}
+                </div>
+
+                <button
+                  className="btn-close"
+                  onClick={() =>
+                    setMessage({ type: "", text: "", undoHandshake: null })
+                  }
+
+                />
+              </div>
+            )}
+
             <h3 className="mb-4 fw-bold">Handshakes</h3>
 
             <div className="handshake-tabs mb-4 d-flex gap-4">
@@ -189,6 +243,38 @@ export default function HandshakesComponent() {
             </div>
           </div>
         </div>
+        {confirmModal.show && (
+          <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,.5)" }}>
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Cancel Handshake</h5>
+                  <button
+                    className="btn-close"
+                    onClick={() => setConfirmModal({ show: false, handshake: null })}
+                  />
+                </div>
+
+                <div className="modal-body">
+                  Are you sure you want to cancel this handshake request?
+                </div>
+
+                <div className="modal-footer">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setConfirmModal({ show: false, handshake: null })}
+                  >
+                    No
+                  </button>
+                  <button className="btn btn-danger" onClick={confirmCancel}>
+                    Yes, Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </>
   );

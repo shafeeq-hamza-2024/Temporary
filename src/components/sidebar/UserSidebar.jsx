@@ -48,7 +48,8 @@ export default function UserSidebar() {
             { label: "Dashboard", path: "/gatc/dashboard" },
             { label: "Programs", path: "/gatc/program" },
             { label: "Speakers", path: "/gatc/speakers" },
-            { label: "Participants", path: "/gatc/participants" },
+            // { label: "Participants", path: "/gatc/participants" },
+            { label: "My Handshakes", path: "/handshakes" },
           ]
           : []),
       ],

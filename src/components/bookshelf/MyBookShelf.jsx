@@ -20,6 +20,14 @@ export default function MyBookShelf() {
   const createFileMut = useCreateFile();
 
   const [path, setPath] = useState([]);
+  const [message, setMessage] = useState({ type: "", text: "" });
+
+  const [modal, setModal] = useState({
+    show: false,
+    type: "", // folder | file | rename | delete
+    item: null,
+    value: "",
+  });
 
   // ⭐ FIX: Create a virtual "root" containing all top-level folders
   useEffect(() => {
@@ -57,45 +65,96 @@ export default function MyBookShelf() {
   const enterFolder = (folder) => setPath([...path, folder]);
   const goTo = (index) => setPath(path.slice(0, index + 1));
 
-  // Actions
-  const createFolder = () => {
-    const name = prompt("Folder name?");
-    if (!name) return;
+  // // Actions
+  // const createFolder = () => {
+  //   const name = prompt("Folder name?");
+  //   if (!name) return;
 
-    let parent = currentFolder?.id || null;
-    if (parent == "ROOT") parent = null;
-    createFolderMut.mutate({ name, parent });
-  };
+  //   let parent = currentFolder?.id || null;
+  //   if (parent == "ROOT") parent = null;
+  //   createFolderMut.mutate({ name, parent });
+  // };
 
-  const createFile = () => {
-    const title = prompt("File name?");
-    const url = prompt("PDF URL?");
-    if (!title || !url) return;
+  // const createFile = () => {
+  //   const title = prompt("File name?");
+  //   const url = prompt("PDF URL?");
+  //   if (!title || !url) return;
 
-    const folder = currentFolder?.id || null;
+  //   const folder = currentFolder?.id || null;
 
-    createFileMut.mutate({ title, url, folder });
-  };
+  //   createFileMut.mutate({ title, url, folder });
+  // };
 
-  const renameItem = (item) => {
-    const newName = prompt("Enter new name", item.name || item.title);
-    if (!newName) return;
+  // const renameItem = (item) => {
+  //   const newName = prompt("Enter new name", item.name || item.title);
+  //   if (!newName) return;
 
-    if ("subfolders" in item) {
-      renameFolderMut.mutate({ id: item.id, name: newName });
-    } else {
-      renameFileMut.mutate({ id: item.id, title: newName });
+  //   if ("subfolders" in item) {
+  //     renameFolderMut.mutate({ id: item.id, name: newName });
+  //   } else {
+  //     renameFileMut.mutate({ id: item.id, title: newName });
+  //   }
+  // };
+
+
+  const createFolder = () =>
+    setModal({ show: true, type: "folder", item: null, value: "" });
+
+  const createFile = () =>
+    setModal({ show: true, type: "file", item: null, value: "" });
+
+  const renameItem = (item) =>
+    setModal({
+      show: true,
+      type: "rename",
+      item,
+      value: item.name || item.title,
+    });
+
+
+  const deleteItem = (item) =>
+    setModal({ show: true, type: "delete", item });
+
+
+  const handleModalConfirm = () => {
+    const { type, item, value } = modal;
+
+    if (type === "folder") {
+      let parent = currentFolder?.id === "ROOT" ? null : currentFolder?.id;
+      createFolderMut.mutate({ name: value, parent });
     }
+
+    if (type === "file") {
+      createFileMut.mutate({
+        title: value,
+        url: value,
+        folder: currentFolder?.id,
+      });
+    }
+
+    if (type === "rename") {
+      if ("subfolders" in item)
+        renameFolderMut.mutate({ id: item.id, name: value });
+      else
+        renameFileMut.mutate({ id: item.id, title: value });
+    }
+
+    if (type === "delete") {
+      if ("subfolders" in item) deleteFolderMut.mutate(item.id);
+      else deleteFileMut.mutate(item.id);
+    }
+
+    setModal({ show: false, type: "", item: null, value: "" });
   };
 
-  const deleteItem = (item) => {
-    if (!window.confirm(`Delete ${item.name || item.title}?`)) return;
 
-    if ("subfolders" in item) deleteFolderMut.mutate(item.id);
-    else deleteFileMut.mutate(item.id);
-  };
 
-  const moveItem = (item) => alert("Move coming soon…");
+
+
+
+  const moveItem = () =>
+    setMessage({ type: "info", text: "Move feature coming soon 🚧" });
+
   const copyLink = (item) => navigator.clipboard.writeText(item.url || "");
 
   // Sidebar Tree
@@ -158,6 +217,16 @@ export default function MyBookShelf() {
 
       {/* Main */}
       <div className="bookshelf-main">
+        {message.text && (
+          <div className={`alert alert-${message.type} alert-dismissible fade show`}>
+            {message.text}
+            <button
+              className="btn-close"
+              onClick={() => setMessage({ type: "", text: "" })}
+            />
+          </div>
+        )}
+
         <div className="d-flex justify-content-between">
           <h2 className="mb-4">
             <i className="ri-folder-2-line me-2"></i> My BookShelf
@@ -257,6 +326,48 @@ export default function MyBookShelf() {
           </div>
         )}
       </div>
+      {modal.show && (
+        <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,.5)" }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title text-capitalize">
+                  {modal.type}
+                </h5>
+                <button className="btn-close" onClick={() => setModal({ show: false })} />
+              </div>
+
+              <div className="modal-body">
+                {modal.type === "delete" ? (
+                  <p>
+                    Are you sure you want to delete{" "}
+                    <strong>{modal.item?.name || modal.item?.title}</strong>?
+                  </p>
+                ) : (
+                  <input
+                    className="form-control"
+                    placeholder="Enter Name"
+                    value={modal.value}
+                    onChange={(e) =>
+                      setModal((m) => ({ ...m, value: e.target.value }))
+                    }
+                  />
+                )}
+              </div>
+
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setModal({ show: false })}>
+                  Cancel
+                </button>
+                <button className="btn btn-primary" onClick={handleModalConfirm}>
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

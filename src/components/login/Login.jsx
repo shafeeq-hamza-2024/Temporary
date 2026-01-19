@@ -8,11 +8,16 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [showResend, setShowResend] = useState(false);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const registration = params.get("registration");
 
+  const [message, setMessage] = useState({
+    type: "", // success | danger
+    text: "",
+  });
 
   // -------------------------
   // LOGIN MUTATION
@@ -20,37 +25,70 @@ export default function Login() {
   const loginMutation = useMutation({
     mutationFn: validateLogin,
     onSuccess: (data) => {
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-      }
-
-      const role = data.user.role;
-
-      // if (role === "speaker") {
-      //   navigate("/user", { replace: true });
-      // } else {
-      //   navigate("/user", { replace: true });
-      // }
-      console.log("reg",registration)
-      if (registration === "gatc") {
-
-        navigate("/gatc2026", { replace: true });
+      if (!data.access) {
+        setMessage({
+          type: "danger",
+          text: "Login failed. Please verify your email.",
+        });
         return;
       }
 
-      // default redirect
-      navigate("/user", { replace: true });
+      localStorage.setItem("access", data.access);
+      localStorage.setItem("refresh", data.refresh);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      setMessage({
+        type: "success",
+        text: "Login successful! Redirecting...",
+      });
+
+      setTimeout(() => {
+        if (registration === "gatc") {
+          navigate("/gatc2026", { replace: true });
+        } else {
+          navigate("/user", { replace: true });
+        }
+      }, 800);
     },
+
+
     onError: (err) => {
-      alert(err.response?.data?.detail || "Invalid email or password");
-    }
+      const status = err.response?.status;
+      const detail = err.response?.data?.detail;
+
+      if (status === 403) {
+        setMessage({
+          type: "danger",
+          text: detail || "Please verify your email before logging in.",
+        });
+        setShowResend(true);   // 👈 SHOW RESEND LINK
+      } else if (status === 404) {
+        setMessage({
+          type: "danger",
+          text: "Account not found.",
+        });
+        setShowResend(false);
+      } else {
+        setMessage({
+          type: "danger",
+          text: "Invalid email or password.",
+        });
+        setShowResend(false);
+      }
+    },
+
+
+
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setMessage({ type: "", text: "" });
+    setShowResend(false);
     loginMutation.mutate({ email, password });
   };
+
+
 
   /* ======================
      UI (OLD DESIGN)
@@ -76,6 +114,29 @@ export default function Login() {
       {/* Right Section (Login Form) */}
       <div className="form-box1">
         <h2>Login</h2>
+        {message.text && (
+          <div
+            className={`alert alert-${message.type} alert-dismissible fade show`}
+            role="alert"
+          >
+            {message.text}
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setMessage({ type: "", text: "" })}
+            ></button>
+          </div>
+        )}
+        {showResend && (
+          <p style={{ marginTop: "10px", fontSize: "14px" }}>
+            Didn’t receive the verification email?{" "}
+            <a href="/resend-verification" style={{ fontWeight: "bold" }}>
+              Resend verification
+            </a>
+          </p>
+        )}
+
+
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -107,7 +168,8 @@ export default function Login() {
           </button>
 
           <p className="login-link">
-            Don’t have an account? <a href="/register">Register</a> :: <a href="/register?registration=gatc">GATC Registration</a>
+            Don’t have an account? <a href="/register">Register</a>
+            {/* :: <a href="/register?registration=gatc">GATC Registration</a> */}
           </p>
         </form>
       </div>
