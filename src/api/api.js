@@ -9,7 +9,7 @@ export const siteURL = "http://68.178.168.255:9006"
 
 
 // export const siteURL = "http://127.0.0.1:8000";
-
+//todo : make it better
 const api = axios.create({
   baseURL: `${siteURL}/api`,
 });
