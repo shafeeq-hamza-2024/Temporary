@@ -171,6 +171,15 @@ export default function Login() {
             Don’t have an account? <a href="/register">Register</a>
             {/* :: <a href="/register?registration=gatc">GATC Registration</a> */}
           </p>
+
+          <div className="login-link">
+            
+            <label>
+              
+              <a href="/Terms&Conditions">Terms & Conditions</a> and{" "}
+              <a href="/PrivacyPolicy">Privacy Policy</a>.
+            </label>
+          </div>
         </form>
       </div>
     </div>
