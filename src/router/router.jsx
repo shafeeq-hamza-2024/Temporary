@@ -34,6 +34,8 @@ import TermsConditions from "../components/documents/TermsConditions";
 import Consultancy from "../components/documents/Consultancy";
 import Events from "../components/documents/Events";
 import Product from "../components/documents/Products";
+import GATCLite from "../components/gatc/GATC-Lite";
+
 
 
 export const router = createBrowserRouter
@@ -186,6 +188,7 @@ export const router = createBrowserRouter
         { path: "/gatc/dashboard", element: <GatcDashboard /> },
         { path: "/gatc2026", element: <GATC2026 /> },
         { path: "/gatc2026/registration", element: <GATCRegistration /> },
+        { path: "/gatclite", element: <GATCLite /> },
         {
           path: "/public/users/:id",
           loader: ({ params }) => {

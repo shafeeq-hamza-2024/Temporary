@@ -50,7 +50,10 @@ const VerifyEmail = () => {
             <p style={{ margin: "15px 0", fontSize: "0.95rem" }}>
               Your account is now active. You can log in.
             </p>
-            <button className="btn3" onClick={() => (window.location.href = "http://myneuronworld.com")}>
+            {/* <button className="btn3" onClick={() => (window.location.href = "http://localhost:5173")}>
+              Go to Login
+            </button> */}
+            <button className="btn3" onClick={() => (window.location.href = "https://myneuronworld.com")}>
               Go to Login
             </button>
           </>
@@ -62,7 +65,10 @@ const VerifyEmail = () => {
             <p style={{ margin: "15px 0", fontSize: "0.95rem" }}>
               The verification link is invalid or expired.
             </p>
-            <button className="btn3" onClick={() => (window.location.href = "http://myneuronworld.com")}>
+            {/* <button className="btn3" onClick={() => (window.location.href = "http://localhost:5173")}>
+              Register again
+            </button> */}
+            <button className="btn3" onClick={() => (window.location.href = "https://myneuronworld.com")}>
               Register again
             </button>
           </>

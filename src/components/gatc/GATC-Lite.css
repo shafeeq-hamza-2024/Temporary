@@ -1,0 +1,97 @@
+
+.gatc-hero-section {
+  background: #ffffff;
+  padding: 60px 20px;
+  font-family: "Poppins", system-ui, sans-serif;
+}
+
+/* Container */
+.gatc-hero-container {
+  max-width: 1180px;
+  margin: 0 auto 40px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+/* Image */
+.gatc-hero-image {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.gatc-hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Right title */
+.gatc-hero-content {
+  flex: 1;
+  text-align: center;
+}
+
+.gatc-hero-content h1 {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #1f3c88;
+}
+
+.gatc-hero-content h1 span {
+  font-weight: 700;
+}
+
+/* Text section */
+.gatc-hero-text {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.gatc-hero-text h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #0f63c9;
+  margin-bottom: 20px;
+}
+
+.gatc-hero-text p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #374151;
+  margin-bottom: 14px;
+}
+
+/* Button */
+.gatc-btn {
+  margin-top: 20px;
+  padding: 12px 36px;
+  border-radius: 999px;
+  border: none;
+  background: #0b7c7b;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  pointer-events: auto;
+  text-decoration: none;
+  box-shadow: 0 12px 28px rgba(11, 124, 123, 0.35);
+}
+
+.gatc-btn:hover {
+  background: #096b6a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .gatc-hero-container {
+    flex-direction: column;
+  }
+
+  .gatc-hero-content h1 {
+    font-size: 26px;
+  }
+}
