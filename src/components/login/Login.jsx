@@ -109,10 +109,23 @@ export default function Login() {
         <p>
           Connecting bright minds to advance health research & innovation
         </p>
+        <div className="quick-links">
+          <a href="/Events" className="quick-link active">
+            Events
+          </a>
+
+          <a href="/Consultancy" className="quick-link active">
+            Consultancy
+          </a>
+
+          <a href="/Product" className="quick-link active">
+            Products
+          </a>
+        </div>
       </div>
 
       {/* Right Section (Login Form) */}
-      <div className="form-box1">
+      <div className="form-box">
         <h2>Login</h2>
         {message.text && (
           <div
@@ -173,9 +186,9 @@ export default function Login() {
           </p>
 
           <div className="login-link">
-            
+
             <label>
-              
+
               <a href="/Terms&Conditions">Terms & Conditions</a> and{" "}
               <a href="/PrivacyPolicy">Privacy Policy</a>.
             </label>

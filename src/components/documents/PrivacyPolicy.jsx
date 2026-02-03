@@ -113,7 +113,7 @@ export default function PrivacyPolicy() {
                 </p>
                 <p className="text-muted small">
                   <strong>Grievance Officer:</strong><br />
-                  Email: <a href="mailto:legal@bencoshealthcare.com">legal@bencoshealthcare.com</a><br />
+                  Email: <a href="mailto:legal@bencoslife.com">legal@bencoslife.com</a><br />
                   Response time as prescribed under the DPDP Act.
                 </p>
               </section>

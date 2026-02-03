@@ -15,7 +15,7 @@ export default function NotFound() {
         Let’s help you get back on track.
       </p>
 
-      <a href="/" className="btn btn-dark px-4 py-2 rounded-pill nf-btn">
+      <a href="/user" className="btn btn-dark px-4 py-2 rounded-pill nf-btn">
         Go Home
       </a>
     </div>

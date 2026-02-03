@@ -16,6 +16,9 @@ export default function Profile() {
   const { data: education, isLoading: eLoading } = useEducationList();
   const { data: scientific, isLoading: sLoading } = useScientificInterest();
 
+
+
+
   const [alert, setAlert] = useState({
     show: false,
     type: "danger",

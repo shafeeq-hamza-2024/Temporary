@@ -29,8 +29,12 @@ import GATC2026 from "../components/gatc/GATC2026";
 import GATCRegistration from "../components/gatc/GATC-Registration";
 import VerifyEmail from "../components/auth/VerifyEmail";
 import ResendVerification from "../components/auth/ResendVerification";
-import PrivacyPolicy from "../components/documents/Privacypolicy";
+import PrivacyPolicy from "../components/documents/PrivacyPolicy";
 import TermsConditions from "../components/documents/TermsConditions";
+import Consultancy from "../components/documents/Consultancy";
+import Events from "../components/documents/Events";
+import Product from "../components/documents/Products";
+
 
 export const router = createBrowserRouter
   ([
@@ -82,6 +86,11 @@ export const router = createBrowserRouter
 
     },
     {
+      path: "/",
+      loader: () => redirect("/login"),
+    },
+
+    {
       element: <AuthLayout />,
       children: [
         {
@@ -99,19 +108,34 @@ export const router = createBrowserRouter
         {
           element: <ResendVerification />,
           path: "/resend-verification",
-          
+
         },
         {
           element: <TermsConditions />,
           path: "/Terms&Conditions",
-          
+
         },
         {
           element: <PrivacyPolicy />,
           path: "/PrivacyPolicy",
-          
+
         },
-        
+        {
+          element: <Events />,
+          path: "/Events",
+
+        },
+        {
+          element: <Consultancy />,
+          path: "/Consultancy",
+
+        },
+        {
+          element: <Product />,
+          path: "/Product",
+
+        },
+
       ],
     },
 
@@ -124,19 +148,19 @@ export const router = createBrowserRouter
       },
       children: [
 
-        {
-          path: "/",
-          element: <div>Home</div>,
-          loader: () => {
-            let user = localStorage.getItem("user");
-            if (user) {
-              user = JSON.parse(user);
-              if (user.type === "admin") return redirect("/admin");
-              if (user.type === "speaker") return redirect("/speaker");
-              return redirect("/user");
-            }
-          }
-        },
+        // {
+        //   path: "/",
+        //   element: <div>Home</div>,
+        //   loader: () => {
+        //     let user = localStorage.getItem("user");
+        //     if (user) {
+        //       user = JSON.parse(user);
+        //       if (user.type === "admin") return redirect("/admin");
+        //       if (user.type === "speaker") return redirect("/speaker");
+        //       return redirect("/login");
+        //     }
+        //   }
+        // },
 
         { path: "/admin", element: <div>Admin Dashboard</div> },
         { path: "/about", element: <div>About</div> },

@@ -10,7 +10,7 @@ export default function ScholarSearch() {
   const [query, setQuery] = useState("");
   const [showShelfModal, setShowShelfModal] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
-  const [showMore, setShowMore] = useState(false);
+  const [expanded, setExpanded] = useState({});
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 10;
 
@@ -74,15 +74,15 @@ export default function ScholarSearch() {
   // }));
 
   const formattedResults = (data?.articles || []).map((art) => ({
-  id: art.id,
-  title: art.title,
-  authors: art.authors || "Unknown",
-  journal: art.journal || "Unknown Journal",
-  year: art.year || "",
-  abstract: art.abstract,
-  pdf: art.pdf,        // already set in hook
-  pubmed: art.pubmed,  // already set in hook
-}));
+    id: art.id,
+    title: art.title,
+    authors: art.authors || "Unknown",
+    journal: art.journal || "Unknown Journal",
+    year: art.year || "",
+    abstract: art.abstract,
+    pdf: art.pdf,        // already set in hook
+    pubmed: art.pubmed,  // already set in hook
+  }));
 
 
 
@@ -162,7 +162,7 @@ export default function ScholarSearch() {
             </div> */}
 
             <form
-              className="d-flex justify-content-center"
+              className="d-flex justify-content-center flex-wrap"
               onSubmit={(e) => {
                 e.preventDefault();
                 setPage(1);
@@ -220,7 +220,7 @@ export default function ScholarSearch() {
               key={r.id}
               className="article-card shadow-sm p-4 mb-4 rounded"
             >
-              <div className="d-flex align-items-start gap-3">
+              <div className="article-row d-flex align-items-start gap-3">
 
                 {/* PDF ICON */}
                 <img src={pdfIcon} className="pdf-icon" alt="pdf" />
@@ -242,16 +242,19 @@ export default function ScholarSearch() {
 
 
                   <p className="abstract-text">
-                    {(showMore ? r.abstract : r.abstract?.slice(0, 150)) || "No abstract available"}
-                    {r.abstract?.length > 50 && (
+                    {(expanded[r.id] ? r.abstract : r.abstract?.slice(0, 150))}
+                    {r.abstract?.length > 150 && (
                       <span
-                        onClick={() => setShowMore(!showMore)}
-                        style={{ color: "#007bffff", cursor: "pointer" }}
+                        onClick={() =>
+                          setExpanded(prev => ({ ...prev, [r.id]: !prev[r.id] }))
+                        }
+                        style={{ color: "#007bff", cursor: "pointer" }}
                       >
-                        {showMore ? " ...Read less" : " ...Read more"}
+                        {expanded[r.id] ? " Read less" : " Read more"}
                       </span>
                     )}
                   </p>
+
 
 
                   {/* PDF BUTTON */}

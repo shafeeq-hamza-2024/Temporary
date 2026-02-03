@@ -1,11 +1,40 @@
 import { useParams } from "react-router";
 import { siteURL } from "../../api/api";
 import { usePublicUserProfile } from "../../hooks/publicUsers/usePublicUserProfile";
+import { useSendFollow } from "../../hooks/follow/usefollowActions";
+import { useUnfollow } from "../../hooks/follow/usefollowActions";
+import { useOutgoingFollowRequests } from "../../hooks/follow/useOutgoingFollowRequests";
+import { useUserFollowers } from "../../hooks/follow/useUserFollowers";
+
 import { Link } from "react-router";
 
 export default function PublicProfile() {
     const { id } = useParams();
     const { data, isLoading } = usePublicUserProfile(id);
+    const sendFollow = useSendFollow();
+    const unfollow = useUnfollow();
+    const DEFAULT_AVATAR = "/images/Avatar.png";
+
+
+    const { data: outgoing = [] } = useOutgoingFollowRequests();
+    const { data: followers = [] } = useUserFollowers(id);
+
+    const isRequested = outgoing.some(
+        (req) => req.following?.id === Number(id)
+    );
+
+    const isFollowing = followers.some(
+        (u) => u.id === Number(id)
+    );
+
+    const handleFollow = () => {
+        sendFollow.mutate(Number(id));
+    };
+
+    const handleUnfollow = () => {
+        unfollow.mutate(Number(id));
+    };
+
 
     if (isLoading)
         return (
@@ -52,13 +81,17 @@ export default function PublicProfile() {
                                     profile_image
                                         ? profile_image.startsWith("http")
                                             ? profile_image
-                                            : `${siteURL}${profile_image}`
-                                        : "/images/Avatar 1.png"
+                                            : `${siteURL}/${profile_image}`
+                                        : DEFAULT_AVATAR
                                 }
                                 alt="Profile"
                                 className="profile-pic rounded-circle shadow"
                                 style={{ width: 150, height: 150, objectFit: "cover" }}
+                                onError={(e) => {
+                                    e.currentTarget.src = DEFAULT_AVATAR;
+                                }}
                             />
+
 
                             <div className="flex-grow-1">
 
@@ -87,31 +120,56 @@ export default function PublicProfile() {
                                                 <i className="ri-twitter-x-fill"></i>
                                             </a>
                                         )}
-
-
-
-
                                     </div>
 
                                     {/* <Link
-                                    to="/inbox"
-                                    className="btn btn-dark rounded-pill px-3 d-flex align-items-center gap-1"
-                                >
-                                    <i className="ri-chat-1-line"></i>
-                                    Message
-                                </Link> */}
-
-                                    <Link
                                         to={`/inbox/${id}`}
                                         className="btn btn-dark rounded-pill px-3 d-flex align-items-center gap-1"
                                     >
                                         <i className="ri-send-plane-line me-2"></i>
                                         Message
-                                    </Link>
+                                    </Link> */}
+
+                                    <div className="d-flex gap-2">
+                                        <Link
+                                            to={`/inbox/${id}`}
+                                            className="btn btn-dark rounded-pill px-3 d-flex align-items-center gap-1"
+                                        >
+                                            <i className="ri-send-plane-line me-2"></i>
+                                            Message
+                                        </Link>
+
+                                        {!isFollowing && !isRequested && (
+                                            <button
+                                                className="btn btn-outline-dark rounded-pill px-3"
+                                                onClick={handleFollow}
+                                                disabled={sendFollow.isLoading}
+                                            >
+                                                {sendFollow.isLoading ? "Sending…" : "Follow"}
+                                            </button>
+                                        )}
+
+                                        {isRequested && (
+                                            <button
+                                                className="btn btn-secondary rounded-pill px-3"
+                                                disabled
+                                            >
+                                                Requested
+                                            </button>
+                                        )}
+
+                                        {isFollowing && (
+                                            <button
+                                                className="btn btn-outline-danger rounded-pill px-3"
+                                                onClick={handleUnfollow}
+                                            >
+                                                Unfollow
+                                            </button>
+                                        )}
+                                    </div>
+
 
                                 </div>
-
-
 
                                 {/* NAME */}
                                 <h3>

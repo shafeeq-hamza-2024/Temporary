@@ -47,6 +47,74 @@
   color: #f1f1f1;
 }
 
+
+.quick-links {
+  margin-top: 25px;
+  margin-left: 4px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Individual link */
+.quick-link {
+  font-size: 15px;
+  color: #f1f1f1;
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.quick-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 3px;
+  background: #a6ff00;
+  transition: width 0.3s ease;
+}
+
+.quick-link:hover {
+  color: #d6ff66;
+  transform: translateY(-2px);
+}
+
+.quick-link:hover::after {
+  width: 100%;
+}
+
+/* Active link underline (white) */
+.quick-link.active {
+  color: #ffffff;
+}
+
+.quick-link.active::after {
+  width: 100%;
+  background: #ffffff;
+}
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .quick-link {
+    font-size: 1.8rem;
+  }
+
+  .quick-links {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .quick-link {
+    font-size: 1.5rem;
+  }
+}
+
 /* ===== FORM BOX ===== */
 .form-box1 {
   position: relative;

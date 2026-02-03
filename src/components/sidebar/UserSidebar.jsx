@@ -9,6 +9,7 @@ export default function UserSidebar() {
   const userId = storedUser?.id;
 
   const { data: user, isLoading } = useUser(userId);
+  const [isOpen, setIsOpen] = useState(false);
 
 
   const isVerified = user?.is_verified === true;
@@ -30,7 +31,7 @@ export default function UserSidebar() {
       label: "Dashboard",
       icon: "ri-dashboard-line",
       color: "#0d6efd",
-      path: "/",
+      path: "/user",
     },
 
 
@@ -40,11 +41,13 @@ export default function UserSidebar() {
       color: "#0abde3",
       children: [
         // Always visible
+        { label: "GATC Lite (M&M)-NISER", path: "/gatclite" },
         { label: "GATC 2026", path: "/gatc2026" },
 
         // 🔐 Visible ONLY after payment verification
         ...(isVerified
           ? [
+            
             { label: "Dashboard", path: "/gatc/dashboard" },
             { label: "Programs", path: "/gatc/program" },
             { label: "Speakers", path: "/gatc/speakers" },
@@ -136,36 +139,64 @@ export default function UserSidebar() {
     setOpenMap((prev) => ({ ...prev, ...openState }));
   }, [currentPath]);
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("sidebar-open");
+    } else {
+      document.body.classList.remove("sidebar-open");
+    }
+  }, [isOpen]);
+
+
 
   if (isLoading) return null; // or loader
 
 
 
   return (
-    <aside className="sidebar p-3">
-      <h5 className="text-muted mb-4">Menu</h5>
+    <>
+      {/* HAMBURGER (MOBILE ONLY) */}
+      <button
+        className="sidebar-toggle d-lg-none"
+        onClick={() => setIsOpen(true)}
+        aria-label="Open menu"
+      >
+        <i className="ri-menu-line"></i>
+      </button>
 
-      <ul className="list-unstyled">
-        {menuTree.map((item, i) => (
-          <MenuItem
-            key={item.label || `divider-${i}`}
-            item={item}
+      {/* OVERLAY */}
+      <div
+        className={`sidebar-overlay ${isOpen ? "show" : ""}`}
+        onClick={() => setIsOpen(false)}
+      />
 
-            nav={nav}
-            openMap={openMap}
-            toggle={toggle}
-            currentPath={currentPath}
-          />
-        ))}
-      </ul>
-    </aside>
+      {/* SIDEBAR */}
+      <aside className={`sidebar p-3 ${isOpen ? "open" : ""}`}>
+        <h5 className="text-muted mb-4">Menu</h5>
+
+        <ul className="list-unstyled">
+          {menuTree.map((item, i) => (
+            <MenuItem
+              key={item.label || `divider-${i}`}
+              item={item}
+              nav={nav}
+              openMap={openMap}
+              toggle={toggle}
+              currentPath={currentPath}
+              closeSidebar={() => setIsOpen(false)}   // 👈 important
+            />
+          ))}
+        </ul>
+      </aside>
+    </>
   );
+
 }
 
 /* ======================================================
    RECURSIVE MENU ITEM COMPONENT
 ====================================================== */
-function MenuItem({ item, nav, openMap, toggle, currentPath }) {
+function MenuItem({ item, nav, openMap, toggle, currentPath, closeSidebar }) {
   const logout = useLogout();
   // Divider Row
   if (item.type === "divider") {
@@ -192,13 +223,20 @@ function MenuItem({ item, nav, openMap, toggle, currentPath }) {
         `}
         onClick={() => {
           if (item.label === "Logout") {
-            logout();             // 👈 call logout hook
+            logout();
+            closeSidebar?.();
             return;
           }
 
-          if (hasChildren) toggle(item.label);
-          else nav(item.path);
+          if (hasChildren) {
+            toggle(item.label);
+          } else {
+            nav(item.path);
+            closeSidebar?.();     // ✅ close on mobile
+          }
         }}
+
+
 
       >
         {/* Icon */}

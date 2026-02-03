@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 
 import { Link } from "react-router";
 import DOMPurify from "dompurify";
-
+import { useNavigate } from "react-router";
 import { usePosts } from "../../hooks/posts/usePosts";
 import { useLikePost } from "../../hooks/posts/useLikePost";
 import { useBookmarkPost } from "../../hooks/posts/useBookmarkPost";
@@ -13,10 +13,19 @@ import { useUserProfile } from "../../hooks/profile/useUserProfile";
 import { useResearchNews } from "../../hooks/news/useResearchNews";
 import { useUpdatePost } from "../../hooks/posts/useUpdatePost";
 import { useDeletePost } from "../../hooks/posts/useDeletePost";
-
-import { useNavigate } from "react-router";
-import "./PostsPage.css";
+import { useIncomingFollowRequests } from "../../hooks/follow/useIncomingFollowRequests";
+import { useOutgoingFollowRequests } from "../../hooks/follow/useOutgoingFollowRequests";
+import { useUserFollowers } from "../../hooks/follow/useUserFollowers";
+import { useUserFollowing } from "../../hooks/follow/useUserFollowing";
+import { useAcceptFollow } from "../../hooks/follow/usefollowActions";
+import { useRejectFollow } from "../../hooks/follow/usefollowActions";
+import { useUnfollow } from "../../hooks/follow/usefollowActions";
+import { useRemoveFollower } from "../../hooks/follow/usefollowActions";
 import { getOgiMeta } from "../../api/ogiApi";
+import "./PostsPage.css";
+
+
+
 
 export default function PostsPage() {
   const navigate = useNavigate();
@@ -34,6 +43,37 @@ export default function PostsPage() {
 
   const updatePost = useUpdatePost();
   const deletePost = useDeletePost();
+
+  const { data: profile, isLoading: profileLoading } = useUserProfile();
+
+  const { data: incoming = [] } = useIncomingFollowRequests();
+  const { data: outgoing = [] } = useOutgoingFollowRequests();
+
+  const userId = profile?.id;
+
+  const { data: followers = [] } = useUserFollowers(userId);
+  const { data: following = [] } = useUserFollowing(userId);
+
+  const acceptFollow = useAcceptFollow();
+  const rejectFollow = useRejectFollow();
+  const unfollow = useUnfollow();
+  const removeFollower = useRemoveFollower();
+
+
+  const [searchPeople, setSearchPeople] = useState("");
+  const [showAllPeople, setShowAllPeople] = useState(false);
+  const people = [
+    "Rahul",
+    "Aritra",
+    "Arup",
+    "Subhanjan",
+    "Chandrima",
+    "Suman",
+    "Ananya",
+    "Rohit",
+    "Sneha",
+  ];
+
 
   const confirmDeletePost = () => {
     deletePost.mutate(confirmDelete.postId, {
@@ -85,7 +125,7 @@ export default function PostsPage() {
 
 
 
-  const { data: profile, isLoading: profileLoading } = useUserProfile();
+
 
   const createPost = useCreatePost();
   const [showPreview, setShowPreview] = useState(false);
@@ -289,20 +329,6 @@ export default function PostsPage() {
 
 
 
-  {/* NEWS */ }
-  {/* POSTS LOADING */ }
-  {
-    isPostsLoading && (
-      <div className="text-center py-5">Loading posts...</div>
-    )
-  }
-
-  {/* NEWS LOADING */ }
-  {
-    isNewsLoading && (
-      <div className="small text-muted">Loading research news...</div>
-    )
-  }
 
 
 
@@ -313,6 +339,7 @@ export default function PostsPage() {
       </div>
     );
   }
+
 
 
 
@@ -432,7 +459,372 @@ export default function PostsPage() {
                 </Link>
               </div>
             </div>
+            <div className="activity-card">
+              <div className="activity-title">My Activity</div>
+
+              <div
+                className="activity-item"
+                data-bs-toggle="modal"
+                data-bs-target="#followrequest"
+              >
+                <div className="activity-left">
+                  <i className="ri-user-add-line"></i>
+                  <span>Follow Requests</span>
+                </div>
+                <span className="activity-count">{incoming.length}</span>
+              </div>
+
+              <div
+                className="activity-item"
+                data-bs-toggle="modal"
+                data-bs-target="#pendingrequest"
+              >
+                <div className="activity-left">
+                  <i className="ri-time-line"></i>
+                  <span>Pending Requests</span>
+                </div>
+                <span className="activity-count">{outgoing.length}</span>
+              </div>
+
+              <div
+                className="activity-item"
+                data-bs-toggle="modal"
+                data-bs-target="#followingModal"
+              >
+                <div className="activity-left">
+                  <i className="ri-user-follow-line"></i>
+                  <span>Following</span>
+                </div>
+                <span className="activity-count">
+                  {profile?.following_count || 0}
+                </span>
+              </div>
+
+              <div
+                className="activity-item"
+                data-bs-toggle="modal"
+                data-bs-target="#followersModal"
+              >
+                <div className="activity-left">
+                  <i className="ri-group-line"></i>
+                  <span>Followers</span>
+                </div>
+                <span className="activity-count">
+                  {profile?.followers_count || 0}
+                </span>
+              </div>
+            </div>
+
+            <div
+              className="modal fade"
+              id="followersModal"
+              tabIndex="-1"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div className="modal-content rounded-4 bg-white">
+
+                  {/* Header */}
+                  <div className="modal-header border-bottom">
+                    <h6 className="modal-title fw-semibold text-dark">
+                      Followers
+                    </h6>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                    />
+                  </div>
+
+                  {/* Search */}
+                  {/* <div className="px-3 pt-3">
+                    <input
+                      className="form-control form-control-sm"
+                      placeholder="Search"
+                    />
+                  </div> */}
+
+                  {/* Body */}
+                  <div className="modal-body pt-2 follow-list">
+                    {followers.length === 0 && (
+                      <div className="empty-state">
+                        No followers yet
+                      </div>
+                    )}
+
+                    {followers.map((user) => (
+                      <div key={user.id} className="follow-item">
+                        <div className="follow-left">
+                          {user.profile_image ? (
+                            <img
+                              src={user.profile_image}
+                              className="follow-avatar"
+                              alt="avatar"
+                            />
+                          ) : (
+                            <div className="follow-avatar initials-avatar">
+                              {(user.first_name?.[0] || "")}
+                              {(user.last_name?.[0] || "").toUpperCase()}
+                            </div>
+                          )}
+
+                          <div className="follow-meta">
+                            <div className="follow-name">
+                              {user.first_name} {user.last_name}
+                            </div>
+                            {user.profile_title && (
+                              <div className="follow-subtitle">
+                                {user.profile_title}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <button
+                          className="btn btn-sm btn-remove"
+                          disabled={removeFollower.isLoading}
+                          onClick={() => removeFollower.mutate(user.id)}
+                        >
+                          {removeFollower.isLoading ? "Removing…" : "Remove"}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+
+            {/* following model  */}
+            <div
+              className="modal fade"
+              id="followingModal"
+              tabIndex="-1"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div className="modal-content rounded-4 bg-white">
+
+                  {/* Header */}
+                  <div className="modal-header border-bottom">
+                    <h6 className="modal-title fw-semibold text-dark">
+                      Following
+                    </h6>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                    />
+                  </div>
+
+                  {/* Search */}
+                  {/* <div className="px-3 pt-3">
+                    <input
+                      className="form-control form-control-sm"
+                      placeholder="Search"
+                    />
+                  </div> */}
+
+                  {/* Body */}
+                  <div className="modal-body pt-2 follow-list">
+                    {following.length === 0 && (
+                      <div className="empty-state">
+                        No following yet
+                      </div>
+                    )}
+
+                    {following.map((user) => (
+                      <div key={user.id} className="follow-item">
+                        <div className="follow-left">
+                          {user.profile_image ? (
+                            <img
+                              src={user.profile_image}
+                              className="follow-avatar"
+                              alt="avatar"
+                            />
+                          ) : (
+                            <div className="follow-avatar initials-avatar">
+                              {(user.first_name?.[0] || "")}
+                              {(user.last_name?.[0] || "").toUpperCase()}
+                            </div>
+                          )}
+
+                          <div className="follow-name">
+                            {user.first_name} {user.last_name}
+                          </div>
+                        </div>
+
+                        <button
+                          className="btn btn-sm btn-remove"
+                          disabled={unfollow.isLoading}
+                          onClick={() => unfollow.mutate(user.id)}
+                        >
+                          {unfollow.isLoading ? "Removing…" : "Remove"}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+
+
+            {/* accept or reject  */}
+
+
+            <div
+              className="modal fade"
+              id="followrequest"
+              tabIndex="-1"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div className="modal-content rounded-4 bg-white">
+
+                  {/* Header */}
+                  <div className="modal-header border-bottom">
+                    <h6 className="modal-title fw-semibold text-dark">
+                      Follow Request
+                    </h6>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                    />
+                  </div>
+
+
+
+                  {/* Body */}
+                  <div className="modal-body pt-2 follow-list">
+                    {incoming.length === 0 && (
+                      <div className="empty-state">
+                        No Follow Requests
+                      </div>
+                    )}
+
+                    {incoming.map((req) => (
+                      <div key={req.id} className="follow-item">
+                        <div className="follow-left">
+                          {req.follower.profile_image ? (
+                            <img
+                              src={req.follower.profile_image}
+                              className="follow-avatar"
+                              alt="avatar"
+                            />
+                          ) : (
+                            <div className="follow-avatar initials-avatar">
+                              {(req.follower.first_name?.[0] || "")}
+                              {(req.follower.last_name?.[0] || "").toUpperCase()}
+                            </div>
+                          )}
+
+                          <div className="follow-name">
+                            {req.follower.first_name} {req.follower.last_name}
+                          </div>
+                        </div>
+
+                        <div className="follow-actions">
+                          <button
+                            className="btn btn-sm btn-accept"
+                            onClick={() => acceptFollow.mutate(req.id)}
+                            disabled={acceptFollow.isLoading}
+                          >
+                            {acceptFollow.isLoading ? "Accepting…" : "Accept"}
+                          </button>
+
+                          <button
+                            className="btn btn-sm btn-reject"
+                            onClick={() => rejectFollow.mutate(req.id)}
+                            disabled={rejectFollow.isLoading}
+                          >
+                            {rejectFollow.isLoading ? "Rejecting…" : "Reject"}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+
+
+            {/* pending request  */}
+
+
+            <div
+              className="modal fade"
+              id="pendingrequest"
+              tabIndex="-1"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div className="modal-content rounded-4 bg-white">
+
+                  {/* Header */}
+                  <div className="modal-header border-bottom">
+                    <h6 className="modal-title fw-semibold text-dark">
+                      Pending Request
+                    </h6>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                    />
+                  </div>
+
+
+
+                  {/* Body */}
+                  <div className="modal-body pt-2 pending-list">
+                    {outgoing.length === 0 && (
+                      <div className="empty-state">
+                        No Pending Requests
+                      </div>
+                    )}
+
+                    {outgoing.map((req) => (
+                      <div
+                        key={req.id}
+                        className="pending-item"
+                      >
+                        <div className="pending-left">
+                          {req.following.profile_image ? (
+                            <img
+                              src={req.following.profile_image}
+                              className="pending-avatar"
+                              alt="avatar"
+                            />
+                          ) : (
+                            <div className="pending-avatar initials-avatar">
+                              {(req.following.first_name?.[0] || "")}
+                              {(req.following.last_name?.[0] || "").toUpperCase()}
+                            </div>
+                          )}
+
+                          <div className="pending-name">
+                            {req.following.first_name} {req.following.last_name}
+                          </div>
+                        </div>
+
+                        <span className="pending-status">Pending</span>
+                      </div>
+                    ))}
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
+
+
           </div>
+
 
 
           {/* ================= MAIN FEED ================= */}
@@ -440,6 +832,11 @@ export default function PostsPage() {
 
           {/* CREATE POST (UI ONLY) */}
           <div className="col-lg-6">
+
+            
+
+           
+
             <div className="sticky-top" style={{ zIndex: 1050 }}>
               {alert.show && (
                 <div className={`alert alert-${alert.type} alert-dismissible fade show`} role="alert" >
@@ -515,10 +912,24 @@ export default function PostsPage() {
                 </div>
               </div>
 
+              {/* POSTS LOADING */}
+            {
+              isPostsLoading && (
+                <div className="text-center py-5">Loading posts...</div>
+              )
+            }
+
+            {/* POSTS EMPTY */}
+            {!isPostsLoading && posts.length === 0 && (
+              <div className="text-center text-muted py-5">
+                No posts yet.
+              </div>
+            )}
+
 
 
               {/* POSTS */}
-              {posts.map((post) => (
+              {!isPostsLoading && posts.map((post) => (
                 <div
                   key={post.id}
                   className="card border-0 shadow-sm rounded-4 mb-4"
@@ -856,6 +1267,63 @@ export default function PostsPage() {
                 ))}
               </div>
             </div>
+            {/* <div className="card border-0 shadow-sm rounded-4 p-3">
+              <div className="card-body">
+                <h6 className="fw-semibold mb-3">People You May Know</h6>
+
+                
+                <input
+                  type="text"
+                  className="form-control form-control-sm mb-3"
+                  placeholder="Search people..."
+                  value={searchPeople}
+                  onChange={(e) => setSearchPeople(e.target.value)}
+                />
+
+                
+                {people
+                  .filter((name) =>
+                    name.toLowerCase().includes(searchPeople.toLowerCase())
+                  )
+                  .slice(0, showAllPeople ? people.length : 5)
+                  .map((name, idx) => (
+                    <div
+                      key={idx}
+                      className="d-flex justify-content-between align-items-center mb-3"
+                    >
+                      <div className="d-flex align-items-center gap-2">
+                        <img
+                          src={`https://i.pravatar.cc/40?img=${idx + 30}`}
+                          className="rounded-circle"
+                          width="36"
+                          height="36"
+                          alt=""
+                        />
+                        <div>
+                          <div className="fw-semibold small">{name}</div>
+                          <div className="text-muted small">Research</div>
+                        </div>
+                      </div>
+
+                      <button className="btn btn-sm btn-outline-secondary rounded-pill">
+                        +
+                      </button>
+                    </div>
+                  ))}
+
+                
+                {people.length > 5 && (
+                  <div className="text-center mt-2">
+                    <button
+                      className="btn btn-link btn-sm text-decoration-none"
+                      onClick={() => setShowAllPeople(!showAllPeople)}
+                    >
+                      {showAllPeople ? "Show less" : "See all"}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div> */}
           </div>
         </div>
       </div>

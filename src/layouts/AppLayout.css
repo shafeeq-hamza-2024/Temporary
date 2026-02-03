@@ -1,11 +1,9 @@
-.app-body
-{
+.app-body {
     display: flex;
 }
 
-main.content
-{
-    flex:1;
+main.content {
+    flex: 1;
 }
 
 .form-check-input:checked {
@@ -59,16 +57,18 @@ main.content
 }
 
 
-.dropdown-item.active, .dropdown-item:active {
+.dropdown-item.active,
+.dropdown-item:active {
     color: var(--bs-dropdown-link-active-color);
     text-decoration: none;
     background-color: var(--bs-dropdown-link-active-bg);
 }
 
-.dropdown-item.active, .dropdown-item:active {
-  --bs-dropdown-link-active-bg: #70a83e;
+.dropdown-item.active,
+.dropdown-item:active {
+    --bs-dropdown-link-active-bg: #70a83e;
 }
 
-    a:hover {
-        color: #70a83e;
-    }
+a:hover {
+    color: #70a83e;
+}

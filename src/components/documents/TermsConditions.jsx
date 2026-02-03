@@ -84,7 +84,7 @@ export default function TermsConditions() {
               <hr />
 
               <footer className="text-center small text-muted">
-                Contact: <a href="mailto:legal@bencoshealthcare.com">legal@bencoshealthcare.com</a>
+                Contact: <a href="mailto:legal@bencoslife.com">legal@bencoslife.com</a>
               </footer>
 
             </div>

@@ -218,3 +218,113 @@
 }
 
 
+/* ---------- MOBILE FIRST ---------- */
+
+.container {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 50px;
+  margin-bottom: 10px;
+}
+
+.btn-search {
+  width: 100%;
+  border-radius: 50px;
+}
+
+/* Stack search input + button */
+.search-section form {
+  gap: 10px;
+}
+
+/* Article layout */
+.article-row {
+  flex-direction: column;
+}
+
+.pdf-icon {
+  width: 42px;
+  height: auto;
+  margin-bottom: 8px;
+}
+
+.article-title {
+  width: 100%;
+  font-size: 1rem;
+}
+
+.abstract-text {
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+/* Buttons stack nicely */
+.article-card a,
+.article-card button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* Pagination */
+.pagination {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+@media (max-width: 360px) {
+  .article-title {
+    font-size: 0.95rem;
+  }
+
+  .author-line {
+    font-size: 0.75rem;
+  }
+
+  .abstract-text {
+    font-size: 0.88rem;
+  }
+}
+
+@media (min-width: 576px) {
+  .article-row {
+    flex-direction: row;
+  }
+
+  .pdf-icon {
+    width: 48px;
+  }
+
+  .article-card a,
+  .article-card button {
+    width: auto;
+  }
+
+  .search-input {
+    width: 70%;
+  }
+
+  .btn-search {
+    width: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .search-input {
+    width: 750px;
+    max-width: 90%;
+  }
+
+  .article-title {
+    font-size: 1.1rem;
+  }
+
+  .abstract-text {
+    font-size: 1rem;
+  }
+}
+

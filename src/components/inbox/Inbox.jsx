@@ -135,11 +135,17 @@ export default function Inbox() {
           <>
             {/* Header */}
             <div className="p-3 border-bottom d-flex align-items-center gap-3">
-              <img
-                src={active.user.profile_image || "https://i.pravatar.cc/100"}
-                className="inbox-avatar"
-                alt="avatar"
-              />
+              {active.user.profile_image ? (
+                <img
+                  src={active.user.profile_image}
+                  className="inbox-avatar"
+                  alt="avatar"
+                />
+              ) : (
+                <div className="inbox-avatar initials-avatar">
+                  {(active.user.first_name?.[0] || "") + (active.user.last_name?.[0] || "").toUpperCase()}
+                </div>
+              )}
               <div>
                 <h6 className="mb-0">
                   {active.user.first_name} {active.user.last_name}

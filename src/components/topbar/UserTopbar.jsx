@@ -64,7 +64,7 @@ export default function UserTopbar() {
         {/* Left */}
         <div className="d-flex align-items-center gap-2">
 
-          <Link className="navbar-brand fw-bold" to="/" style={{ "fontSize": "22px" }}>
+          <Link className="navbar-brand fw-bold" to="/user" style={{ "fontSize": "22px" }}>
             <img src="/images/MyNeuron-Logo.png" style={{ width: "200px", height: "50px", objectFit: "contain" }} />
           </Link>
         </div>

@@ -86,3 +86,72 @@
 .submenu-wrapper.open {
   max-height: 400px;
 }
+
+
+/* SIDEBAR BASE */
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1050;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+/* OPEN STATE */
+.sidebar.open {
+  transform: translateX(0);
+}
+
+/* OVERLAY */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1040;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* HAMBURGER */
+.sidebar-toggle {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1100;
+  background: #fff;
+  border: none;
+  padding: 8px 10px;
+  font-size: 1.6rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+/* DESKTOP */
+@media (min-width: 992px) {
+  .sidebar {
+    position: relative;
+    transform: none;
+    height: auto;
+  }
+
+  .sidebar-overlay,
+  .sidebar-toggle {
+    display: none;
+  }
+}
+
+
+body.sidebar-open {
+  overflow: hidden;
+  touch-action: none;
+}
