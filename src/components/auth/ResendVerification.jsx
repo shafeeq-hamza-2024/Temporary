@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useResendVerification } from "../../hooks/useResendVerification";
-import "../register/Registerform.css"; // reuse CSS
+import "../register/RegisterForm.css"; // reuse CSS
 
 const ResendVerification = () => {
     const [email, setEmail] = useState("");

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useVerifyEmail } from "../../hooks/useVerifyEmail";
-import "../register/Registerform.css"; // ✅ reuse same CSS
+import "../register/RegisterForm.css"; // ✅ reuse same CSS
 
 const VerifyEmail = () => {
   const location = useLocation();
