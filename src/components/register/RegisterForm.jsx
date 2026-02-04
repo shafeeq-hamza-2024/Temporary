@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Registerform.css";
+import "./RegisterForm.css";
 import { useLocation } from "react-router";
 
 import { useRegister } from "../../hooks/useRegister";
