@@ -1,8 +1,8 @@
 import { useParams } from "react-router";
 import { siteURL } from "../../api/api";
 import { usePublicUserProfile } from "../../hooks/publicUsers/usePublicUserProfile";
-import { useSendFollow } from "../../hooks/follow/usefollowActions";
-import { useUnfollow } from "../../hooks/follow/usefollowActions";
+import { useSendFollow } from "../../hooks/follow/useFollowActions";
+import { useUnfollow } from "../../hooks/follow/useFollowActions";
 import { useOutgoingFollowRequests } from "../../hooks/follow/useOutgoingFollowRequests";
 import { useUserFollowers } from "../../hooks/follow/useUserFollowers";
 

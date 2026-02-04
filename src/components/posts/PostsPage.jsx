@@ -17,10 +17,10 @@ import { useIncomingFollowRequests } from "../../hooks/follow/useIncomingFollowR
 import { useOutgoingFollowRequests } from "../../hooks/follow/useOutgoingFollowRequests";
 import { useUserFollowers } from "../../hooks/follow/useUserFollowers";
 import { useUserFollowing } from "../../hooks/follow/useUserFollowing";
-import { useAcceptFollow } from "../../hooks/follow/usefollowActions";
-import { useRejectFollow } from "../../hooks/follow/usefollowActions";
-import { useUnfollow } from "../../hooks/follow/usefollowActions";
-import { useRemoveFollower } from "../../hooks/follow/usefollowActions";
+import { useAcceptFollow } from "../../hooks/follow/useFollowActions";
+import { useRejectFollow } from "../../hooks/follow/useFollowActions";
+import { useUnfollow } from "../../hooks/follow/useFollowActions";
+import { useRemoveFollower } from "../../hooks/follow/useFollowActions";
 import { getOgiMeta } from "../../api/ogiApi";
 import "./PostsPage.css";
 
