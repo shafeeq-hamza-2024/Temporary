@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router";
-import "./bookmark.css";
+import "./Bookmark.css";
 
 export default function Bookmark() {
   const navigate = useNavigate();
