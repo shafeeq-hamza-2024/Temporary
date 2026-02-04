@@ -6,6 +6,7 @@ import { useUnfollow } from "../../hooks/follow/usefollowActions";
 import { useOutgoingFollowRequests } from "../../hooks/follow/useOutgoingFollowRequests";
 import { useUserFollowers } from "../../hooks/follow/useUserFollowers";
 
+
 import { Link } from "react-router";
 
 export default function PublicProfile() {
@@ -14,6 +15,9 @@ export default function PublicProfile() {
     const sendFollow = useSendFollow();
     const unfollow = useUnfollow();
     const DEFAULT_AVATAR = "/images/Avatar.png";
+    const authUserId = JSON.parse(localStorage.getItem("user"))?.id;
+
+    const isOwnProfile = Number(id) === authUserId;
 
 
     const { data: outgoing = [] } = useOutgoingFollowRequests();
@@ -56,6 +60,7 @@ export default function PublicProfile() {
         personal_detail,
         professional_detail,
         education,
+        scientific_interest,
     } = data;
 
     return (
@@ -129,44 +134,45 @@ export default function PublicProfile() {
                                         <i className="ri-send-plane-line me-2"></i>
                                         Message
                                     </Link> */}
-
-                                    <div className="d-flex gap-2">
-                                        <Link
-                                            to={`/inbox/${id}`}
-                                            className="btn btn-dark rounded-pill px-3 d-flex align-items-center gap-1"
-                                        >
-                                            <i className="ri-send-plane-line me-2"></i>
-                                            Message
-                                        </Link>
-
-                                        {!isFollowing && !isRequested && (
-                                            <button
-                                                className="btn btn-outline-dark rounded-pill px-3"
-                                                onClick={handleFollow}
-                                                disabled={sendFollow.isLoading}
+                                    {!isOwnProfile && (
+                                        <div className="d-flex gap-2">
+                                            <Link
+                                                to={`/inbox/${id}`}
+                                                className="btn btn-dark rounded-pill px-3 d-flex align-items-center gap-1"
                                             >
-                                                {sendFollow.isLoading ? "Sending…" : "Follow"}
-                                            </button>
-                                        )}
+                                                <i className="ri-send-plane-line me-2"></i>
+                                                Message
+                                            </Link>
 
-                                        {isRequested && (
-                                            <button
-                                                className="btn btn-secondary rounded-pill px-3"
-                                                disabled
-                                            >
-                                                Requested
-                                            </button>
-                                        )}
+                                            {!isFollowing && !isRequested && (
+                                                <button
+                                                    className="btn btn-outline-dark rounded-pill px-3"
+                                                    onClick={handleFollow}
+                                                    disabled={sendFollow.isLoading}
+                                                >
+                                                    {sendFollow.isLoading ? "Sending…" : "Follow"}
+                                                </button>
+                                            )}
 
-                                        {isFollowing && (
-                                            <button
-                                                className="btn btn-outline-danger rounded-pill px-3"
-                                                onClick={handleUnfollow}
-                                            >
-                                                Unfollow
-                                            </button>
-                                        )}
-                                    </div>
+                                            {isRequested && (
+                                                <button
+                                                    className="btn btn-secondary rounded-pill px-3"
+                                                    disabled
+                                                >
+                                                    Requested
+                                                </button>
+                                            )}
+
+                                            {isFollowing && (
+                                                <button
+                                                    className="btn btn-outline-danger rounded-pill px-3"
+                                                    onClick={handleUnfollow}
+                                                >
+                                                    Unfollow
+                                                </button>
+                                            )}
+                                        </div>
+                                    )}
 
 
                                 </div>
@@ -286,6 +292,64 @@ export default function PublicProfile() {
                             )}
                         </div>
                     </div>
+
+                    {/* ===== SCIENTIFIC INTERESTS ===== */}
+                    {scientific_interest && (
+                        <div className="card shadow-sm border-0 fade-up mb-4">
+                            <div className="card-header bg-white">
+                                <h5 className="mb-0">Scientific Interests</h5>
+                            </div>
+
+                            <div className="card-body small text-secondary">
+
+                                {scientific_interest.research_area_of_expertise && (
+                                    <p className="mb-2">
+                                        <strong>Research Area:</strong><br />
+                                        {scientific_interest.research_area_of_expertise}
+                                    </p>
+                                )}
+
+                                {scientific_interest.major_focus?.length > 0 && (
+                                    <p className="mb-2">
+                                        <strong>Major Focus:</strong><br />
+                                        {scientific_interest.major_focus.join(", ")}
+                                    </p>
+                                )}
+
+                                {scientific_interest.specific_research_areas?.length > 0 && (
+                                    <p className="mb-2">
+                                        <strong>Specific Research Areas:</strong><br />
+                                        {scientific_interest.specific_research_areas.join(", ")}
+                                    </p>
+                                )}
+
+                                {scientific_interest.organ_sites?.length > 0 && (
+                                    <p className="mb-2">
+                                        <strong>Organ Sites:</strong><br />
+                                        {scientific_interest.organ_sites.join(", ")}
+                                    </p>
+                                )}
+
+                                {scientific_interest.additional_research_areas?.length > 0 && (
+                                    <p className="mb-0">
+                                        <strong>Additional Research Areas:</strong><br />
+                                        {scientific_interest.additional_research_areas.join(", ")}
+                                    </p>
+                                )}
+
+                                {!scientific_interest.research_area_of_expertise &&
+                                    !scientific_interest.major_focus?.length &&
+                                    !scientific_interest.specific_research_areas?.length &&
+                                    !scientific_interest.organ_sites?.length &&
+                                    !scientific_interest.additional_research_areas?.length && (
+                                        <p className="text-muted mb-0">
+                                            No scientific interests added.
+                                        </p>
+                                    )}
+                            </div>
+                        </div>
+                    )}
+
 
                     {/* ===== PAST EXPERIENCE ===== */}
                     <div className="card shadow-sm border-0 fade-up">
