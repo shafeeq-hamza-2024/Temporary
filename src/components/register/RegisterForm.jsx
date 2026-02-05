@@ -117,7 +117,7 @@ const RegisterForm = () => {
       <div className="overlay"></div>
 
       <div className="left-text">
-        <img src="images/Logo-Color.png" alt="MyNeuron Logo" className="logo" />
+        <img src="/images/Logo-Color.png" alt="MyNeuron Logo" className="logo" />
         <h1>Connect | Collaborate | Create</h1>
         <p>
           Connecting bright minds to advance health research & innovation

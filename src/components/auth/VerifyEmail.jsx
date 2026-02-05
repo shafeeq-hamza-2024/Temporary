@@ -27,7 +27,7 @@ const VerifyEmail = () => {
     <div className="hero">
       <div className="overlay"></div>
       <div className="left-text">
-        <img src="images/Logo-Color.png" alt="MyNeuron Logo" className="logo" />
+        <img src="/images/Logo-Color.png" alt="MyNeuron Logo" className="logo" />
         <h1>Connect | Collaborate | Create</h1>
         <p>
           Connecting bright minds to advance health research & innovation
@@ -53,7 +53,7 @@ const VerifyEmail = () => {
             {/* <button className="btn3" onClick={() => (window.location.href = "http://localhost:5173/login")}>
               Go to Login
             </button> */}
-            <button className="btn3" onClick={() => (window.location.href = "https://myneuronworld.com/login")}>
+            <button className="btn3" onClick={() => (window.location.href = "https://www.myneuronworld.com/login")}>
               Go to Login
             </button>
           </>
@@ -68,7 +68,7 @@ const VerifyEmail = () => {
             {/* <button className="btn3" onClick={() => (window.location.href = "http://localhost:5173/register")}>
               Register again
             </button> */}
-            <button className="btn3" onClick={() => (window.location.href = "https://myneuronworld.com/register")}>
+            <button className="btn3" onClick={() => (window.location.href = "https://www.myneuronworld.com/register")}>
               Register again
             </button>
           </>
