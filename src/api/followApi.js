@@ -96,3 +96,9 @@ export const getUserFollowing = async (userId) => {
   const res = await api.get(`/usersfollow/${userId}/following/`);
   return res.data;
 };
+
+
+export const getMyFollowing = async () => {
+  const res = await api.get("/follows/my-following/");
+  return res.data;
+};

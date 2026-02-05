@@ -174,8 +174,11 @@ export default function GATCLite() {
                                                     ✅ Early Bird Deadline:
                                                     <strong className="text-danger"> 10 February, 2026</strong>
                                                 </li>
-                                                <li>
+                                                <li className="mb-1">
                                                     ✅ Late Registration: <strong>₹700</strong> (till 28 Feb 2026)
+                                                </li>
+                                                <li className="mb-1">
+                                                    ✅ Spot Registration: <strong>₹1000</strong> (after 28 Feb 2026 / on spot)
                                                 </li>
                                             </ul>
                                         </div>
@@ -216,19 +219,6 @@ export default function GATCLite() {
                                         </li>
                                         <li>
                                             Industry participants need to arrange their own accommodation.
-                                        </li>
-                                    </ul>
-
-                                    {/* REFUND POLICY */}
-                                    <h6 className="fw-bold text-uppercase mb-2">Refund Policy</h6>
-                                    <ul className="small text-muted ps-3 mb-0">
-                                        <li>
-                                            A cancellation charge of <strong>₹1,000</strong> will be applicable
-                                            for processing refunds.
-                                        </li>
-                                        <li>
-                                            Requests for refunds must be received on or before
-                                            <strong className="text-danger"> 20 February 2026</strong>.
                                         </li>
                                     </ul>
 

@@ -5,6 +5,7 @@ import { useSendFollow } from "../../hooks/follow/useFollowActions";
 import { useUnfollow } from "../../hooks/follow/useFollowActions";
 import { useOutgoingFollowRequests } from "../../hooks/follow/useOutgoingFollowRequests";
 import { useUserFollowers } from "../../hooks/follow/useUserFollowers";
+import { useMyFollowing } from "../../hooks/follow/useFollowActions";
 
 
 import { Link } from "react-router";
@@ -19,17 +20,22 @@ export default function PublicProfile() {
 
     const isOwnProfile = Number(id) === authUserId;
 
+    const { data: myFollowing = [] } = useMyFollowing();
 
     const { data: outgoing = [] } = useOutgoingFollowRequests();
-    const { data: followers = [] } = useUserFollowers(id);
+    // const { data: followers = [] } = useUserFollowers(id);
 
     const isRequested = outgoing.some(
         (req) => req.following?.id === Number(id)
     );
 
-    const isFollowing = followers.some(
+    const isFollowing = myFollowing.some(
         (u) => u.id === Number(id)
     );
+
+    // const isFollowing = followers.some(
+    //     (u) => u.id === Number(id)
+    // );
 
     const handleFollow = () => {
         sendFollow.mutate(Number(id));

@@ -3,13 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDOyxNCEw28eOW26gm-wvyXXAvCjCNboCU",
-  authDomain: "notification-myneuron.firebaseapp.com",
-  databaseURL: "https://notification-myneuron-default-rtdb.firebaseio.com",
-  projectId: "notification-myneuron",
-  storageBucket: "notification-myneuron.appspot.com",
-  messagingSenderId: "939658171334",
-  appId: "1:939658171334:web:596e2ae978b5c77536d8c7"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 export default firebaseConfig;
 

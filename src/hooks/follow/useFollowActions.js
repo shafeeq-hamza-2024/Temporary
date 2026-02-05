@@ -1,10 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   sendFollowRequest,
   acceptFollowRequest,
   rejectFollowRequest,
   unfollowUser,
-  removeFollower
+  removeFollower,
+  getMyFollowing
 } from "../../api/followApi";
 
 export const useSendFollow = () => {
@@ -26,6 +28,7 @@ export const useAcceptFollow = () => {
     mutationFn: acceptFollowRequest,
     onSuccess: () => {
       qc.invalidateQueries();
+      
     },
   });
 };
@@ -65,5 +68,28 @@ export const useRemoveFollower = () => {
       qc.invalidateQueries({ queryKey: ["following"] });
       qc.invalidateQueries({ queryKey: ["user-profile"] });
     },
+  });
+};
+
+
+// export const useMyFollowing = () => {
+//   const qc = useQueryClient();
+
+//   return useMutation({
+//     mutationFn: getMyFollowing,
+//     onSuccess: () => {
+//       qc.invalidateQueries({ queryKey: ["my-following"] });
+//     },
+//     staleTime: 1000 * 30, // optional
+//   });
+// };
+
+
+
+export const useMyFollowing = () => {
+  return useQuery({
+    queryKey: ["my-following"],
+    queryFn: getMyFollowing,
+    staleTime: 1000 * 30, // 30 seconds cache
   });
 };

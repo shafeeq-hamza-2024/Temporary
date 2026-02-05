@@ -13,6 +13,7 @@ export default function UserSidebar() {
 
 
   const isVerified = user?.is_verified === true;
+  const isVerifiedLite = user?.is_verified_lite === true;
 
   const nav = useNavigate();
   const location = useLocation();
@@ -42,6 +43,21 @@ export default function UserSidebar() {
       children: [
         // Always visible
         { label: "GATC Lite (M&M)-NISER", path: "/gatclite" },
+        ...(isVerifiedLite
+          ? [
+            
+            { label: "Dashboard", path: "/gatc/dashboard" },
+            { label: "Programs", path: "/gatc/program" },
+            { label: "Speakers", path: "/gatc/speakers" },
+            // { label: "Participants", path: "/gatc/participants" },
+            { label: "My Handshakes", path: "/handshakes" },
+          ]
+          : []),
+
+  // Divider
+    { type: "divider" },
+
+
         { label: "GATC 2026", path: "/gatc2026" },
 
         // 🔐 Visible ONLY after payment verification
