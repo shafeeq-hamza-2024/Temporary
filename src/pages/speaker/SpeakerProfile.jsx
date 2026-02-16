@@ -8,7 +8,8 @@ import { useGetMyHandshakes } from "../../hooks/handshake/useGetMyHandshakes";
 import { useCreateHandshake } from "../../hooks/handshake/useCreateHandshake";
 import AsyncButton from "../../components/ui/AsyncButton";
 import { useCancelHandshake } from "../../hooks/handshake/useCancelHandshake";
-
+import { useSpeakerPrograms } from "../../hooks/programs/useSpeakerProgram";
+import { usePublicUserProfile } from "../../hooks/publicUsers/usePublicUserProfile";
 
 //const user = JSON.parse(localStorage.getItem("user")) || {};
 
@@ -23,12 +24,16 @@ export default function SpeakerProfile() {
     setUser(u);
   }, []);
 
+  const DEFAULT_AVATAR = "/images/Avatar.png";
+
   const { id } = useParams();
+
+  const { data: programs = [], isLoading: programsLoading } =
+    useSpeakerPrograms(id);
+
   const { loading, sendRequest } = useFakeHandshake();
 
   const [activeTab, setActiveTab] = useState("profile");
-
-  const [selectedYear, setSelectedYear] = useState(2026);
 
   const { mutate, isPending } = useCreateHandshake();
 
@@ -36,7 +41,7 @@ export default function SpeakerProfile() {
 
   const { cancelMut } = useCancelHandshake();
 
-
+  const [selectedYear, setSelectedYear] = useState(null);
   const createHandshake = (receiver_id) => {
     mutate({ receiver_id });
   };
@@ -66,8 +71,36 @@ export default function SpeakerProfile() {
     );
   }, [speaker, handshakes, user]);
 
+  const programsByYear = useMemo(() => {
+    const grouped = {};
+
+    programs.forEach((p) => {
+      const year = new Date(p.date).getFullYear();
+      if (!grouped[year]) grouped[year] = [];
+      grouped[year].push(p);
+    });
+
+    // Sort each year by date ascending
+    Object.keys(grouped).forEach((year) => {
+      grouped[year].sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+    });
+
+    return grouped;
+  }, [programs]);
 
 
+ const years = Object.keys(programsByYear).sort((a, b) => b - a);
+
+
+
+
+  useEffect(() => {
+    if (years.length && !selectedYear) {
+      setSelectedYear(Number(years[0]));
+    }
+  }, [years, selectedYear]);
 
 
   useEffect(() => {
@@ -210,53 +243,9 @@ export default function SpeakerProfile() {
         );
     }
   };
+   
 
-
-  // -----------------------------------
-  // SAMPLE POSTS (RIGHT SIDEBAR)
-  // -----------------------------------
-  const samplePosts = [
-    {
-      text: "Published new research paper on neural architecture search.",
-      time: "2 days ago",
-    },
-    {
-      text: "Spoke at MIT Tech Forum on AI Ethics.",
-      time: "1 week ago",
-    },
-  ];
-
-  // -----------------------------------
-  // SIMILAR PROFILES (RIGHT SIDEBAR)
-  // -----------------------------------
-  const similarProfiles = [
-    {
-      name: "Prof. Maya Rangan",
-      title: "Quantum Scientist, IISc",
-      photo: "https://i.pravatar.cc/100?img=32",
-    },
-    {
-      name: "Dr. Samuel Crane",
-      title: "Robotics Expert, Stanford",
-      photo: "https://i.pravatar.cc/100?img=45",
-    },
-    {
-      name: "Dr. Elena Kovacs",
-      title: "Computational Biologist, ETH Zurich",
-      photo: "https://i.pravatar.cc/100?img=12",
-    },
-    {
-      name: "Prof. Hiroshi Tanaka",
-      title: "Nanomaterials Researcher, University of Tokyo",
-      photo: "https://i.pravatar.cc/100?img=57",
-    },
-    {
-      name: "Dr. Liora Ben-Shahar",
-      title: "Molecular Neuroscientist, Weizmann Institute",
-      photo: "https://i.pravatar.cc/100?img=28",
-    },
-  ];
-
+  
 
 
 
@@ -294,26 +283,13 @@ export default function SpeakerProfile() {
   }
 
 
-  //console.log("speaker",speaker);
-
-  const years = [2026, 2025, 2024];
-
-
-
-  const yearlyData = {
-    2026: speaker?.sessions_2026 || [],
-    2025: speaker?.sessions_2025 || [],
-    2024: speaker?.sessions_2024 || [],
-  };
-
-
 
   return (
     <div className="container py-4">
       {/* BACK BUTTON */}
-        <button className="btn btn-outline-secondary mb-3" onClick={() => window.history.back()}>
-          <i className="ri-arrow-left-line me-1"></i> Back
-        </button>
+      <button className="btn btn-outline-secondary mb-3" onClick={() => window.history.back()}>
+        <i className="ri-arrow-left-line me-1"></i> Back
+      </button>
       <div className="row">
         {/* -----------------------------------
             LEFT MAIN PROFILE CONTENT
@@ -352,13 +328,23 @@ export default function SpeakerProfile() {
 
                 {/* LEFT — PHOTO */}
                 <img
-                  src={speaker.profile_image || "https://i.pravatar.cc/100"}
+                  src={
+                    speaker.profile_image
+                      ? speaker.profile_image.startsWith("http")
+                        ? speaker.profile_image
+                        : `${siteURL}/${speaker.profile_image}`
+                      : DEFAULT_AVATAR
+                  }
                   alt="speaker"
                   className="rounded-circle shadow"
                   style={{
                     width: "150px",
                     height: "150px",
                     objectFit: "cover",
+                  }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = DEFAULT_AVATAR;
                   }}
                 />
 
@@ -468,44 +454,44 @@ export default function SpeakerProfile() {
                 </div>
 
                 {/* ---- SESSIONS FOR SELECTED YEAR ---- */}
-                {yearlyData[selectedYear] && yearlyData[selectedYear].length > 0 ? (
-                  <div className="d-flex flex-column gap-3">
-
-                    {yearlyData[selectedYear].map((s, i) => (
-                      <div
-                        key={i}
-                        className="session-card p-3 rounded border d-flex align-items-center gap-4"
-                      >
-                        {/* LEFT - DATE */}
-                        <div className="text-center px-3">
-                          <div className="fw-bold fs-5">{s.date}</div>
-                          <div className="text-muted small">{s.day}</div>
+                {programsByYear[selectedYear]?.length ? (
+                  programsByYear[selectedYear].map((p) => (
+                    <div
+                      key={p.id}
+                      className="session-card p-3 rounded border d-flex align-items-center gap-4"
+                    >
+                      <div className="text-center px-3">
+                        <div className="fw-bold fs-5">
+                          {new Date(p.date).getDate()}
                         </div>
-
-                        {/* VERTICAL DIVIDER */}
-                        <div className="vr" />
-
-                        {/* CENTER - DETAILS */}
-                        <div className="flex-grow-1">
-                          <h6 className="mb-1">{s.topic}</h6>
-                          <div className="text-muted small">
-                            <i className="ri-time-line me-1"></i>
-                            {s.start} – {s.end}
-                          </div>
-                          <div className="text-muted small">
-                            <i className="ri-map-pin-2-line me-1"></i>
-                            {s.venue}
-                          </div>
+                        <div className="text-muted small">
+                          {new Date(p.date).toLocaleDateString("en-IN", {
+                            month: "short",
+                          })}
                         </div>
-
-                        {/* RIGHT - ICON */}
-                        <i className="ri-mic-2-line fs-3 text-primary"></i>
                       </div>
-                    ))}
 
-                  </div>
+                      <div className="vr" />
+
+                      <div className="flex-grow-1">
+                        <h6 className="mb-1">{p.topic}</h6>
+
+                        <div className="text-muted small">
+                          <i className="ri-time-line me-1"></i>
+                          {p.start_time} – {p.end_time}
+                        </div>
+
+                        <div className="text-muted small">
+                          <i className="ri-map-pin-2-line me-1"></i>
+                          {p.venue}
+                        </div>
+                      </div>
+
+                      <i className="ri-mic-2-line fs-3 text-primary"></i>
+                    </div>
+                  ))
                 ) : (
-                  <p className="text-muted mb-0">No sessions for this year.</p>
+                  <p className="text-muted mb-0">No programs available.</p>
                 )}
 
               </div>
@@ -539,44 +525,44 @@ export default function SpeakerProfile() {
                 </div>
 
                 {/* ---- SESSIONS FOR SELECTED YEAR ---- */}
-                {yearlyData[selectedYear] && yearlyData[selectedYear].length > 0 ? (
-                  <div className="d-flex flex-column gap-3">
-
-                    {yearlyData[selectedYear].map((s, i) => (
-                      <div
-                        key={i}
-                        className="session-card p-3 rounded border d-flex align-items-center gap-4"
-                      >
-                        {/* LEFT - DATE */}
-                        <div className="text-center px-3">
-                          <div className="fw-bold fs-5">{s.date}</div>
-                          <div className="text-muted small">{s.day}</div>
+                {programsByYear[selectedYear]?.length ? (
+                  programsByYear[selectedYear].map((p) => (
+                    <div
+                      key={p.id}
+                      className="session-card p-3 rounded border d-flex align-items-center gap-4"
+                    >
+                      <div className="text-center px-3">
+                        <div className="fw-bold fs-5">
+                          {new Date(p.date).getDate()}
                         </div>
-
-                        {/* VERTICAL DIVIDER */}
-                        <div className="vr" />
-
-                        {/* CENTER - DETAILS */}
-                        <div className="flex-grow-1">
-                          <h6 className="mb-1">{s.topic}</h6>
-                          <div className="text-muted small">
-                            <i className="ri-time-line me-1"></i>
-                            {s.start} – {s.end}
-                          </div>
-                          <div className="text-muted small">
-                            <i className="ri-map-pin-2-line me-1"></i>
-                            {s.venue}
-                          </div>
+                        <div className="text-muted small">
+                          {new Date(p.date).toLocaleDateString("en-IN", {
+                            month: "short",
+                          })}
                         </div>
-
-                        {/* RIGHT - ICON */}
-                        <i className="ri-mic-2-line fs-3 text-primary"></i>
                       </div>
-                    ))}
 
-                  </div>
+                      <div className="vr" />
+
+                      <div className="flex-grow-1">
+                        <h6 className="mb-1">{p.topic}</h6>
+
+                        <div className="text-muted small">
+                          <i className="ri-time-line me-1"></i>
+                          {p.start_time} – {p.end_time}
+                        </div>
+
+                        <div className="text-muted small">
+                          <i className="ri-map-pin-2-line me-1"></i>
+                          {p.venue}
+                        </div>
+                      </div>
+
+                      <i className="ri-mic-2-line fs-3 text-primary"></i>
+                    </div>
+                  ))
                 ) : (
-                  <p className="text-muted mb-0">No sessions for this year.</p>
+                  <p className="text-muted mb-0">No programs available.</p>
                 )}
 
               </div>
@@ -600,115 +586,13 @@ export default function SpeakerProfile() {
         <div className="col-md-4">
 
           {/* POSTS */}
-          <div className="card shadow-sm border-0 mb-4 fade-up fade-delay-2">
-            <div className="card-header bg-white d-flex justify-content-between align-items-center">
-              <h6 className="mb-0">Recent Posts</h6>
-              <i className="ri-article-line text-muted"></i>
-            </div>
 
-            <div className="card-body">
-
-              {samplePosts.map((p, i) => {
-                const firstLetter = p.text.charAt(0).toUpperCase();
-                const letterClass = `post-icon-${firstLetter}`;
-
-                return (
-                  <div key={i} className="d-flex align-items-start mb-3 post-item">
-
-                    {/* LEFT ICON BOX */}
-                    <div className={`post-icon shadow-sm ${letterClass}`}>
-                      {firstLetter}
-                    </div>
-
-                    {/* TEXT */}
-                    <div className="flex-grow-1 ms-3">
-                      <p className="mb-1">{p.text}</p>
-                      <small className="text-muted">{p.time}</small>
-                    </div>
-                  </div>
-                );
-              })}
-
-              <button className="btn btn-sm btn-light border mt-3 w-100 hover-lift">
-                <i className="ri-list-unordered me-2"></i>
-                See All Posts
-              </button>
-            </div>
-          </div>
 
           {/* HANDSHAKES SECTION */}
-          <div className="card border-0 shadow mb-4 fade-up fade-delay-25">
-            <div className="card-header bg-white d-flex align-items-center gap-2">
-              <i className="ri-handshake-line text-primary fs-5"></i>
-              <h6 className="mb-0">Handshakes</h6>
-            </div>
 
-            <div className="card-body">
-              {speaker.handshakes?.length > 0 && Array.isArray(speaker.handshakes) ? (
-                speaker.handshakes.map((h, i) => (
-                  <div
-                    key={i}
-                    className="d-flex align-items-center justify-content-between mb-3 p-2 rounded border"
-                    style={{ background: "#f8f9fa" }}
-                  >
-                    <div className="d-flex align-items-center gap-3">
-                      <img
-                        src={h.photo}
-                        alt="avatar"
-                        className="rounded-circle"
-                        style={{ width: "42px", height: "42px", objectFit: "cover" }}
-                      />
-                      <div>
-                        <strong>{h.name}</strong>
-                        <div className="text-muted small">{h.title}</div>
-                      </div>
-                    </div>
-
-                    {/* Status Badge */}
-                    <span
-                      className={`badge px-3 py-2 rounded-pill ${h.status === "accepted"
-                        ? "bg-success"
-                        : h.status === "pending"
-                          ? "bg-warning text-dark"
-                          : "bg-danger"
-                        }`}
-                    >
-                      {h.status}
-                    </span>
-                  </div>
-                ))
-              ) : (
-                <div className="text-muted small">No handshakes yet.</div>
-              )}
-            </div>
-          </div>
 
           {/* SIMILAR PROFILES */}
-          <div className="card shadow-sm border-0 mb-4 fade-up fade-delay-3">
-            <div className="card-header bg-white">
-              <h6 className="mb-0">Similar Profiles</h6>
-            </div>
-            <div className="card-body">
-              {similarProfiles.map((p, i) => (
-                <div
-                  key={i}
-                  className="d-flex align-items-center gap-3 mb-3"
-                  style={{ cursor: "pointer" }}
-                >
-                  <img
-                    src={p.photo}
-                    alt="avatar"
-                    className="rounded-circle"
-                    style={{ width: "45px", height: "45px", objectFit: "cover" }}
-                  />
-                  <div>
-                    <strong>{p.name}</strong>
-                    <div className="text-muted small">{p.title}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+
 
           {/* QUICK ACTIONS */}
           <div className="card shadow-sm border-0 mb-4 fade-up fade-delay-4">
@@ -723,9 +607,7 @@ export default function SpeakerProfile() {
                 <i className="ri-send-plane-line me-2"></i>
                 Message
               </Link>
-              <button className="btn btn-outline-secondary w-100">
-                <i className="ri-bookmark-line me-2"></i>Save Profile
-              </button>
+
             </div>
           </div>
 

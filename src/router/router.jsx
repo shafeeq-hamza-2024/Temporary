@@ -35,7 +35,7 @@ import Consultancy from "../components/documents/Consultancy";
 import Events from "../components/documents/Events";
 import Product from "../components/documents/Products";
 import GATCLite from "../components/gatc/GATC-Lite";
-
+import WriteArticle from "../components/posts/WriteArticle";
 
 
 export const router = createBrowserRouter
@@ -174,7 +174,7 @@ export const router = createBrowserRouter
         { path: "/my-bookshelf", element: <MyBookShelf /> },
         { path: "/user/profile/edit", element: <ProfileEdit /> },
         { path: "/gatc/speakers", element: <SpeakerDashboard /> },
-
+{ path: "writearticle", element: <WriteArticle /> },
         { path: "/posts", element: <PostsPage /> },
         { path: "/posts/:id", element: <PostDetail /> },
 

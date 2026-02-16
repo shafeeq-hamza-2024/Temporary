@@ -13,7 +13,7 @@ export default function UserSidebar() {
 
 
   const isVerified = user?.is_verified === true;
-  const isVerifiedLite = user?.is_verified_lite === true;
+  const isVerifiedLite = user?.is_verified_lite == true;
 
   const nav = useNavigate();
   const location = useLocation();
@@ -42,17 +42,23 @@ export default function UserSidebar() {
       color: "#0abde3",
       children: [
         // Always visible
-        { label: "GATC Lite (M&M)-NISER", path: "/gatclite" },
-        ...(isVerifiedLite
-          ? [
-            
-            { label: "Dashboard", path: "/gatc/dashboard" },
+        { label: "GATC Lite (M&M)-NISER", path: "/gatclite",
+          children: [
             { label: "Programs", path: "/gatc/program" },
             { label: "Speakers", path: "/gatc/speakers" },
-            // { label: "Participants", path: "/gatc/participants" },
             { label: "My Handshakes", path: "/handshakes" },
           ]
-          : []),
+         },
+        // ...(isVerifiedLite
+        //   ? [
+            
+        //     // { label: "Dashboard", path: "/gatc/dashboard" },
+        //     { label: "Programs", path: "/gatc/program" },
+        //     { label: "Speakers", path: "/gatc/speakers" },
+        //     // { label: "Participants", path: "/gatc/participants" },
+        //     { label: "My Handshakes", path: "/handshakes" },
+        //   ]
+        //   : []),
 
   // Divider
     { type: "divider" },

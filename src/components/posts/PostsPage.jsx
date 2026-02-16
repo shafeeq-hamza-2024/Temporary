@@ -23,6 +23,8 @@ import { useUnfollow } from "../../hooks/follow/useFollowActions";
 import { useRemoveFollower } from "../../hooks/follow/useFollowActions";
 import { getOgiMeta } from "../../api/ogiApi";
 import "./PostsPage.css";
+import { useArticles } from "../../hooks/articles/useArticles";
+import { useArticleRatings } from "../../hooks/ratings/useRatings";
 
 
 
@@ -40,6 +42,19 @@ export default function PostsPage() {
     show: false,
     postId: null,
   });
+  const [ogPreview, setOgPreview] = useState(null);
+  const handleOgFromText = async (text) => {
+    if (!/^https?:\/\//i.test(text)) return;
+
+    try {
+      const res = await getOgiMeta(text);
+      setOgPreview(buildOgHtml(res));
+    } catch (err) {
+      console.error("OG fetch failed", err);
+      setOgPreview(null);
+    }
+  };
+
 
   const updatePost = useUpdatePost();
   const deletePost = useDeletePost();
@@ -250,16 +265,69 @@ export default function PostsPage() {
 
 
 
+  // const handleCreatePost = () => {
+  //   if (!form.content?.trim() && form.files.length === 0) {
+  //     showAlert("Post cannot be empty", "warning");
+  //     return;
+  //   }
+
+  //   if (postType === "video") {
+  //     const isValidUrl = /^https?:\/\/.+/i.test(form.content);
+  //     if (!isValidUrl) {
+  //       showAlert("Please enter a valid video URL", "warning");
+  //       return;
+  //     }
+  //   }
+
+
+  //   const payload = {
+  //     postId: editingPost?.id,
+  //     title: form.title?.trim() || "",
+  //     content: form.content?.trim() || "",
+  //     files: form.files,
+  //   };
+
+  //   const mutation = editingPost ? updatePost : createPost;
+
+  //   mutation.mutate(payload, {
+  //     onSuccess: () => {
+  //       setShowModal(false);
+  //       setEditingPost(null);
+  //       setForm({ title: "", content: "", files: [] });
+
+  //       showAlert(
+  //         editingPost ? "Post updated successfully" : "Post created successfully",
+  //         "success"
+  //       );
+  //     },
+  //     onError: () => {
+  //       showAlert(
+  //         editingPost ? "Failed to update post" : "Failed to create post",
+  //         "danger"
+  //       );
+  //     },
+  //   });
+  // };
+
+
+
   const handleCreatePost = () => {
-    if (!form.content?.trim() && form.files.length === 0) {
+    if (!form.content?.trim() && form.files.length === 0 && !ogPreview) {
       showAlert("Post cannot be empty", "warning");
       return;
+    }
+
+    let finalContent = form.content?.trim() || "";
+
+    // ✅ append OG HTML
+    if (ogPreview && !finalContent.includes("og-card")) {
+      finalContent += ogPreview;
     }
 
     const payload = {
       postId: editingPost?.id,
       title: form.title?.trim() || "",
-      content: form.content?.trim() || "",
+      content: finalContent,
       files: form.files,
     };
 
@@ -270,21 +338,15 @@ export default function PostsPage() {
         setShowModal(false);
         setEditingPost(null);
         setForm({ title: "", content: "", files: [] });
+        setOgPreview(null);
 
         showAlert(
           editingPost ? "Post updated successfully" : "Post created successfully",
           "success"
         );
       },
-      onError: () => {
-        showAlert(
-          editingPost ? "Failed to update post" : "Failed to create post",
-          "danger"
-        );
-      },
     });
   };
-
 
 
 
@@ -833,9 +895,9 @@ export default function PostsPage() {
           {/* CREATE POST (UI ONLY) */}
           <div className="col-lg-6">
 
-            
 
-           
+
+
 
             <div className="sticky-top" style={{ zIndex: 1050 }}>
               {alert.show && (
@@ -887,44 +949,59 @@ export default function PostsPage() {
 
                   </div>
 
-                  <div className="d-flex justify-content-between px-2">
+                  <div className="d-flex justify-content-around px-4 mt-2">
+
+                    {/* IMAGE */}
                     <button
-                      className="btn btn-light btn-sm"
+                      className="btn btn-light rounded-circle icon-btn"
                       onClick={() => {
                         setPostType("image");
                         setShowModal(true);
                       }}
                     >
-                      <i className="ri-image-line text-primary me-1"></i> Photo
+                      <i className="ri-image-line text-primary"></i>
                     </button>
 
+                    {/* VIDEO */}
                     <button
-                      className="btn btn-light btn-sm"
+                      className="btn btn-light rounded-circle icon-btn"
+                      onClick={() => {
+                        setPostType("video");
+                        setShowModal(true);
+                      }}
+                    >
+                      <i className="ri-video-line text-danger"></i>
+                    </button>
+
+                    {/* ARTICLE */}
+                    <button
+                      className="btn btn-light rounded-circle icon-btn"
                       onClick={() => {
                         setPostType("article");
                         setShowModal(true);
                       }}
                     >
-                      <i className="ri-file-text-line text-warning me-1"></i> Article
+                      <i className="ri-file-text-line text-warning"></i>
                     </button>
 
                   </div>
+
                 </div>
               </div>
 
               {/* POSTS LOADING */}
-            {
-              isPostsLoading && (
-                <div className="text-center py-5">Loading posts...</div>
-              )
-            }
+              {
+                isPostsLoading && (
+                  <div className="text-center py-5">Loading posts...</div>
+                )
+              }
 
-            {/* POSTS EMPTY */}
-            {!isPostsLoading && posts.length === 0 && (
-              <div className="text-center text-muted py-5">
-                No posts yet.
-              </div>
-            )}
+              {/* POSTS EMPTY */}
+              {!isPostsLoading && posts.length === 0 && (
+                <div className="text-center text-muted py-5">
+                  No posts yet.
+                </div>
+              )}
 
 
 
@@ -1355,10 +1432,10 @@ export default function PostsPage() {
               <div className="modal-body">
 
                 {/* ARTICLE HEADING */}
-                {postType === "article" && (
+                {(postType === "article" || postType === "image" || postType === "post") && (
                   <input
                     className="form-control mb-3"
-                    placeholder="Article title"
+                    placeholder="Title"
                     value={form.title}
                     onChange={(e) =>
                       setForm({ ...form, title: e.target.value })
@@ -1366,76 +1443,91 @@ export default function PostsPage() {
                   />
                 )}
 
-                <Editor
-                  apiKey="gzbaq6k6otgk5w4c2vhnm06gksbkpyt5ahllriq2s49rj3ty"
-                  value={form.content}
-                  onEditorChange={(newValue) => {
-                    setForm({ ...form, content: newValue });
-                  }}
-                  init={{
-                    height: 400,
-                    menubar: false,
-                    plugins: `
-                        advlist
-                        autolink
-                        lists
-                        link
-                        image
-                        charmap
-                        preview
-                        anchor
-                        searchreplace
-                        visualblocks
-                        code
-                        fullscreen
-                        insertdatetime
-                        media
-                        table
-                        help
-                        wordcount
-                      `,
-                    toolbar: `
-                        undo redo |
-                        formatselect |
-                        bold italic underline |
-                        alignleft aligncenter alignright |
-                        bullist numlist |
-                        link image media table |
-                        code preview fullscreen
-                      `,
-                    setup: (editor) => {
-                      editor.on("paste", async (e) => {
-                        const clipboardData = e.clipboardData || window.clipboardData;
+                {/* ================= POST CONTENT INPUT ================= */}
 
-                        if (!clipboardData) return;
+                {/* ARTICLE → TinyMCE */}
+                {postType === "article" && (
+                  <Editor
+                    apiKey="gzbaq6k6otgk5w4c2vhnm06gksbkpyt5ahllriq2s49rj3ty"
+                    value={form.content}
+                    onEditorChange={(newValue) => {
+                      setForm({ ...form, content: newValue });
+                    }}
+                    init={{
+                      height: 200,
+                      menubar: false,
+                      plugins: `
+        advlist autolink lists link image charmap preview
+        anchor searchreplace visualblocks code fullscreen
+        insertdatetime media table help wordcount
+      `,
+                      toolbar: `
+        undo redo |
+        formatselect |
+        bold italic underline |
+        alignleft aligncenter alignright |
+        bullist numlist |
+        link image media table |
+        code preview fullscreen
+      `,
+                      setup: (editor) => {
+                        editor.on("paste", async (e) => {
+                          const clipboardData = e.clipboardData || window.clipboardData;
+                          if (!clipboardData) return;
 
-                        const pastedText = clipboardData.getData("text/plain");
+                          const pastedText = clipboardData.getData("text/plain");
+                          if (!/^https?:\/\//i.test(pastedText)) return;
 
-                        // simple URL check
-                        if (!/^https?:\/\//i.test(pastedText)) return;
+                          e.preventDefault();
 
-                        e.preventDefault(); // stop normal paste
+                          try {
+                            const res = await getOgiMeta(pastedText);
+                            editor.insertContent(buildOgHtml(res));
+                          } catch {
+                            editor.insertContent(pastedText);
+                          }
+                        });
+                      },
+                    }}
+                  />
+                )}
 
-                        try {
-                          const res = await getOgiMeta(pastedText);
+                {/* POST / IMAGE → SIMPLE TEXTAREA */}
+                {(postType === "post" || postType === "image") && (
+                  <textarea
+                    className="form-control mb-3"
+                    rows={2}
+                    placeholder="What do you want to talk about?"
+                    value={form.content}
+                    onChange={(e) =>
+                      setForm({ ...form, content: e.target.value })
+                    }
+                    onPaste={async (e) => {
+                      const text = e.clipboardData.getData("text/plain");
+                      handleOgFromText(text);
+                    }}
+                  />
 
-                          const ogHtml = buildOgHtml(res);
+                )}
 
-                          // 🔹 Insert at cursor (recommended)
-                          editor.insertContent(ogHtml);
 
-                          // 🔹 OR prepend at top (uncomment if needed)
-                          // editor.setContent(ogHtml + editor.getContent());
+                {/* VIDEO URL INPUT */}
+                {postType === "video" && (
+                  <input
+                    type="url"
+                    className="form-control"
+                    placeholder="Paste video URL (YouTube, Vimeo, etc.)"
+                    value={form.content}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setForm({ ...form, content: value });
+                      handleOgFromText(value);
+                    }}
+                  />
 
-                        } catch (err) {
-                          console.error("OG fetch failed", err);
-                          editor.insertContent(pastedText);
-                        }
-                      });
+                )}
 
-                    },
-                  }}
-                />
+
 
 
 
@@ -1446,7 +1538,7 @@ export default function PostsPage() {
                       className="btn btn-outline-primary btn-sm"
                       onClick={() => fileRef.current.click()}
                     >
-                      <i className="ri-image-add-line me-1"></i> Add Image
+                      <i className="ri-image-add-line me-1"></i>
                     </button>
 
                     <input
@@ -1482,25 +1574,32 @@ export default function PostsPage() {
 
                   </>
                 )}
+                {ogPreview && (
+                  <div
+                    className="og-preview mt-3"
+                    dangerouslySetInnerHTML={{ __html: ogPreview }}
+                  />
+                )}
+
               </div>
 
               {/* FOOTER */}
               <div className="modal-footer">
-                <button
+                {/* <button
                   className="btn btn-light"
                   onClick={closeModal}
 
                 >
                   Cancel
-                </button>
+                </button> */}
 
-                <button
+                {/* <button
                   className="btn btn-outline-secondary"
                   disabled={!form.content}
                   onClick={() => setShowPreview(true)}
                 >
                   Preview
-                </button>
+                </button> */}
 
 
                 <button

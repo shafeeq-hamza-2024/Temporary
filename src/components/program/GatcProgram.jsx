@@ -10,7 +10,7 @@ export default function Program() {
     const [activeEvent, setActiveEvent] = useState(null);
     const [activeDate, setActiveDate] = useState(null);
     const [fadeKey, setFadeKey] = useState(0);
-
+    const DEFAULT_AVATAR = "/images/Avatar.png";
     /* ================= EVENTS ================= */
     const events = useMemo(() => {
         return [...new Set(programs.map(p => p.event_name))];
@@ -124,24 +124,35 @@ export default function Program() {
 
                                                 {/* SPEAKER */}
 
-                                                <div
-                                                    style={{ cursor: "pointer" }}
-                                                    onClick={() => nav(`/speakers/${p.speaker}`)}
-                                                >
-                                                    <div className="program-speaker-row">
-                                                        <img
-                                                            src={p.speaker_image || "/avatar.png"}
-                                                            alt={p.speaker_name}
-                                                            className="speaker-avatar"
-                                                        />
+                                                {p.speaker && (
+                                                    <div
+                                                        style={{ cursor: "pointer" }}
+                                                        onClick={() => nav(`/speakers/${p.speaker}`)}
+                                                    >
+                                                        <div className="program-speaker-row">
+                                                            <img
+                                                                src={
+                                                                    p.speaker_image
+                                                                        ? p.speaker_image.startsWith("http")
+                                                                            ? p.speaker_image
+                                                                            : `${siteURL}/${p.speaker_image}`
+                                                                        : DEFAULT_AVATAR
+                                                                }
+                                                                alt={p.speaker_name || "Speaker"}
+                                                                className="speaker-avatar"
+                                                                onError={(e) => {
+                                                                    e.target.onerror = null;
+                                                                    e.target.src = DEFAULT_AVATAR;
+                                                                }}
+                                                            />
 
-                                                        <div>
-                                                            <div className="speaker-name">{p.speaker_name}</div>
-                                                            <div className="speaker-role">Speaker</div>
+                                                            <div>
+                                                                <div className="speaker-name">{p.speaker_name}</div>
+                                                                <div className="speaker-role">Speaker</div>
+                                                            </div>
                                                         </div>
                                                     </div>
-
-                                                </div>
+                                                )}
 
                                                 {/* FOOTER */}
                                                 <div className="program-footer">

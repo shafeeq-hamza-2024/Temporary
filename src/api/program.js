@@ -33,3 +33,16 @@ export const deleteProgram = async (id) => {
   const res = await api.delete(`/programs/${id}/`);
   return res.data;
 };
+
+
+/* =======================
+   SPEAKER PROGRAMS
+======================= */
+
+// Get programs of a specific speaker
+export const getSpeakerPrograms = async (speakerId) => {
+  const res = await api.get("/programs/", {
+    params: { speaker: speakerId },
+  });
+  return res.data;
+};

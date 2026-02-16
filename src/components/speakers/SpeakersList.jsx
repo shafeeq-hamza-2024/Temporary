@@ -7,6 +7,8 @@ import { useSpeakers } from "../../hooks/speakers/useSpeakers";
 
 export default function SpeakersList() {
   const nav = useNavigate();
+  const DEFAULT_AVATAR = "/images/Avatar.png";
+
 
   const { data: speakers, error, isLoading } = useSpeakers();
 
@@ -43,12 +45,12 @@ export default function SpeakersList() {
               onClick={() => nav(`/speakers/${s.id}`)}
             >
               <img
-                src={s.profile_image || "https://i.pravatar.cc/100"}
+                src={s.profile_image || DEFAULT_AVATAR}
                 alt={s.name}
                 className="speaker-img"
                 onError={(e) => {
                   e.target.onerror = null; // prevent infinite loop
-                  e.target.src = "https://i.pravatar.cc/100";
+                  e.target.src = DEFAULT_AVATAR;
                 }}
               />
 

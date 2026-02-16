@@ -798,3 +798,39 @@
   color: #6b7280;
   padding: 24px 0;
 }
+
+
+
+.icon-btn {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn i {
+  font-size: 26px;
+}
+
+
+.btn-close1 {
+  background-size: 1.2rem;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+}
+
+.btn-close1:hover {
+  opacity: 1;
+}
+
+.btn-close1:focus {
+  box-shadow: none;
+}
+
+.og-preview {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
