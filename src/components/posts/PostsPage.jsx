@@ -1432,7 +1432,7 @@ export default function PostsPage() {
               <div className="modal-body">
 
                 {/* ARTICLE HEADING */}
-                {(postType === "article" || postType === "image" || postType === "post") && (
+                {(postType === "article") && (
                   <input
                     className="form-control mb-3"
                     placeholder="Title"
