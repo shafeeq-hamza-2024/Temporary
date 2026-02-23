@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./RegisterForm.css";
 import { useLocation } from "react-router";
+import { useNavigate } from "react-router";
 
 import { useRegister } from "../../hooks/useRegister";
 import { useResendVerification } from "../../hooks/useResendVerification";
@@ -16,6 +17,7 @@ const RegisterForm = () => {
     useResendVerification();
 
   const [showResend, setShowResend] = useState(false);
+  const navigate = useNavigate();
 
 
   const [formData, setFormData] = useState({
@@ -69,6 +71,10 @@ const RegisterForm = () => {
         }
 
         setIsSubmitting(false);
+        // ✅ Redirect to login page after short delay
+        setTimeout(() => {
+          navigate("/login");
+        }, 1500); // 1.5 sec delay so user can see success message
       },
 
 

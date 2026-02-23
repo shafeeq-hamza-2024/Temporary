@@ -36,7 +36,7 @@ import Events from "../components/documents/Events";
 import Product from "../components/documents/Products";
 import GATCLite from "../components/gatc/GATC-Lite";
 import WriteArticle from "../components/posts/WriteArticle";
-
+import ResetPassword from "../components/auth/ResetPassword";
 
 export const router = createBrowserRouter
   ([
@@ -106,6 +106,10 @@ export const router = createBrowserRouter
         {
           element: <VerifyEmail />,
           path: "/verify-email",
+        },
+        {
+          element: <ResetPassword />,
+          path: "/reset-password",
         },
         {
           element: <ResendVerification />,

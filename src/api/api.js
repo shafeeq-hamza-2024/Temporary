@@ -31,6 +31,7 @@ api.interceptors.request.use(
       "/register/",
       "/verify-email/",
       "/resend-verification/",
+      "/reset-password/",
     ];
 
     const isPublic = publicEndpoints.some((url) =>

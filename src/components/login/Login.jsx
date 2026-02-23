@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { validateLogin } from "../../api/authApi";
 import { useNavigate, useLocation } from "react-router";
+import { useForgotPassword } from "../../hooks/useForgotPassword";
 import "./Login.css";
 
 export default function Login() {
@@ -9,6 +10,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const [showResend, setShowResend] = useState(false);
+  const [forgotMode, setForgotMode] = useState(false);
+  const forgotMutation = useForgotPassword();
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -81,6 +84,39 @@ export default function Login() {
 
   });
 
+
+  const handleForgotSubmit = (e) => {
+    e.preventDefault();
+
+    if (!email) {
+      setMessage({
+        type: "danger",
+        text: "Please enter your email.",
+      });
+      return;
+    }
+
+    forgotMutation.mutate(
+      { email },
+      {
+        onSuccess: (data) => {
+          setMessage({
+            type: "success",
+            text: data.detail || "Reset link sent if email exists.",
+          });
+        },
+        onError: (err) => {
+          console.log("Forgot password error:", err.response);
+          setMessage({
+            type: "danger",
+            text: err.response?.data?.detail || "Something went wrong.",
+          });
+        },
+
+      }
+    );
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
@@ -151,7 +187,7 @@ export default function Login() {
 
 
 
-        <form onSubmit={handleSubmit}>
+        {/* <form onSubmit={handleSubmit}>
           <div className="form-group">
             <input
               type="email"
@@ -170,7 +206,20 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+
+            <div style={{ textAlign: "right", marginBottom: "5px", marginTop: "5px" }}>
+              <span
+                style={{ cursor: "pointer", fontSize: "14px", color: "#00ff99" }}
+                onClick={() => {
+                  setForgotMode(true);
+                  setMessage({ type: "", text: "" });
+                }}
+              >
+                Forgot Password?
+              </span>
+            </div>
           </div>
+
 
           <button
             type="submit"
@@ -182,7 +231,7 @@ export default function Login() {
 
           <p className="login-link">
             Don’t have an account? <a href="/register">Register</a>
-            {/* :: <a href="/register?registration=gatc">GATC Registration</a> */}
+            :: <a href="/register?registration=gatc">GATC Registration</a>
           </p>
 
           <div className="login-link">
@@ -193,7 +242,102 @@ export default function Login() {
               <a href="/PrivacyPolicy">Privacy Policy</a>.
             </label>
           </div>
-        </form>
+        </form> */}
+
+
+
+
+
+
+
+        {forgotMode ? (
+          <form onSubmit={handleForgotSubmit}>
+            <div className="form-group">
+              <input
+                type="email"
+                placeholder="Enter your registered email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn3"
+              disabled={forgotMutation.isPending}
+            >
+              {forgotMutation.isPending ? "Sending..." : "Send Reset Link"}
+            </button>
+
+            <p
+              className="login-link"
+              style={{ cursor: "pointer", marginTop: "15px" }}
+              onClick={() => {
+                setForgotMode(false);
+                setMessage({ type: "", text: "" });
+              }}
+            >
+              Back to Login
+            </p>
+          </form>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+
+              <div style={{ textAlign: "right", marginBottom: "5px", marginTop: "5px" }}>
+                <span
+                  style={{ cursor: "pointer", fontSize: "14px", color: "#00ff99" }}
+                  onClick={() => {
+                    setForgotMode(true);
+                    setMessage({ type: "", text: "" });
+                  }}
+                >
+                  Forgot Password?
+                </span>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="btn3"
+              disabled={loginMutation.isPending}
+            >
+              {loginMutation.isPending ? "Logging in..." : "Log in"}
+            </button>
+
+            <p className="login-link">
+              Don’t have an account? <a href="/register">Register</a>
+            </p>
+
+            <div className="login-link">
+
+              <label>
+
+                <a href="/Terms&Conditions">Terms & Conditions</a> and{" "}
+                <a href="/PrivacyPolicy">Privacy Policy</a>.
+              </label>
+            </div>
+
+          </form>
+        )}
       </div>
     </div>
   );
