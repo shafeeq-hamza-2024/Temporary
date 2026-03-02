@@ -1,120 +1,53 @@
+/* ===================================== */
+/* BASE STYLES */
+/* ===================================== */
+
 .scholar-page h2 {
   font-weight: 700;
   letter-spacing: -0.5px;
 }
 
-.search-input {
-  width: 750px;
-  max-width: 90%;
-  padding: 12px 16px;
-  font-size: 1rem;
-  border-radius: 8px;
-    border-bottom-left-radius: 50px;
-    border-top-left-radius: 50px;
-    padding-left: 30px;
+.container {
+  padding-left: 14px;
+  padding-right: 14px;
 }
 
-.btn-search
-{
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
+.left-pane {
+  min-height: 550px;
+  position: relative;
 }
 
-.article-card {
-  transition: all 0.2s ease;
-  background: white;
-}
-
-.article-card:hover {
-  /* transform: translateY(-2px); */
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-.article-title {
-  width: 85%;
-  line-height: 1.3;
-}
-
-.abstract-text {
-  color: #555;
-}
-
-.bookmark-btn {
-  height: 36px;
-  width: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ARTICLE ICON (left of card) */
-.article-icon {
-  font-size: 28px;
-  color: #70a83e; /* elegant violet accent */
-  margin-top: 4px;
-}
-
-
-/* TITLE COLOR */
 .colored-title {
   color: #70a83e;
   font-weight: 600;
 }
 
-/* AUTHOR LINE */
 .author-line {
   color: #3c5f39;
   font-weight: 500;
+  font-size: 0.85rem;
 }
 
-.article-card:hover {
-  /* border-left: 4px solid #3c5f39; */
-  padding-left: calc(1rem - 3px);
+.abstract-text {
+  color: #555;
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
-.left-pane {
-  min-height: 550px;   /* gives left column guaranteed space */
-  position: relative;
+/* ===================================== */
+/* SEARCH SECTION (MOBILE FIRST) */
+/* ===================================== */
+
+.search-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
-
-
-.placeholder-box {
-  /* background: #fafafa; */
-  /* border: 1px dashed #ccc; */
-  border-radius: 12px;
-  padding: 50px 20px;
-}
-
-
-.article-card .pdf-icon
-{
-    height:100px;
-    width:auto;
-}
-
-
-.scholar-page {
-  animation: fadePage 0.5s ease-out;
-}
-
-@keyframes fadePage {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.search-section {
-  animation: slideDown 0.6s ease forwards;
-  opacity: 0;
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-15px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
 
 .search-input {
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 50px;
   transition: box-shadow 0.2s ease;
 }
 
@@ -122,60 +55,22 @@
   box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
 }
 
-
-.loading-dots {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin: 15px 0;
+.btn-search {
+  width: 100%;
+  border-radius: 50px;
 }
 
-.loading-dots span {
-  width: 10px;
-  height: 10px;
-  background: #70a83e;
-  border-radius: 50%;
-  animation: bounceDot 0.6s infinite alternate;
-}
-
-.loading-dots span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.loading-dots span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes bounceDot {
-  from { transform: translateY(0); opacity: 0.6; }
-  to   { transform: translateY(-8px); opacity: 1; }
-}
-
+/* ===================================== */
+/* ARTICLE CARD */
+/* ===================================== */
 
 .article-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
   opacity: 0;
   transform: translateY(12px);
   animation: fadeUp 0.55s ease forwards;
-}
-
-.article-card:nth-child(1) { animation-delay: 0.1s; }
-.article-card:nth-child(2) { animation-delay: 0.2s; }
-.article-card:nth-child(3) { animation-delay: 0.3s; }
-.article-card:nth-child(4) { animation-delay: 0.4s; }
-/* add more if results > 4 */
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.article-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -184,19 +79,20 @@
   box-shadow: 0px 6px 20px rgba(0,0,0,0.08);
 }
 
-.placeholder-box {
-  animation: fadeSoft 0.8s ease-out forwards;
-  opacity: 0;
+.article-row {
+  display: flex;
+  flex-direction: column;
 }
 
-@keyframes fadeSoft {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+.article-title {
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.3;
 }
 
 .pdf-icon {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  margin-bottom: 10px;
   transition: transform 0.25s ease;
 }
 
@@ -204,119 +100,81 @@
   transform: scale(1.1);
 }
 
-.bookmark-btn {
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.bookmark-btn:hover {
-  background-color: #e9ecef;
-  transform: scale(1.05);
-}
-
-.read-more {
-  font-weight: 500;
-}
-
-
-/* ---------- MOBILE FIRST ---------- */
-
-.container {
-  padding-left: 12px;
-  padding-right: 12px;
-}
-
-.search-input {
-  width: 100%;
-  max-width: 100%;
-  border-radius: 50px;
-  margin-bottom: 10px;
-}
-
-.btn-search {
-  width: 100%;
-  border-radius: 50px;
-}
-
-/* Stack search input + button */
-.search-section form {
-  gap: 10px;
-}
-
-/* Article layout */
-.article-row {
-  flex-direction: column;
-}
-
-.pdf-icon {
-  width: 42px;
-  height: auto;
-  margin-bottom: 8px;
-}
-
-.article-title {
-  width: 100%;
-  font-size: 1rem;
-}
-
-.abstract-text {
-  font-size: 0.92rem;
-  line-height: 1.45;
-}
-
-/* Buttons stack nicely */
 .article-card a,
 .article-card button {
   width: 100%;
   margin-top: 8px;
 }
 
-/* Pagination */
+/* ===================================== */
+/* PAGINATION */
+/* ===================================== */
+
 .pagination {
   flex-wrap: wrap;
   gap: 6px;
+  justify-content: center;
 }
 
-@media (max-width: 360px) {
-  .article-title {
-    font-size: 0.95rem;
-  }
-
-  .author-line {
-    font-size: 0.75rem;
-  }
-
-  .abstract-text {
-    font-size: 0.88rem;
-  }
+.page-link {
+  padding: 6px 10px;
+  font-size: 0.85rem;
 }
+
+/* ===================================== */
+/* ANIMATIONS */
+/* ===================================== */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===================================== */
+/* SMALL DEVICES (≥576px) */
+/* ===================================== */
 
 @media (min-width: 576px) {
+
+  .search-section form {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .search-input {
+    width: 70%;
+    border-radius: 50px 0 0 50px;
+  }
+
+  .btn-search {
+    width: auto;
+    border-radius: 0 50px 50px 0;
+  }
+
   .article-row {
     flex-direction: row;
+    gap: 15px;
   }
 
   .pdf-icon {
-    width: 48px;
+    width: 52px;
+    margin-bottom: 0;
   }
 
   .article-card a,
   .article-card button {
     width: auto;
   }
-
-  .search-input {
-    width: 70%;
-  }
-
-  .btn-search {
-    width: auto;
-  }
 }
 
+/* ===================================== */
+/* TABLET (≥768px) */
+/* ===================================== */
+
 @media (min-width: 768px) {
+
   .search-input {
-    width: 750px;
-    max-width: 90%;
+    width: 600px;
   }
 
   .article-title {
@@ -324,7 +182,26 @@
   }
 
   .abstract-text {
-    font-size: 1rem;
+    font-size: 0.98rem;
   }
 }
 
+/* ===================================== */
+/* DESKTOP (≥992px) */
+/* ===================================== */
+
+@media (min-width: 992px) {
+
+  .search-input {
+    width: 750px;
+    max-width: 90%;
+  }
+
+  .article-card {
+    padding: 28px;
+  }
+
+  .article-title {
+    font-size: 1.15rem;
+  }
+}

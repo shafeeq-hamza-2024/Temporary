@@ -188,3 +188,47 @@
   flex: 1;
   padding: 20px;
 }
+
+
+/* Desktop default (already yours) */
+.bookshelf-layout {
+  display: flex;
+  flex-direction: row-reverse;
+  min-height: calc(100vh - 70px);
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+  .bookshelf-layout {
+    flex-direction: column;
+  }
+
+  .bookshelf-sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    top: auto;
+    border-left: none;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .bookshelf-main {
+    padding: 16px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .bookshelf-main {
+    padding: 12px;
+  }
+
+  .bookshelf-sidebar {
+    padding: 10px 0;
+  }
+
+  .tree-label {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+}

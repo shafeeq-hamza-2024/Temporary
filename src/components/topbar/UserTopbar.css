@@ -1,6 +1,6 @@
 .user-topbar {
   background: #fff;
-  height: 60px;
+  height: 70px;
   display: flex;
   align-items: center;
 }
@@ -121,4 +121,25 @@
   padding: 12px 14px;
   font-size: 13px;
   color: #6c757d;
+}
+
+.icon-btn {
+  position: relative;
+}
+
+.message-badge {
+  position: absolute;
+  top: 4px;          /* move down slightly */
+  right: 4px;        /* move inside button */
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 50px;
+  background: #dc3545;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

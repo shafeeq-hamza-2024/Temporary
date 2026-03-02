@@ -10,7 +10,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { useSearchPublicUsers } from '../../hooks/publicUsers/useSearchPublicUsers';
 import useDebounce from '../../hooks/useDebounce';
-
+import { useConversations } from '../../hooks/conversation/useConversations';
 
 
 
@@ -18,12 +18,19 @@ import useDebounce from '../../hooks/useDebounce';
 
 
 export default function UserTopbarNew() {
-
+  const { data: conversations = [] } = useConversations();
 
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   const searchRef = useRef(null);
+
+
+  const totalUnreadConversations = conversations.filter(
+    (c) => c.unread_count > 0
+  ).length;
+
+
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -167,10 +174,22 @@ export default function UserTopbarNew() {
             <i className="ri-book-open-line fs-4"></i>
           </Link>
 
-          <Link to="/inbox" className="btn btn-light rounded-circle icon-btn">
+          {/* <Link to="/inbox" className="btn btn-light rounded-circle icon-btn">
             <i className="ri-message-3-line fs-4"></i>
-          </Link>
+          </Link> */}
 
+          <Link
+            to="/inbox"
+            className="btn btn-light rounded-circle icon-btn position-relative"
+          >
+            <i className="ri-message-3-line fs-4"></i>
+
+            {totalUnreadConversations > 0 && (
+              <span className="message-badge">
+                {totalUnreadConversations}
+              </span>
+            )}
+          </Link>
 
           <NotificationBell />
 

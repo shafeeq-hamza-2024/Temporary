@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router';
 import { useSearchPublicUsers } from '../../hooks/publicUsers/useSearchPublicUsers';
 import useDebounce from '../../hooks/useDebounce';
 
-
+import { useConversations } from '../../hooks/conversation/useConversations';
 
 
 
@@ -19,11 +19,14 @@ import useDebounce from '../../hooks/useDebounce';
 
 export default function UserTopbar() {
 
-
+  const { data: conversations = [] } = useConversations();
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   const searchRef = useRef(null);
+  const totalUnreadConversations = conversations.filter(
+    (c) => c.unread_count > 0
+  ).length;
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -69,72 +72,6 @@ export default function UserTopbar() {
           </Link>
         </div>
 
-        {/* Center */}
-        {/* <div className="flex-grow-1 d-flex justify-content-center">
-          <div
-            className="search-wrapper position-relative"
-            ref={searchRef}
-          >
-
-
-            <div className="search-box d-flex align-items-center">
-              <i className="ri-search-line me-2"></i>
-              <input
-                type="text"
-                placeholder="Search users..."
-                className="form-control border-0 shadow-none"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-
-            {search && (
-              <div className="search-dropdown">
-                {isLoading && (
-                  <div className="search-loading d-flex align-items-center gap-2">
-                    <span className="spinner-border spinner-border-sm"></span>
-                    Searching users…
-                  </div>
-                )}
-
-
-                {!isLoading && results.length === 0 && (
-                  <div className="search-empty">No users found</div>
-                )}
-
-                {results.map((user) => (
-                  <div
-                    key={user.id}
-                    className="search-item"
-                    onClick={() => {
-                      setSearch("");
-                      navigate(`/public/users/${user.id}`);
-                    }}
-                  >
-                    {user.profile_image ? (
-                      <img src={user.profile_image} alt="avatar" />
-                    ) : (
-                      <div className="search-avatar-fallback">
-                        {user.first_name?.[0]}
-                        {user.last_name?.[0]}
-                      </div>
-                    )}
-
-                    <div>
-                      <div className="search-user-name">
-                        {user.first_name} {user.middle_name} {user.last_name}
-                      </div>
-                      <div className="search-user-title">
-                        {user.profile_title}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-          </div>
-        </div> */}
 
 
         {/* Right */}
@@ -167,8 +104,17 @@ export default function UserTopbar() {
             <i className="ri-book-open-line fs-4"></i>
           </Link>
 
-          <Link to="/inbox" className="btn btn-light rounded-circle icon-btn">
+          <Link
+            to="/inbox"
+            className="btn btn-light rounded-circle icon-btn position-relative"
+          >
             <i className="ri-message-3-line fs-4"></i>
+
+            {totalUnreadConversations > 0 && (
+             <span className="message-badge">
+  {totalUnreadConversations}
+</span>
+            )}
           </Link>
 
 
