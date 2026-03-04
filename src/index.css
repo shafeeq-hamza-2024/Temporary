@@ -77,3 +77,8 @@ button:focus-visible {
 .scroll-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari */
 }
+
+@theme {
+  --color-primary: #70a83e;
+  --color-skin: rgb(243, 242, 239);
+}

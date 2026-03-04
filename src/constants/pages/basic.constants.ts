@@ -1,7 +1,8 @@
+import { GrDocumentUser } from "react-icons/gr";
 import { MdOutlinePages } from "react-icons/md";
 import { RiChatFollowUpLine, RiPagesLine } from "react-icons/ri";
-import { APP_ROUTES } from "../app/routes";
 import { PageSectionItem } from "../../types/pages/basic.types";
+import { APP_ROUTES } from "@/router/appRoutes";
 
 export const PAGE_SECTION_ITEMS: PageSectionItem[] = [
   {
@@ -10,18 +11,18 @@ export const PAGE_SECTION_ITEMS: PageSectionItem[] = [
     path: APP_ROUTES.PAGES.ROOT,
   },
   {
-    icon: RiPagesLine,
+    icon: GrDocumentUser,
     heading: "My Pages",
-    path: APP_ROUTES.PAGES.MY_PAGES,
+    path: `${APP_ROUTES.PAGES.ROOT}?type=my`,
   },
   {
     icon: MdOutlinePages,
     heading: "Managed Pages",
-    path: APP_ROUTES.PAGES.MANAGED_PAGES,
+    path: `${APP_ROUTES.PAGES.ROOT}?type=managed`,
   },
   {
     icon: RiChatFollowUpLine,
     heading: "Followed Pages",
-    path: APP_ROUTES.PAGES.FOLLOWED_PAGES,
+    path: `${APP_ROUTES.PAGES.ROOT}?type=followed`,
   },
 ];

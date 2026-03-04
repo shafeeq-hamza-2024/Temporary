@@ -26,6 +26,7 @@ import { getOgiMeta } from "../../api/ogiApi";
 import "./PostsPage.css";
 import { useArticles } from "../../hooks/articles/useArticles";
 import { useArticleRatings } from "../../hooks/ratings/useRatings";
+import PageSection from "../pages/PageSection";
 
 export default function PostsPage() {
   const navigate = useNavigate();
@@ -466,7 +467,7 @@ export default function PostsPage() {
                 </Link>
               </div>
             </div>
-            <div className="activity-card">
+            <div className="activity-card mb-3">
               <div className="activity-title">My Activity</div>
 
               <div
@@ -521,6 +522,8 @@ export default function PostsPage() {
                 </span>
               </div>
             </div>
+
+            <PageSection />
 
             <div
               className="modal fade"
