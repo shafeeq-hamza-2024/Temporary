@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -66,5 +68,12 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.scroll-container {
+  overflow: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
 
-
+.scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}

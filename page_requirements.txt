@@ -1,0 +1,8 @@
+1. Page create , edit, delete.
+2. Page create -> owner
+3. owner -> admin (not in priority)
+4. Users can follow/unfollow Page
+5. In page details section there will be an option to post on behalf of the page by owner & admin
+6. Page posts can be edited and deleted by owner & admin
+7. Page creation form fields:
+    
