@@ -5,6 +5,7 @@ import { router } from "./router/router.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { RouterProvider } from "react-router";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   useEffect(() => {
@@ -15,6 +16,7 @@ function App() {
     <QueryClientProvider client={client}>
       <StrictMode>
         <RouterProvider router={router}></RouterProvider>
+        <Toaster position="top-right" />
         {import.meta.env.VITE_SHOW_DEV_TOOLS && (
           <ReactQueryDevtools initialIsOpen={false} position="bottom" />
         )}
