@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useRef } from "react";
 
 import { Link } from "react-router";
@@ -26,9 +27,6 @@ import "./PostsPage.css";
 import { useArticles } from "../../hooks/articles/useArticles";
 import { useArticleRatings } from "../../hooks/ratings/useRatings";
 
-
-
-
 export default function PostsPage() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -55,7 +53,6 @@ export default function PostsPage() {
     }
   };
 
-
   const updatePost = useUpdatePost();
   const deletePost = useDeletePost();
 
@@ -74,7 +71,6 @@ export default function PostsPage() {
   const unfollow = useUnfollow();
   const removeFollower = useRemoveFollower();
 
-
   const [searchPeople, setSearchPeople] = useState("");
   const [showAllPeople, setShowAllPeople] = useState(false);
   const people = [
@@ -89,7 +85,6 @@ export default function PostsPage() {
     "Sneha",
   ];
 
-
   const confirmDeletePost = () => {
     deletePost.mutate(confirmDelete.postId, {
       onSuccess: () => {
@@ -103,15 +98,12 @@ export default function PostsPage() {
     });
   };
 
-
   const handleDeletePost = (postId) => {
     setConfirmDelete({
       show: true,
       postId,
     });
   };
-
-
 
   const [editingPost, setEditingPost] = useState(null);
   const handleEditPost = (post) => {
@@ -125,22 +117,9 @@ export default function PostsPage() {
     setShowModal(true);
   };
 
+  const { data: news = [], isLoading: isNewsLoading } = useResearchNews();
 
-  const {
-    data: news = [],
-    isLoading: isNewsLoading,
-  } = useResearchNews();
-
-
-  const {
-    data: posts = [],
-    isLoading: isPostsLoading,
-    isError,
-  } = usePosts();
-
-
-
-
+  const { data: posts = [], isLoading: isPostsLoading, isError } = usePosts();
 
   const createPost = useCreatePost();
   const [showPreview, setShowPreview] = useState(false);
@@ -150,10 +129,7 @@ export default function PostsPage() {
 
   const [commentText, setCommentText] = useState({});
 
-
-
   const fileRef = useRef(null);
-
 
   const likePost = useLikePost();
   const bookmarkPost = useBookmarkPost();
@@ -161,12 +137,11 @@ export default function PostsPage() {
 
   const [expandedComments, setExpandedComments] = useState({});
   const toggleComments = (postId) => {
-    setExpandedComments(prev => ({
+    setExpandedComments((prev) => ({
       ...prev,
       [postId]: !prev[postId],
     }));
   };
-
 
   const truncateWords = (text, wordLimit = 30) => {
     const words = text.split(/\s+/);
@@ -174,13 +149,11 @@ export default function PostsPage() {
     return words.slice(0, wordLimit).join(" ") + "...";
   };
 
-
   const [alert, setAlert] = useState({
     show: false,
     message: "",
     type: "success", // success | danger | warning | info
   });
-
 
   const showAlert = (message, type = "success") => {
     setAlert({ show: true, message, type });
@@ -191,25 +164,22 @@ export default function PostsPage() {
     }, 3000);
   };
 
-
-
-
   const [files, setFiles] = useState([]); // new state for images
   const MAX_IMAGES = 6;
-
 
   const handleFileSelect = (e) => {
     const selected = Array.from(e.target.files);
 
     // Only images
-    const imageFiles = selected.filter(file => file.type.startsWith("image/"));
+    const imageFiles = selected.filter((file) =>
+      file.type.startsWith("image/"),
+    );
 
     if (imageFiles.length !== selected.length) {
       showAlert("Only images are allowed", "warning");
     }
 
-
-    setForm(prev => {
+    setForm((prev) => {
       const combined = [...prev.files, ...imageFiles];
 
       if (combined.length > 6) {
@@ -233,11 +203,15 @@ export default function PostsPage() {
            margin:12px 0;
            font-family:Arial,sans-serif;
          ">
-      ${og["og:image"] ? `
+      ${
+        og["og:image"]
+          ? `
         <img src="${og["og:image"]}"
              alt="${og["og:title"]}"
              style="width:100%;max-height:300px;object-fit:cover;" />
-      ` : ""}
+      `
+          : ""
+      }
 
       <div style="padding:12px;">
         <div style="font-size:12px;color:#6b7280;margin-bottom:4px;">
@@ -262,9 +236,6 @@ export default function PostsPage() {
   `;
   };
 
-
-
-
   // const handleCreatePost = () => {
   //   if (!form.content?.trim() && form.files.length === 0) {
   //     showAlert("Post cannot be empty", "warning");
@@ -278,7 +249,6 @@ export default function PostsPage() {
   //       return;
   //     }
   //   }
-
 
   //   const payload = {
   //     postId: editingPost?.id,
@@ -308,8 +278,6 @@ export default function PostsPage() {
   //     },
   //   });
   // };
-
-
 
   const handleCreatePost = () => {
     if (!form.content?.trim() && form.files.length === 0 && !ogPreview) {
@@ -341,16 +309,14 @@ export default function PostsPage() {
         setOgPreview(null);
 
         showAlert(
-          editingPost ? "Post updated successfully" : "Post created successfully",
-          "success"
+          editingPost
+            ? "Post updated successfully"
+            : "Post created successfully",
+          "success",
         );
       },
     });
   };
-
-
-
-
 
   const closeModal = () => {
     setShowModal(false);
@@ -359,10 +325,7 @@ export default function PostsPage() {
       content: "",
       files: [],
     });
-
   };
-
-
 
   const handleCommentSubmit = (postId) => {
     const text = commentText[postId];
@@ -382,29 +345,15 @@ export default function PostsPage() {
         onError: () => {
           showAlert("Failed to add comment", "danger");
         },
-      }
+      },
     );
   };
 
-
-
-
-
-
-
-
-
   if (isError) {
     return (
-      <div className="text-danger text-center py-5">
-        Failed to load posts
-      </div>
+      <div className="text-danger text-center py-5">Failed to load posts</div>
     );
   }
-
-
-
-
 
   return (
     <div className="container-fluid py-4" style={{ background: "#f3f2ef" }}>
@@ -419,7 +368,9 @@ export default function PostsPage() {
                 <h5 className="modal-title">Delete Post</h5>
                 <button
                   className="btn-close"
-                  onClick={() => setConfirmDelete({ show: false, postId: null })}
+                  onClick={() =>
+                    setConfirmDelete({ show: false, postId: null })
+                  }
                 />
               </div>
 
@@ -434,15 +385,14 @@ export default function PostsPage() {
               <div className="modal-footer">
                 <button
                   className="btn btn-secondary"
-                  onClick={() => setConfirmDelete({ show: false, postId: null })}
+                  onClick={() =>
+                    setConfirmDelete({ show: false, postId: null })
+                  }
                 >
                   Cancel
                 </button>
 
-                <button
-                  className="btn btn-danger"
-                  onClick={confirmDeletePost}
-                >
+                <button className="btn btn-danger" onClick={confirmDeletePost}>
                   Yes, Delete
                 </button>
               </div>
@@ -453,13 +403,10 @@ export default function PostsPage() {
 
       <div className="container">
         <div className="row g-4">
-
           {/* ================= LEFT SIDEBAR ================= */}
           <div className="col-lg-3 d-none d-lg-block">
             <div className="card border-0 shadow-sm rounded-4 mb-3 profile-card">
-
               <div className="card-body text-center">
-
                 {/* PROFILE IMAGE */}
                 {profile?.profile_image ? (
                   <img
@@ -482,7 +429,6 @@ export default function PostsPage() {
 
                 {/* FULL NAME */}
                 <h6 className="fw-semibold mb-1 fs-6">
-
                   {profileLoading
                     ? "Loading..."
                     : `${profile?.first_name || ""} ${profile?.middle_name || ""} ${profile?.last_name || ""}`}
@@ -510,7 +456,6 @@ export default function PostsPage() {
                     </div>
                   )}
                 </div>
-
 
                 {/* CTA */}
                 <Link
@@ -585,7 +530,6 @@ export default function PostsPage() {
             >
               <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div className="modal-content rounded-4 bg-white">
-
                   {/* Header */}
                   <div className="modal-header border-bottom">
                     <h6 className="modal-title fw-semibold text-dark">
@@ -609,9 +553,7 @@ export default function PostsPage() {
                   {/* Body */}
                   <div className="modal-body pt-2 follow-list">
                     {followers.length === 0 && (
-                      <div className="empty-state">
-                        No followers yet
-                      </div>
+                      <div className="empty-state">No followers yet</div>
                     )}
 
                     {followers.map((user) => (
@@ -625,7 +567,7 @@ export default function PostsPage() {
                             />
                           ) : (
                             <div className="follow-avatar initials-avatar">
-                              {(user.first_name?.[0] || "")}
+                              {user.first_name?.[0] || ""}
                               {(user.last_name?.[0] || "").toUpperCase()}
                             </div>
                           )}
@@ -652,8 +594,6 @@ export default function PostsPage() {
                       </div>
                     ))}
                   </div>
-
-
                 </div>
               </div>
             </div>
@@ -667,7 +607,6 @@ export default function PostsPage() {
             >
               <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div className="modal-content rounded-4 bg-white">
-
                   {/* Header */}
                   <div className="modal-header border-bottom">
                     <h6 className="modal-title fw-semibold text-dark">
@@ -691,9 +630,7 @@ export default function PostsPage() {
                   {/* Body */}
                   <div className="modal-body pt-2 follow-list">
                     {following.length === 0 && (
-                      <div className="empty-state">
-                        No following yet
-                      </div>
+                      <div className="empty-state">No following yet</div>
                     )}
 
                     {following.map((user) => (
@@ -707,7 +644,7 @@ export default function PostsPage() {
                             />
                           ) : (
                             <div className="follow-avatar initials-avatar">
-                              {(user.first_name?.[0] || "")}
+                              {user.first_name?.[0] || ""}
                               {(user.last_name?.[0] || "").toUpperCase()}
                             </div>
                           )}
@@ -727,15 +664,11 @@ export default function PostsPage() {
                       </div>
                     ))}
                   </div>
-
-
                 </div>
               </div>
             </div>
 
-
             {/* accept or reject  */}
-
 
             <div
               className="modal fade"
@@ -745,7 +678,6 @@ export default function PostsPage() {
             >
               <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div className="modal-content rounded-4 bg-white">
-
                   {/* Header */}
                   <div className="modal-header border-bottom">
                     <h6 className="modal-title fw-semibold text-dark">
@@ -758,14 +690,10 @@ export default function PostsPage() {
                     />
                   </div>
 
-
-
                   {/* Body */}
                   <div className="modal-body pt-2 follow-list">
                     {incoming.length === 0 && (
-                      <div className="empty-state">
-                        No Follow Requests
-                      </div>
+                      <div className="empty-state">No Follow Requests</div>
                     )}
 
                     {incoming.map((req) => (
@@ -779,8 +707,10 @@ export default function PostsPage() {
                             />
                           ) : (
                             <div className="follow-avatar initials-avatar">
-                              {(req.follower.first_name?.[0] || "")}
-                              {(req.follower.last_name?.[0] || "").toUpperCase()}
+                              {req.follower.first_name?.[0] || ""}
+                              {(
+                                req.follower.last_name?.[0] || ""
+                              ).toUpperCase()}
                             </div>
                           )}
 
@@ -809,15 +739,11 @@ export default function PostsPage() {
                       </div>
                     ))}
                   </div>
-
-
                 </div>
               </div>
             </div>
 
-
             {/* pending request  */}
-
 
             <div
               className="modal fade"
@@ -827,7 +753,6 @@ export default function PostsPage() {
             >
               <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div className="modal-content rounded-4 bg-white">
-
                   {/* Header */}
                   <div className="modal-header border-bottom">
                     <h6 className="modal-title fw-semibold text-dark">
@@ -840,21 +765,14 @@ export default function PostsPage() {
                     />
                   </div>
 
-
-
                   {/* Body */}
                   <div className="modal-body pt-2 pending-list">
                     {outgoing.length === 0 && (
-                      <div className="empty-state">
-                        No Pending Requests
-                      </div>
+                      <div className="empty-state">No Pending Requests</div>
                     )}
 
                     {outgoing.map((req) => (
-                      <div
-                        key={req.id}
-                        className="pending-item"
-                      >
+                      <div key={req.id} className="pending-item">
                         <div className="pending-left">
                           {req.following.profile_image ? (
                             <img
@@ -864,8 +782,10 @@ export default function PostsPage() {
                             />
                           ) : (
                             <div className="pending-avatar initials-avatar">
-                              {(req.following.first_name?.[0] || "")}
-                              {(req.following.last_name?.[0] || "").toUpperCase()}
+                              {req.following.first_name?.[0] || ""}
+                              {(
+                                req.following.last_name?.[0] || ""
+                              ).toUpperCase()}
                             </div>
                           )}
 
@@ -878,30 +798,21 @@ export default function PostsPage() {
                       </div>
                     ))}
                   </div>
-
-
                 </div>
               </div>
             </div>
-
-
           </div>
-
-
 
           {/* ================= MAIN FEED ================= */}
 
-
           {/* CREATE POST (UI ONLY) */}
           <div className="col-lg-6">
-
-
-
-
-
             <div className="sticky-top" style={{ zIndex: 1050 }}>
               {alert.show && (
-                <div className={`alert alert-${alert.type} alert-dismissible fade show`} role="alert" >
+                <div
+                  className={`alert alert-${alert.type} alert-dismissible fade show`}
+                  role="alert"
+                >
                   {alert.message}
                   <button
                     type="button"
@@ -913,7 +824,6 @@ export default function PostsPage() {
             </div>
 
             <div style={{ maxWidth: "720px" }} className="mx-auto">
-
               {/* CREATE POST */}
               <div className="card border-0 shadow-sm rounded-4 mb-4">
                 <div className="card-body">
@@ -946,11 +856,9 @@ export default function PostsPage() {
                         setShowModal(true);
                       }}
                     />
-
                   </div>
 
                   <div className="d-flex justify-content-around px-4 mt-2">
-
                     {/* IMAGE */}
                     <button
                       className="btn btn-light rounded-circle icon-btn"
@@ -983,114 +891,102 @@ export default function PostsPage() {
                     >
                       <i className="ri-file-text-line text-warning"></i>
                     </button>
-
                   </div>
-
                 </div>
               </div>
 
               {/* POSTS LOADING */}
-              {
-                isPostsLoading && (
-                  <div className="text-center py-5">Loading posts...</div>
-                )
-              }
+              {isPostsLoading && (
+                <div className="text-center py-5">Loading posts...</div>
+              )}
 
               {/* POSTS EMPTY */}
               {!isPostsLoading && posts.length === 0 && (
-                <div className="text-center text-muted py-5">
-                  No posts yet.
-                </div>
+                <div className="text-center text-muted py-5">No posts yet.</div>
               )}
 
-
-
               {/* POSTS */}
-              {!isPostsLoading && posts.map((post) => (
-                <div
-                  key={post.id}
-                  className="card border-0 shadow-sm rounded-4 mb-4"
-                >
-                  <div className="card-body">
-
-                    {/* HEADER */}
-                    <div className="d-flex gap-3 mb-2">
-                      {post.user.profile_image ? (
-                        <img
-                          src={post.user.profile_image}
-                          className="rounded-circle post-avatar"
-                          width="48"
-                          height="48"
-                          alt="Profile"
-                        />
-
-                      ) : (
-                        <div
-                          className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
-                          style={{ width: 48, height: 48 }}
-                        >
-                          {post.user.first_name?.[0]}
-                          {post.user.last_name?.[0]}
-                        </div>
-                      )}
-
-                      <div className="d-flex justify-content-between align-items-start w-100">
-                        <div>
-                          <div className="fw-semibold">
-                            {post.user.first_name} {post.user.last_name}
-                          </div>
-                          <small className="text-muted">
-                            {new Date(post.created_at).toLocaleString()}
-                          </small>
-                        </div>
-
-                        {post.user.id === profile?.id && (
-                          <div className="dropdown">
-                            <button
-                              className="btn btn-sm btn-light"
-                              data-bs-toggle="dropdown"
-                            >
-                              <i className="ri-more-2-fill"></i>
-                            </button>
-
-                            <ul className="dropdown-menu dropdown-menu-end">
-                              <li>
-                                <button
-                                  className="dropdown-item"
-                                  onClick={() => handleEditPost(post)}
-                                >
-                                  ✏️ Edit
-                                </button>
-                              </li>
-                              <li>
-                                <button
-                                  className="dropdown-item text-danger"
-                                  onClick={() => handleDeletePost(post.id)}
-                                >
-                                  🗑 Delete
-                                </button>
-                              </li>
-                            </ul>
+              {!isPostsLoading &&
+                posts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="card border-0 shadow-sm rounded-4 mb-4"
+                  >
+                    <div className="card-body">
+                      {/* HEADER */}
+                      <div className="d-flex gap-3 mb-2">
+                        {post.user.profile_image ? (
+                          <img
+                            src={post.user.profile_image}
+                            className="rounded-circle post-avatar"
+                            width="48"
+                            height="48"
+                            alt="Profile"
+                          />
+                        ) : (
+                          <div
+                            className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+                            style={{ width: 48, height: 48 }}
+                          >
+                            {post.user.first_name?.[0]}
+                            {post.user.last_name?.[0]}
                           </div>
                         )}
+
+                        <div className="d-flex justify-content-between align-items-start w-100">
+                          <div>
+                            <div className="fw-semibold">
+                              {post.user.first_name} {post.user.last_name}
+                            </div>
+                            <small className="text-muted">
+                              {new Date(post.created_at).toLocaleString()}
+                            </small>
+                          </div>
+
+                          {post.user.id === profile?.id && (
+                            <div className="dropdown">
+                              <button
+                                className="btn btn-sm btn-light"
+                                data-bs-toggle="dropdown"
+                              >
+                                <i className="ri-more-2-fill"></i>
+                              </button>
+
+                              <ul className="dropdown-menu dropdown-menu-end">
+                                <li>
+                                  <button
+                                    className="dropdown-item"
+                                    onClick={() => handleEditPost(post)}
+                                  >
+                                    ✏️ Edit
+                                  </button>
+                                </li>
+                                <li>
+                                  <button
+                                    className="dropdown-item text-danger"
+                                    onClick={() => handleDeletePost(post.id)}
+                                  >
+                                    🗑 Delete
+                                  </button>
+                                </li>
+                              </ul>
+                            </div>
+                          )}
+                        </div>
                       </div>
 
-                    </div>
+                      {/* TITLE */}
+                      {post.title && <h6 className="mt-3">{post.title}</h6>}
 
-                    {/* TITLE */}
-                    {post.title && (
-                      <h6 className="mt-3">{post.title}</h6>
-                    )}
+                      {/* CONTENT */}
+                      <div
+                        className="text-secondary mt-2"
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(post.content || ""),
+                        }}
+                      />
 
-                    {/* CONTENT */}
-                    <div
-                      className="text-secondary mt-2"
-                      dangerouslySetInnerHTML={{
-                        __html: DOMPurify.sanitize(post.content || ""),
-                      }}
-                    />
-
-                    {/* 🔗 LINK PREVIEW (YouTube)
+                      {/* 🔗 LINK PREVIEW (YouTube)
                     {post.link_preview?.type === "youtube" && (
                       <a
                         href={post.link_preview.watch_url}
@@ -1109,191 +1005,182 @@ export default function PostsPage() {
                       </a>
                     )} */}
 
-                    {/* MEDIA */}
-                    {/* MEDIA GRID - LinkedIn style */}
-                    {post.media?.length > 0 && (
-                      <div
-                        className={`post-media-grid images-${Math.min(
-                          post.media.length,
-                          4
-                        )} mt-3`}
-                      >
-                        {post.media.slice(0, 4).map((m, idx) => (
-                          <div
-                            key={m.id}
-                            className="media-wrapper"
-                            onClick={() => {
-                              setViewerImages(post.media.map(i => i.file_url));
-                              setCurrentIndex(idx);
-                              setViewerOpen(true);
-                            }}
-                          >
-                            <img
-                              src={m.file_url}
-                              className="post-media-img"
-                              alt=""
-                            />
-
-                            {idx === 3 && post.media.length > 4 && (
-                              <div className="media-overlay">
-                                +{post.media.length - 4}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-
-                  </div>
-
-                  {/* FOOTER */}
-                  <div className="card-body pt-2">
-
-                    <div className="small text-muted mb-2">
-                      {post.like_count} likes · {post.comment_count} comments
-                    </div>
-
-                    {post.comments?.length > 0 && (
-                      <div className="mt-3 comments-box">
-
-                        {(expandedComments[post.id]
-                          ? post.comments
-                          : post.comments
-                            .slice()
-                            .reverse()
-                            .slice(0, 2)
-                        ).map((comment) => (
-                          <div key={comment.id} className="d-flex gap-2 mb-2">
-
-                            {/* Avatar */}
-                            {comment.user.profile_image ? (
+                      {/* MEDIA */}
+                      {/* MEDIA GRID - LinkedIn style */}
+                      {post.media?.length > 0 && (
+                        <div
+                          className={`post-media-grid images-${Math.min(
+                            post.media.length,
+                            4,
+                          )} mt-3`}
+                        >
+                          {post.media.slice(0, 4).map((m, idx) => (
+                            <div
+                              key={m.id}
+                              className="media-wrapper"
+                              onClick={() => {
+                                setViewerImages(
+                                  post.media.map((i) => i.file_url),
+                                );
+                                setCurrentIndex(idx);
+                                setViewerOpen(true);
+                              }}
+                            >
                               <img
-                                src={comment.user.profile_image}
-                                className="rounded-circle"
-                                width="32"
-                                height="32"
+                                src={m.file_url}
+                                className="post-media-img"
                                 alt=""
                               />
-                            ) : (
-                              <div
-                                className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
-                                style={{ width: 32, height: 32, fontSize: 12 }}
-                              >
-                                {comment.user.first_name?.[0]}
-                              </div>
-                            )}
 
-                            {/* Comment bubble */}
-                            <div className="comment-bubble">
-                              <div className="fw-semibold small">
-                                {comment.user.first_name} {comment.user.last_name}
-                              </div>
-                              <div className="small text-secondary">
-                                {comment.c_content}
+                              {idx === 3 && post.media.length > 4 && (
+                                <div className="media-overlay">
+                                  +{post.media.length - 4}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* FOOTER */}
+                    <div className="card-body pt-2">
+                      <div className="small text-muted mb-2">
+                        {post.like_count} likes · {post.comment_count} comments
+                      </div>
+
+                      {post.comments?.length > 0 && (
+                        <div className="mt-3 comments-box">
+                          {(expandedComments[post.id]
+                            ? post.comments
+                            : post.comments.slice().reverse().slice(0, 2)
+                          ).map((comment) => (
+                            <div key={comment.id} className="d-flex gap-2 mb-2">
+                              {/* Avatar */}
+                              {comment.user.profile_image ? (
+                                <img
+                                  src={comment.user.profile_image}
+                                  className="rounded-circle"
+                                  width="32"
+                                  height="32"
+                                  alt=""
+                                />
+                              ) : (
+                                <div
+                                  className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+                                  style={{
+                                    width: 32,
+                                    height: 32,
+                                    fontSize: 12,
+                                  }}
+                                >
+                                  {comment.user.first_name?.[0]}
+                                </div>
+                              )}
+
+                              {/* Comment bubble */}
+                              <div className="comment-bubble">
+                                <div className="fw-semibold small">
+                                  {comment.user.first_name}{" "}
+                                  {comment.user.last_name}
+                                </div>
+                                <div className="small text-secondary">
+                                  {comment.c_content}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
 
-                        {/* SHOW MORE / LESS */}
-                        {post.comments.length > 2 && (
-                          <button
-                            className="btn btn-link btn-sm p-0"
-                            onClick={() => toggleComments(post.id)}
-                          >
-                            {expandedComments[post.id]
-                              ? "Show less comments"
-                              : `Show more comments (${post.comments.length - 2})`}
-                          </button>
-                        )}
-                      </div>
-                    )}
+                          {/* SHOW MORE / LESS */}
+                          {post.comments.length > 2 && (
+                            <button
+                              className="btn btn-link btn-sm p-0"
+                              onClick={() => toggleComments(post.id)}
+                            >
+                              {expandedComments[post.id]
+                                ? "Show less comments"
+                                : `Show more comments (${post.comments.length - 2})`}
+                            </button>
+                          )}
+                        </div>
+                      )}
 
-                    <div className="d-flex border-top pt-2">
-                      <button
-                        className={`btn btn-sm w-100 ${post.is_liked ? "btn-primary" : "btn-light"
+                      <div className="d-flex border-top pt-2">
+                        <button
+                          className={`btn btn-sm w-100 ${
+                            post.is_liked ? "btn-primary" : "btn-light"
                           }`}
-                        onClick={() => likePost.mutate(post.id)}
-                      >
-                        <i
-                          className={`me-1 ${post.is_liked ? "ri-thumb-up-fill" : "ri-thumb-up-line"
+                          onClick={() => likePost.mutate(post.id)}
+                        >
+                          <i
+                            className={`me-1 ${
+                              post.is_liked
+                                ? "ri-thumb-up-fill"
+                                : "ri-thumb-up-line"
                             }`}
-                        ></i>
-                        {post.like_count}
-                      </button>
+                          ></i>
+                          {post.like_count}
+                        </button>
 
+                        <button
+                          className="btn btn-light btn-sm w-100"
+                          onClick={() =>
+                            document
+                              .getElementById(`comment-${post.id}`)
+                              ?.focus()
+                          }
+                        >
+                          <i className="ri-chat-1-line me-1"></i> Comment
+                        </button>
 
-
-
-                      <button
-                        className="btn btn-light btn-sm w-100"
-                        onClick={() =>
-                          document
-                            .getElementById(`comment-${post.id}`)
-                            ?.focus()
-                        }
-                      >
-                        <i className="ri-chat-1-line me-1"></i> Comment
-                      </button>
-
-                      {/* <button
+                        {/* <button
                         className="btn btn-light btn-sm w-100"
                         onClick={() => bookmarkPost.mutate(post.id)}
                       >
                         <i className="ri-bookmark-line me-1"></i> Save
                       </button> */}
 
-                      <Link
-                        to={`/posts/${post.id}`}
-                        className="btn btn-light btn-sm w-100"
-                      >
-                        <i className="ri-eye-line me-1"></i> View
-                      </Link>
-                    </div>
-                    {/* COMMENTS LIST */}
-
-
-
-
-
-                    {/* COMMENTS */}
-                    <div className="mt-3">
-                      <div className="d-flex gap-2">
-                        <input
-                          id={`comment-${post.id}`}
-                          type="text"
-                          className="form-control form-control-sm"
-                          placeholder="Add a comment..."
-                          value={commentText[post.id] || ""}
-                          onChange={(e) =>
-                            setCommentText((p) => ({
-                              ...p,
-                              [post.id]: e.target.value,
-                            }))
-                          }
-                          onKeyDown={(e) =>
-                            e.key === "Enter" &&
-                            handleCommentSubmit(post.id)
-                          }
-                        />
-                        <button
-                          className="btn btn-sm btn-primary"
-                          onClick={() =>
-                            handleCommentSubmit(post.id)
-                          }
+                        <Link
+                          to={`/posts/${post.id}`}
+                          className="btn btn-light btn-sm w-100"
                         >
-                          Post
-                        </button>
+                          <i className="ri-eye-line me-1"></i> View
+                        </Link>
+                      </div>
+                      {/* COMMENTS LIST */}
+
+                      {/* COMMENTS */}
+                      <div className="mt-3">
+                        <div className="d-flex gap-2">
+                          <input
+                            id={`comment-${post.id}`}
+                            type="text"
+                            className="form-control form-control-sm"
+                            placeholder="Add a comment..."
+                            value={commentText[post.id] || ""}
+                            onChange={(e) =>
+                              setCommentText((p) => ({
+                                ...p,
+                                [post.id]: e.target.value,
+                              }))
+                            }
+                            onKeyDown={(e) =>
+                              e.key === "Enter" && handleCommentSubmit(post.id)
+                            }
+                          />
+                          <button
+                            className="btn btn-sm btn-primary"
+                            onClick={() => handleCommentSubmit(post.id)}
+                          >
+                            Post
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
-
-                </div>
-              ))}
+                ))}
             </div>
           </div>
-
 
           {/* ================= RIGHT SIDEBAR ================= */}
           <div className="col-lg-3 d-none d-lg-block">
@@ -1319,7 +1206,9 @@ export default function PostsPage() {
                   >
                     {/* Thumbnail on the left */}
                     <img
-                      src={item.thumbnail || "https://via.placeholder.com/100x70"}
+                      src={
+                        item.thumbnail || "https://via.placeholder.com/100x70"
+                      }
                       alt={item.title}
                       className="news-thumb-img"
                     />
@@ -1411,7 +1300,6 @@ export default function PostsPage() {
         >
           <div className="modal-dialog modal-lg modal-dialog-centered">
             <div className="modal-content rounded-4">
-
               {/* HEADER */}
               <div className="modal-header">
                 {/* <h5 className="modal-title text-capitalize">
@@ -1422,17 +1310,13 @@ export default function PostsPage() {
                   {editingPost ? "Edit Post" : "Create Post"}
                 </h5>
 
-                <button
-                  className="btn-close"
-                  onClick={closeModal}
-                />
+                <button className="btn-close" onClick={closeModal} />
               </div>
 
               {/* BODY */}
               <div className="modal-body">
-
                 {/* ARTICLE HEADING */}
-                {(postType === "article") && (
+                {postType === "article" && (
                   <input
                     className="form-control mb-3"
                     placeholder="Title"
@@ -1472,10 +1356,12 @@ export default function PostsPage() {
       `,
                       setup: (editor) => {
                         editor.on("paste", async (e) => {
-                          const clipboardData = e.clipboardData || window.clipboardData;
+                          const clipboardData =
+                            e.clipboardData || window.clipboardData;
                           if (!clipboardData) return;
 
-                          const pastedText = clipboardData.getData("text/plain");
+                          const pastedText =
+                            clipboardData.getData("text/plain");
                           if (!/^https?:\/\//i.test(pastedText)) return;
 
                           e.preventDefault();
@@ -1507,9 +1393,7 @@ export default function PostsPage() {
                       handleOgFromText(text);
                     }}
                   />
-
                 )}
-
 
                 {/* VIDEO URL INPUT */}
                 {postType === "video" && (
@@ -1524,12 +1408,7 @@ export default function PostsPage() {
                       handleOgFromText(value);
                     }}
                   />
-
                 )}
-
-
-
-
 
                 {/* IMAGE UPLOAD */}
                 {(postType === "image" || postType === "post") && (
@@ -1548,19 +1427,21 @@ export default function PostsPage() {
                       accept="image/*"
                       multiple
                       onChange={(e) =>
-                        setForm(prev => {
+                        setForm((prev) => {
                           const selected = Array.from(e.target.files);
-                          const combined = [...prev.files, ...selected].slice(0, 6);
+                          const combined = [...prev.files, ...selected].slice(
+                            0,
+                            6,
+                          );
                           return { ...prev, files: combined };
                         })
                       }
                     />
 
-
-
-
                     {form.files.length > 0 && (
-                      <div className={`post-media-grid images-${form.files.length}`}>
+                      <div
+                        className={`post-media-grid images-${form.files.length}`}
+                      >
                         {form.files.map((file, idx) => (
                           <img
                             key={idx}
@@ -1571,7 +1452,6 @@ export default function PostsPage() {
                         ))}
                       </div>
                     )}
-
                   </>
                 )}
                 {ogPreview && (
@@ -1580,7 +1460,6 @@ export default function PostsPage() {
                     dangerouslySetInnerHTML={{ __html: ogPreview }}
                   />
                 )}
-
               </div>
 
               {/* FOOTER */}
@@ -1601,16 +1480,14 @@ export default function PostsPage() {
                   Preview
                 </button> */}
 
-
                 <button
                   className="btn btn-primary"
                   disabled={
                     editingPost
                       ? updatePost.isLoading
                       : createPost.isLoading ||
-                      (!form.content?.trim() && form.files.length === 0)
+                        (!form.content?.trim() && form.files.length === 0)
                   }
-
                   onClick={handleCreatePost}
                 >
                   {editingPost
@@ -1620,16 +1497,12 @@ export default function PostsPage() {
                     : createPost.isLoading
                       ? "Posting..."
                       : "Post"}
-
                 </button>
-
               </div>
-
             </div>
           </div>
         </div>
       )}
-
 
       {showPreview && (
         <div
@@ -1638,7 +1511,6 @@ export default function PostsPage() {
         >
           <div className="modal-dialog modal-lg modal-dialog-centered">
             <div className="modal-content rounded-4">
-
               {/* HEADER */}
               <div className="modal-header">
                 <h5 className="modal-title">Post Preview</h5>
@@ -1652,7 +1524,6 @@ export default function PostsPage() {
               <div className="modal-body">
                 <div className="card border-0 shadow-sm rounded-4 mb-4">
                   <div className="card-body">
-
                     {/* HEADER - User Avatar + Name */}
                     <div className="d-flex gap-3 mb-2">
                       {profile?.profile_image ? (
@@ -1710,7 +1581,6 @@ export default function PostsPage() {
                         ))}
                       </div>
                     )}
-
                   </div>
 
                   {/* FOOTER - Optional actions like likes/comments */}
@@ -1730,7 +1600,6 @@ export default function PostsPage() {
                       </button>
                     </div>
                   </div>
-
                 </div>
               </div>
 
@@ -1751,7 +1620,6 @@ export default function PostsPage() {
                   }}
                 >
                   {editingPost ? "Update" : "Post"}
-
                 </button>
               </div>
             </div>
@@ -1759,21 +1627,16 @@ export default function PostsPage() {
         </div>
       )}
 
-
-
       {viewerOpen && (
         <div className="image-viewer-backdrop">
-          <button
-            className="viewer-close"
-            onClick={() => setViewerOpen(false)}
-          >
+          <button className="viewer-close" onClick={() => setViewerOpen(false)}>
             ✕
           </button>
 
           {currentIndex > 0 && (
             <button
               className="viewer-nav left"
-              onClick={() => setCurrentIndex(i => i - 1)}
+              onClick={() => setCurrentIndex((i) => i - 1)}
             >
               ‹
             </button>
@@ -1788,17 +1651,13 @@ export default function PostsPage() {
           {currentIndex < viewerImages.length - 1 && (
             <button
               className="viewer-nav right"
-              onClick={() => setCurrentIndex(i => i + 1)}
+              onClick={() => setCurrentIndex((i) => i + 1)}
             >
               ›
             </button>
           )}
         </div>
       )}
-
-
-
-
     </div>
   );
 }
