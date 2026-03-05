@@ -218,7 +218,7 @@ const CreateNewPage = ({
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)}>
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0 overflow-hidden">
+      <DialogContent className="min-w-6xl max-h-[90vh] flex flex-col p-0 overflow-hidden">
         <DialogHeader className="p-4 border-b">
           <DialogTitle>Create New Page</DialogTitle>
         </DialogHeader>
