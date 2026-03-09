@@ -57,3 +57,19 @@
   padding: 1rem;
   border-radius: 8px;
 }
+
+/* ===== RESPONSIVE NEW POST ===== */
+@media (max-width: 576px) {
+  .preview-modal {
+    max-width: 95%;
+  }
+
+  .file-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+  }
+
+  .file-thumb {
+    height: 80px;
+  }
+}

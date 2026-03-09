@@ -72,3 +72,21 @@ main.content {
 a:hover {
     color: #70a83e;
 }
+
+/* ===== RESPONSIVE LAYOUT ===== */
+@media (max-width: 992px) {
+    .app-body {
+        flex-direction: column;
+    }
+
+    main.content {
+        width: 100%;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    main.content {
+        padding: 8px;
+    }
+}

@@ -56,3 +56,20 @@
   background: #20c997;
   color: #fff;
 }
+
+/* ===== RESPONSIVE PARTICIPANTS ===== */
+@media (max-width: 576px) {
+  .participants-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+
+  .participant-card {
+    padding: 14px 8px;
+  }
+
+  .participant-avatar {
+    width: 65px;
+    height: 65px;
+  }
+}

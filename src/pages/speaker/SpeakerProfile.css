@@ -376,3 +376,25 @@
   justify-content: center;  /* vertically centered */
   text-align: center;
 }
+
+/* ===== RESPONSIVE SPEAKER PROFILE ===== */
+@media (max-width: 576px) {
+  .nf-title {
+    font-size: 2.5rem;
+  }
+
+  .post-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+  }
+
+  .status-screen {
+    height: 40vh;
+  }
+
+  .status-spinner {
+    width: 40px;
+    height: 40px;
+  }
+}

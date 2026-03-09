@@ -26,7 +26,7 @@ export default function SpeakerTopbar() {
         </div>
 
         {/* Center */}
-        <div className="flex-grow-1 d-flex justify-content-center">
+        <div className="flex-grow-1 d-none d-md-flex justify-content-center">
           <div className="search-box d-flex align-items-center">
             <i className="ri-search-line me-2"></i>
             <input
@@ -74,7 +74,7 @@ export default function SpeakerTopbar() {
               />
 
               {/* Show username */}
-              <div className="d-flex flex-column text-start lh-1">
+              <div className="d-none d-md-flex flex-column text-start lh-1">
                 <span className="fw-semibold">{user?.first_name} {user?.last_name}</span>
                 <small className="text-muted">{user?.role}</small>
               </div>

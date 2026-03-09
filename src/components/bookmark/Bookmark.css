@@ -110,3 +110,23 @@
 .text-muted {
     color: #888 !important;
 }
+
+/* ===== RESPONSIVE BOOKMARKS ===== */
+@media (max-width: 576px) {
+    .handshake-item {
+        padding: 10px 12px;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .post-title {
+        font-size: 14px;
+    }
+
+    .tab-btn {
+        font-size: 13px;
+    }
+}

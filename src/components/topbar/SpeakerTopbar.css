@@ -39,3 +39,31 @@
   box-shadow: none !important;
   border: none !important;
 }
+
+/* ===== RESPONSIVE SPEAKER TOPBAR ===== */
+@media (max-width: 768px) {
+  .user-topbar {
+    height: 60px;
+  }
+
+  .user-topbar .navbar-brand img {
+    width: 140px !important;
+    height: 40px !important;
+  }
+
+  .user-topbar .container-fluid {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .user-topbar {
+    height: 56px;
+  }
+
+  .user-topbar .navbar-brand img {
+    width: 120px !important;
+    height: 35px !important;
+  }
+}

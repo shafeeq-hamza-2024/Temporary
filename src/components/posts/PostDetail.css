@@ -101,3 +101,42 @@
   right: -10px;
   border-radius: 50%;
 }
+
+/* ===== RESPONSIVE POST DETAIL ===== */
+@media (max-width: 768px) {
+  .postdetail-page {
+    height: auto;
+    overflow: auto;
+  }
+
+  .pd-avatar {
+    width: 45px;
+    height: 45px;
+  }
+
+  .pd-media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .pd-media-item img,
+  .pd-media-item video {
+    height: 180px;
+  }
+}
+
+@media (max-width: 576px) {
+  .pd-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .pd-media-item img,
+  .pd-media-item video {
+    height: 140px;
+  }
+
+  .comment-avatar {
+    width: 34px;
+    height: 34px;
+  }
+}

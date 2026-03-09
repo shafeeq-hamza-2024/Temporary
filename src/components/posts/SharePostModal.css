@@ -56,3 +56,15 @@
   flex: 1;
   overflow: hidden;
 }
+
+/* ===== RESPONSIVE SHARE MODAL ===== */
+@media (max-width: 576px) {
+  .share-modal {
+    width: 95%;
+  }
+
+  .share-avatar {
+    width: 36px;
+    height: 36px;
+  }
+}

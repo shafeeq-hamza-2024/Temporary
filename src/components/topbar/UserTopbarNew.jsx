@@ -77,7 +77,7 @@ export default function UserTopbarNew() {
         </div>
 
         {/* Center */}
-        <div className="flex-grow-1 d-flex justify-content-center">
+        <div className="flex-grow-1 d-none d-md-flex justify-content-center">
           <div
             className="search-wrapper position-relative"
             ref={searchRef}
@@ -226,7 +226,7 @@ export default function UserTopbarNew() {
 
 
               {/* Show user name */}
-              <div className="d-flex flex-column text-start lh-1">
+              <div className="d-none d-md-flex flex-column text-start lh-1">
                 <span className="fw-semibold">{user?.first_name} {user?.last_name}</span>
                 <small className="text-muted" >{user?.profile_title}</small>
               </div>

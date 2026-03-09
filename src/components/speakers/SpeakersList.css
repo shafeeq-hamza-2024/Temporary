@@ -96,3 +96,12 @@
   font-weight: 600;
   text-transform: uppercase;
 }
+
+/* ===== RESPONSIVE SPEAKERS ===== */
+@media (max-width: 576px) {
+  .speaker-img,
+  .squircle {
+    width: 90px;
+    height: 90px;
+  }
+}

@@ -2,13 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router";
 import useLogout from "../../hooks/logout";
 
-//import "./UserSidebar.css";
+import "../sidebar/UserSidebar.css";
 
 export default function SpeakerSidebar() {
   const nav = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
   const logout = useLogout();
+  const [isOpen, setIsOpen] = useState(false);
 
 
   // OPEN/CLOSE DROPDOWNS
@@ -91,30 +92,57 @@ export default function SpeakerSidebar() {
     setOpenMap((prev) => ({ ...prev, ...openState }));
   }, [currentPath]);
 
-  return (
-    <aside className="sidebar p-3">
-      <h5 className="text-muted mb-4">Menu</h5>
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("sidebar-open");
+    } else {
+      document.body.classList.remove("sidebar-open");
+    }
+  }, [isOpen]);
 
-      <ul className="list-unstyled">
-        {menuTree.map((item, i) => (
-          <MenuItem
-            key={item.label || `divider-${i}`}
-            item={item}
-            nav={nav}
-            openMap={openMap}
-            toggle={toggle}
-            currentPath={currentPath}
-          />
-        ))}
-      </ul>
-    </aside>
+  return (
+    <>
+      {/* HAMBURGER (MOBILE ONLY) */}
+      <button
+        className="sidebar-toggle d-lg-none"
+        onClick={() => setIsOpen(true)}
+        aria-label="Open menu"
+      >
+        <i className="ri-menu-line"></i>
+      </button>
+
+      {/* OVERLAY */}
+      <div
+        className={`sidebar-overlay ${isOpen ? "show" : ""}`}
+        onClick={() => setIsOpen(false)}
+      />
+
+      {/* SIDEBAR */}
+      <aside className={`sidebar p-3 ${isOpen ? "open" : ""}`}>
+        <h5 className="text-muted mb-4">Menu</h5>
+
+        <ul className="list-unstyled">
+          {menuTree.map((item, i) => (
+            <MenuItem
+              key={item.label || `divider-${i}`}
+              item={item}
+              nav={nav}
+              openMap={openMap}
+              toggle={toggle}
+              currentPath={currentPath}
+              closeSidebar={() => setIsOpen(false)}
+            />
+          ))}
+        </ul>
+      </aside>
+    </>
   );
 }
 
 /* ======================================================
    RECURSIVE MENU ITEM COMPONENT
 ====================================================== */
-function MenuItem({ item, nav, openMap, toggle, currentPath }) {
+function MenuItem({ item, nav, openMap, toggle, currentPath, closeSidebar }) {
   const logout = useLogout();
 
   // Divider Row
@@ -142,12 +170,17 @@ function MenuItem({ item, nav, openMap, toggle, currentPath }) {
         `}
         onClick={() => {
           if (item.label === "Logout") {
-            logout();             // 👈 call logout hook
+            logout();
+            closeSidebar?.();
             return;
           }
 
-          if (hasChildren) toggle(item.label);
-          else nav(item.path);
+          if (hasChildren) {
+            toggle(item.label);
+          } else {
+            nav(item.path);
+            closeSidebar?.();
+          }
         }}
       >
         {/* Icon */}
@@ -180,6 +213,7 @@ function MenuItem({ item, nav, openMap, toggle, currentPath }) {
                 openMap={openMap}
                 toggle={toggle}
                 currentPath={currentPath}
+                closeSidebar={closeSidebar}
               />
             ))}
           </div>
