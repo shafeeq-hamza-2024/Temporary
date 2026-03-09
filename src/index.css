@@ -72,7 +72,7 @@ button:focus-visible {
 /* ===== RESPONSIVE FOUNDATION ===== */
 html,
 body {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 *,

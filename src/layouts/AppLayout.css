@@ -1,5 +1,6 @@
 .app-body {
     display: flex;
+    margin-top: 70px;
 }
 
 main.content {
@@ -77,6 +78,7 @@ a:hover {
 @media (max-width: 992px) {
     .app-body {
         flex-direction: column;
+        margin-top: 70px;
     }
 
     main.content {
@@ -85,7 +87,16 @@ a:hover {
     }
 }
 
+@media (max-width: 768px) {
+    .app-body {
+        margin-top: 60px;
+    }
+}
+
 @media (max-width: 576px) {
+    .app-body {
+        margin-top: 56px;
+    }
     main.content {
         padding: 8px;
     }
