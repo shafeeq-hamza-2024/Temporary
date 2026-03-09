@@ -1,27 +1,32 @@
 import { Link, useRevalidator } from "react-router";
-import './UserTopbar.css';
+import "./UserTopbar.css";
 import useLogout from "../../hooks/logout";
 import { useQueryClient } from "@tanstack/react-query";
 import NotificationBell from "../notifications/NotificationBell";
 //import useAuthUser from "../../hooks/auth/useAuthUser";
 
 export default function SpeakerTopbar() {
-
   const logout = useLogout();
   //const { data: user } = useAuthUser(); // 👈 get user info
   const user = JSON.parse(localStorage.getItem("user"));
   const queryClient = useQueryClient();
   const reload = () => {
     queryClient.invalidateQueries();
-  }
+  };
   return (
     <header className="user-topbar shadow-sm">
       <div className="container-fluid d-flex align-items-center justify-content-between">
-
         {/* Left */}
         <div className="d-flex align-items-center gap-2">
-          <Link className="navbar-brand fw-bold" to="/" style={{ "fontSize": "22px" }}>
-            <img src="images/MyNeuron-Logo.png" style={{ width: "200px", height: "50px", objectFit: "contain" }} />
+          <Link
+            className="navbar-brand fw-bold"
+            to="/"
+            style={{ fontSize: "22px" }}
+          >
+            <img
+              src="images/MyNeuron-Logo.png"
+              style={{ width: "200px", height: "50px", objectFit: "contain" }}
+            />
           </Link>
         </div>
 
@@ -39,7 +44,6 @@ export default function SpeakerTopbar() {
 
         {/* Right */}
         <div className="d-flex align-items-center gap-3">
-
           <button
             className="btn btn-light rounded-circle icon-btn"
             onClick={() => reload()}
@@ -48,10 +52,7 @@ export default function SpeakerTopbar() {
             <i className="ri-refresh-line"></i>
           </button>
 
-          
           <NotificationBell />
-
-
 
           <Link to="/inbox" className="btn btn-light rounded-circle icon-btn">
             <i className="ri-message-3-line"></i>
@@ -75,7 +76,9 @@ export default function SpeakerTopbar() {
 
               {/* Show username */}
               <div className="d-none d-md-flex flex-column text-start lh-1">
-                <span className="fw-semibold">{user?.first_name} {user?.last_name}</span>
+                <span className="fw-semibold">
+                  {user?.first_name} {user?.last_name}
+                </span>
                 <small className="text-muted">{user?.role}</small>
               </div>
 
@@ -95,7 +98,9 @@ export default function SpeakerTopbar() {
                 </Link>
               </li>
 
-              <li><hr className="dropdown-divider" /></li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
 
               <li>
                 <button className="dropdown-item text-danger" onClick={logout}>
@@ -103,7 +108,6 @@ export default function SpeakerTopbar() {
                 </button>
               </li>
             </ul>
-
           </div>
         </div>
       </div>

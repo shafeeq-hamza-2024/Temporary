@@ -50,7 +50,7 @@ export default function UserTopbar() {
     queryClient.invalidateQueries();
   };
   return (
-    <header className="user-topbar shadow-sm">
+    <header className="user-topbar shadow-sm ">
       <div className="container-fluid d-flex align-items-center justify-content-between">
         {/* Left */}
         <div className="d-flex align-items-center gap-2">

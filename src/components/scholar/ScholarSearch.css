@@ -71,12 +71,14 @@
   opacity: 0;
   transform: translateY(12px);
   animation: fadeUp 0.55s ease forwards;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .article-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0px 6px 20px rgba(0,0,0,0.08);
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.08);
 }
 
 .article-row {
@@ -126,8 +128,14 @@
 /* ===================================== */
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ===================================== */
@@ -135,7 +143,6 @@
 /* ===================================== */
 
 @media (min-width: 576px) {
-
   .search-section form {
     flex-direction: row;
     justify-content: center;
@@ -143,12 +150,12 @@
 
   .search-input {
     width: 70%;
-    border-radius: 50px 0 0 50px;
+    border-radius: 50px 50px 50px 50px;
   }
 
   .btn-search {
     width: auto;
-    border-radius: 0 50px 50px 0;
+    border-radius: 50px 50px 50px 50px;
   }
 
   .article-row {
@@ -172,7 +179,6 @@
 /* ===================================== */
 
 @media (min-width: 768px) {
-
   .search-input {
     width: 600px;
   }
@@ -191,7 +197,6 @@
 /* ===================================== */
 
 @media (min-width: 992px) {
-
   .search-input {
     width: 750px;
     max-width: 90%;
