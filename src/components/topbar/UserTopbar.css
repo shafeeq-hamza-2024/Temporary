@@ -169,14 +169,6 @@
     height: 40px !important;
   }
 
-  .user-topbar .search-box {
-    display: none;
-  }
-
-  .search-wrapper {
-    display: none;
-  }
-
   .user-topbar .container-fluid {
     padding-left: 55px !important;
     padding-right: 10px;

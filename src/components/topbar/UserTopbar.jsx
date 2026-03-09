@@ -16,6 +16,7 @@ import { useConversations } from "../../hooks/conversation/useConversations";
 export default function UserTopbar() {
   const { data: conversations = [] } = useConversations();
   const [search, setSearch] = useState("");
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const navigate = useNavigate();
 
   const searchRef = useRef(null);
@@ -53,34 +54,106 @@ export default function UserTopbar() {
     <header className="user-topbar shadow-sm ">
       <div className="container-fluid d-flex align-items-center justify-content-between">
         {/* Left */}
-        <div className="d-flex align-items-center gap-2">
-          <Link
-            className="navbar-brand fw-bold"
-            to="/user"
-            style={{ fontSize: "22px" }}
-          >
-            <img
-              src="/images/MyNeuron-Logo.png"
-              style={{ width: "200px", height: "50px", objectFit: "contain" }}
-            />
-          </Link>
+        {!isMobileSearchOpen && (
+          <div className="d-flex align-items-center gap-2">
+            <Link
+              className="navbar-brand fw-bold"
+              to="/user"
+              style={{ fontSize: "22px" }}
+            >
+              <img
+                src="/images/MyNeuron-Logo.png"
+                style={{ width: "200px", height: "50px", objectFit: "contain" }}
+              />
+            </Link>
+          </div>
+        )}
+
+        {/* Center / Search */}
+        <div className={`grow justify-content-center ${isMobileSearchOpen ? 'd-flex w-100 me-2' : 'd-none d-md-flex'}`}>
+          <div className={`search-wrapper position-relative ${isMobileSearchOpen ? 'w-100' : ''}`} ref={searchRef}>
+            <div className={`search-box d-flex align-items-center ${isMobileSearchOpen ? 'w-100' : ''}`}>
+              {isMobileSearchOpen ? (
+                <i 
+                  className="ri-arrow-left-line me-2" 
+                  onClick={() => {
+                    setIsMobileSearchOpen(false);
+                    setSearch("");
+                  }}
+                  style={{ cursor: "pointer", fontSize: "1.2rem" }}
+                ></i>
+              ) : (
+                <i className="ri-search-line me-2"></i>
+              )}
+              <input
+                type="text"
+                placeholder="Search users..."
+                className="form-control border-0 shadow-none bg-transparent w-100"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                autoFocus={isMobileSearchOpen}
+              />
+            </div>
+
+            {search && (
+              <div className="search-dropdown w-100">
+                {isLoading && (
+                  <div className="search-loading d-flex align-items-center gap-2">
+                    <span className="spinner-border spinner-border-sm"></span>
+                    Searching users…
+                  </div>
+                )}
+
+                {!isLoading && results.length === 0 && (
+                  <div className="search-empty">No users found</div>
+                )}
+
+                {results.map((u) => (
+                  <div
+                    key={u.id}
+                    className="search-item"
+                    onClick={() => {
+                      setSearch("");
+                      setIsMobileSearchOpen(false);
+                      navigate(`/public/users/${u.id}`);
+                    }}
+                  >
+                    {u.profile_image ? (
+                      <img src={u.profile_image} alt="avatar" />
+                    ) : (
+                      <div className="search-avatar-fallback">
+                        {u.first_name?.[0]}
+                        {u.last_name?.[0]}
+                      </div>
+                    )}
+
+                    <div>
+                      <div className="search-user-name">
+                        {u.first_name} {u.middle_name} {u.last_name}
+                      </div>
+                      <div className="search-user-title">
+                        {u.profile_title}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right */}
-        <div className="d-flex align-items-center gap-3">
-          {/* <button
-            className="btn btn-light rounded-circle icon-btn"
-            onClick={() => {
-              reload();
-              const btn = document.querySelector(".icon-btn");
-              btn.classList.add("spin-once");
+        <div className={`align-items-center gap-3 ${isMobileSearchOpen ? 'd-none' : 'd-flex'}`}>
+          {/* Mobile Search Toggle Icon */}
+          <div className="d-flex d-md-none">
+            <button 
+              className="btn btn-light rounded-circle icon-btn border"
+              onClick={() => setIsMobileSearchOpen(true)}
+            >
+              <i className="ri-search-line fs-5"></i>
+            </button>
+          </div>
 
-              setTimeout(() => btn.classList.remove("spin-once"), 600);
-            }}
-            title="Refresh Page"
-          >
-            <i className="ri-refresh-line"></i>
-          </button> */}
           <div className="hidden lg:flex gap-2">
             <Link to="/user" className="btn btn-light rounded-circle icon-btn">
               <i className="ri-home-5-line fs-4"></i>
