@@ -171,7 +171,7 @@ export default function UserSidebar() {
       {/* HAMBURGER (MOBILE ONLY) */}
       <button
         className="sidebar-toggle d-lg-none"
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsOpen(!isOpen)}
         aria-label="Open menu"
       >
         <i className="ri-menu-line text-primary"></i>

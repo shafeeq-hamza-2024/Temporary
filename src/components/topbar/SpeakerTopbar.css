@@ -41,6 +41,12 @@
 }
 
 /* ===== RESPONSIVE SPEAKER TOPBAR ===== */
+@media (max-width: 992px) {
+  .user-topbar .container-fluid {
+    padding-left: 55px !important;
+  }
+}
+
 @media (max-width: 768px) {
   .user-topbar {
     height: 60px;
@@ -52,7 +58,7 @@
   }
 
   .user-topbar .container-fluid {
-    padding-left: 10px;
+    padding-left: 55px !important;
     padding-right: 10px;
   }
 }

@@ -146,6 +146,10 @@
 
 /* ===== RESPONSIVE TOPBAR ===== */
 @media (max-width: 992px) {
+  .user-topbar .container-fluid {
+    padding-left: 55px !important;
+  }
+
   .user-topbar .search-box {
     width: 200px;
   }
@@ -170,7 +174,7 @@
   }
 
   .user-topbar .container-fluid {
-    padding-left: 10px;
+    padding-left: 55px !important;
     padding-right: 10px;
   }
 }
