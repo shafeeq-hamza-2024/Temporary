@@ -149,7 +149,7 @@ export default function ScholarSearch() {
             </div> */}
 
             <form
-              className="d-flex justify-content-center flex-wrap"
+              className="d-flex justify-content-center items-center flex-wrap"
               onSubmit={(e) => {
                 e.preventDefault();
                 setPage(1);
@@ -202,7 +202,7 @@ export default function ScholarSearch() {
                 {/* PDF ICON */}
                 <img src={pdfIcon} className="pdf-icon" alt="pdf" />
 
-                <div className="flex-grow-1">
+                <div className="grow">
                   {/* TITLE + BOOKMARK */}
                   <div className="d-flex justify-content-between">
                     <h5 className="article-title colored-title">{r.title}</h5>
@@ -233,41 +233,43 @@ export default function ScholarSearch() {
                     )}
                   </p>
 
-                  {/* PDF BUTTON */}
-                  {/* PDF / PUBMED BUTTON */}
-                  {r.pdf ? (
-                    <a
-                      href={r.pdf}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-sm btn-outline-primary mt-2"
-                    >
-                      <i className="ri-file-download-line me-1"></i> Download
-                      PDF
-                    </a>
-                  ) : (
-                    <a
-                      href={r.pubmed}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-sm btn-outline-secondary mt-2"
-                    >
-                      <i className="ri-external-link-line me-1"></i> View on
-                      PubMed
-                    </a>
-                  )}
+                  {/* BUTTONS CONTAINER */}
+                  <div className="d-grid gap-2 d-md-flex justify-content-md-start mt-3">
+                    {/* PDF / PUBMED BUTTON */}
+                    {r.pdf ? (
+                      <a
+                        href={r.pdf}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-sm btn-outline-primary"
+                      >
+                        <i className="ri-file-download-line me-1"></i> Download
+                        PDF
+                      </a>
+                    ) : (
+                      <a
+                        href={r.pubmed}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-sm btn-outline-secondary"
+                      >
+                        <i className="ri-external-link-line me-1"></i> View on
+                        PubMed
+                      </a>
+                    )}
 
-                  {/* ADD TO SHELF */}
-                  <button
-                    className="btn btn-sm btn-outline-success mt-2 ms-2"
-                    onClick={() => {
-                      setSelectedArticle(r);
-                      setShowShelfModal(true);
-                    }}
-                  >
-                    <i className="ri-bookmark-line me-1"></i>
-                    Add to Shelf
-                  </button>
+                    {/* ADD TO SHELF */}
+                    <button
+                      className="btn btn-sm btn-outline-success"
+                      onClick={() => {
+                        setSelectedArticle(r);
+                        setShowShelfModal(true);
+                      }}
+                    >
+                      <i className="ri-bookmark-line me-1"></i>
+                      Add to Shelf
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
