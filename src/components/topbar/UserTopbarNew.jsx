@@ -1,21 +1,16 @@
-import { Link } from 'react-router';
-import './UserTopbar.css';
+import { Link } from "react-router";
+import "./UserTopbar.css";
 import useLogout from "../../hooks/logout";
 import { useQueryClient } from "@tanstack/react-query";
 import NotificationBell from "../notifications/NotificationBell";
 //import useAuthUser from "../../hooks/auth/useAuthUser";
 import { useUserProfile } from "../../hooks/profile/useUserProfile";
-import { siteURL } from '../../api/api';
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router';
-import { useSearchPublicUsers } from '../../hooks/publicUsers/useSearchPublicUsers';
-import useDebounce from '../../hooks/useDebounce';
-import { useConversations } from '../../hooks/conversation/useConversations';
-
-
-
-
-
+import { siteURL } from "../../api/api";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router";
+import { useSearchPublicUsers } from "../../hooks/publicUsers/useSearchPublicUsers";
+import useDebounce from "../../hooks/useDebounce";
+import { useConversations } from "../../hooks/conversation/useConversations";
 
 export default function UserTopbarNew() {
   const { data: conversations = [] } = useConversations();
@@ -25,12 +20,9 @@ export default function UserTopbarNew() {
 
   const searchRef = useRef(null);
 
-
   const totalUnreadConversations = conversations.filter(
-    (c) => c.unread_count > 0
+    (c) => c.unread_count > 0,
   ).length;
-
-
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -40,18 +32,13 @@ export default function UserTopbarNew() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const debouncedSearch = useDebounce(search, 400);
 
-  const {
-    data: results = [],
-    isLoading,
-  } = useSearchPublicUsers(debouncedSearch);
-
-
+  const { data: results = [], isLoading } =
+    useSearchPublicUsers(debouncedSearch);
 
   const logout = useLogout();
 
@@ -59,31 +46,30 @@ export default function UserTopbarNew() {
   const { data: user, isLoading: uLoading } = useUserProfile();
   // const user = JSON.parse(localStorage.getItem("user"));
 
-
   const queryClient = useQueryClient();
   const reload = () => {
     queryClient.invalidateQueries();
-  }
+  };
   return (
     <header className="user-topbar shadow-sm">
       <div className="container-fluid d-flex align-items-center justify-content-between">
-
         {/* Left */}
         <div className="d-flex align-items-center gap-2">
-
-          <Link className="navbar-brand fw-bold" to="/user" style={{ "fontSize": "22px" }}>
-            <img src="/images/MyNeuron-Logo.png" style={{ width: "200px", height: "50px", objectFit: "contain" }} />
+          <Link
+            className="navbar-brand fw-bold"
+            to="/user"
+            style={{ fontSize: "22px" }}
+          >
+            <img
+              src="/images/MyNeuron-Logo.png"
+              style={{ width: "200px", height: "50px", objectFit: "contain" }}
+            />
           </Link>
         </div>
 
         {/* Center */}
-        <div className="flex-grow-1 d-none d-md-flex justify-content-center">
-          <div
-            className="search-wrapper position-relative"
-            ref={searchRef}
-          >
-
-
+        <div className="grow d-none d-md-flex justify-content-center">
+          <div className="search-wrapper position-relative" ref={searchRef}>
             <div className="search-box d-flex align-items-center">
               <i className="ri-search-line me-2"></i>
               <input
@@ -103,7 +89,6 @@ export default function UserTopbarNew() {
                     Searching users…
                   </div>
                 )}
-
 
                 {!isLoading && results.length === 0 && (
                   <div className="search-empty">No users found</div>
@@ -139,14 +124,11 @@ export default function UserTopbarNew() {
                 ))}
               </div>
             )}
-
           </div>
         </div>
 
-
         {/* Right */}
         <div className="d-flex align-items-center gap-3">
-
           {/* <button
             className="btn btn-light rounded-circle icon-btn"
             onClick={() => {
@@ -161,38 +143,41 @@ export default function UserTopbarNew() {
             <i className="ri-refresh-line"></i>
           </button> */}
 
+          <div className="hidden lg:flex">
+            <Link to="/user" className="btn btn-light rounded-circle icon-btn">
+              <i className="ri-home-5-line fs-4"></i>
+            </Link>
 
-          <Link to="/user" className="btn btn-light rounded-circle icon-btn">
-            <i className="ri-home-5-line fs-4"></i>
-          </Link>
+            <Link to="/posts" className="btn btn-light rounded-circle icon-btn">
+              <i className="ri-pulse-line text-dark fs-4"></i>
+            </Link>
 
-          <Link to="/posts" className="btn btn-light rounded-circle icon-btn">
-            <i className="ri-pulse-line text-dark fs-4"></i>
-          </Link>
+            <Link
+              to="/my-bookshelf"
+              className="btn btn-light rounded-circle icon-btn"
+            >
+              <i className="ri-book-open-line fs-4"></i>
+            </Link>
 
-          <Link to="/my-bookshelf" className="btn btn-light rounded-circle icon-btn">
-            <i className="ri-book-open-line fs-4"></i>
-          </Link>
-
-          {/* <Link to="/inbox" className="btn btn-light rounded-circle icon-btn">
+            {/* <Link to="/inbox" className="btn btn-light rounded-circle icon-btn">
             <i className="ri-message-3-line fs-4"></i>
-          </Link> */}
+            </Link> */}
 
-          <Link
-            to="/inbox"
-            className="btn btn-light rounded-circle icon-btn position-relative"
-          >
-            <i className="ri-message-3-line fs-4"></i>
+            <Link
+              to="/inbox"
+              className="btn btn-light rounded-circle icon-btn position-relative"
+            >
+              <i className="ri-message-3-line fs-4"></i>
 
-            {totalUnreadConversations > 0 && (
-              <span className="message-badge">
-                {totalUnreadConversations}
-              </span>
-            )}
-          </Link>
+              {totalUnreadConversations > 0 && (
+                <span className="message-badge">
+                  {totalUnreadConversations}
+                </span>
+              )}
+            </Link>
 
-          <NotificationBell />
-
+            <NotificationBell />
+          </div>
           {/* Profile + Name */}
           <div className="dropdown">
             <button
@@ -223,12 +208,12 @@ export default function UserTopbarNew() {
                 </div>
               )}
 
-
-
               {/* Show user name */}
               <div className="d-none d-md-flex flex-column text-start lh-1">
-                <span className="fw-semibold">{user?.first_name} {user?.last_name}</span>
-                <small className="text-muted" >{user?.profile_title}</small>
+                <span className="fw-semibold">
+                  {user?.first_name} {user?.last_name}
+                </span>
+                <small className="text-muted">{user?.profile_title}</small>
               </div>
 
               <i className="ri-arrow-down-s-line"></i>
@@ -247,7 +232,9 @@ export default function UserTopbarNew() {
                 </Link>
               </li>
 
-              <li><hr className="dropdown-divider" /></li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
 
               <li>
                 <button className="dropdown-item text-danger" onClick={logout}>
@@ -255,7 +242,6 @@ export default function UserTopbarNew() {
                 </button>
               </li>
             </ul>
-
           </div>
         </div>
       </div>
