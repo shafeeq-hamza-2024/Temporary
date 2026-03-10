@@ -277,6 +277,7 @@ function MenuItem({ item, nav, openMap, toggle, currentPath, closeSidebar }) {
                 openMap={openMap}
                 toggle={toggle}
                 currentPath={currentPath}
+                closeSidebar={closeSidebar}
               />
             ))}
           </div>
