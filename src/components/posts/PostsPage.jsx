@@ -393,7 +393,6 @@ export default function PostsPage() {
 
 
 
-
   if (isError) {
     return (
       <div className="text-danger text-center py-5">
@@ -894,11 +893,6 @@ export default function PostsPage() {
 
           {/* CREATE POST (UI ONLY) */}
           <div className="col-lg-6">
-
-
-
-
-
             <div className="sticky-top" style={{ zIndex: 1050 }}>
               {alert.show && (
                 <div className={`alert alert-${alert.type} alert-dismissible fade show`} role="alert" >

@@ -78,6 +78,7 @@
 .chat-input-area button {
   border-radius: 20px;
 }
+
 .inbox-left .btn-link {
   font-weight: 500;
   color: #70a83e;
@@ -117,9 +118,11 @@
 .status-dot.online {
   background-color: #28c76f;
 }
+
 .status-dot.offline {
   background-color: #babfc7;
 }
+
 .status-dot.busy {
   background-color: #ff9f43;
 }
@@ -160,39 +163,86 @@
   animation: fadeStagger 0.5s ease forwards;
 }
 
-.conversation-item:nth-child(1) { animation-delay: 0.05s; }
-.conversation-item:nth-child(2) { animation-delay: 0.10s; }
-.conversation-item:nth-child(3) { animation-delay: 0.15s; }
-.conversation-item:nth-child(4) { animation-delay: 0.20s; }
-.conversation-item:nth-child(5) { animation-delay: 0.25s; }
+.conversation-item:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.conversation-item:nth-child(2) {
+  animation-delay: 0.10s;
+}
+
+.conversation-item:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.conversation-item:nth-child(4) {
+  animation-delay: 0.20s;
+}
+
+.conversation-item:nth-child(5) {
+  animation-delay: 0.25s;
+}
 
 
 /* -----------------------
       KEYFRAMES
 ------------------------ */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideLeft {
-  0% { opacity: 0; transform: translateX(-20px); }
-  100% { opacity: 1; transform: translateX(0); }
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes slideRight {
-  0% { opacity: 0; transform: translateX(20px); }
-  100% { opacity: 1; transform: translateX(0); }
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes fadeUp {
-  0% { opacity: 0; transform: translateY(15px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeStagger {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
@@ -207,7 +257,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #70a83e; /* Indigo or any color you like */
+  background-color: #70a83e;
+  /* Indigo or any color you like */
   color: #fff;
   font-weight: 600;
   font-size: 14px;
