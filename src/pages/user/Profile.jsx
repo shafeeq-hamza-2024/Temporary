@@ -82,7 +82,7 @@ export default function Profile() {
 
   /* ================= PROFILE ================= */
   return (
-    <div className="container py-4">
+    <div className="container py-3 py-md-4">
       <div className="sticky-top" style={{ zIndex: 1050 }}>
         {alert.show && (
           <div
@@ -106,7 +106,7 @@ export default function Profile() {
 
           {/* ===== PROFILE HEADER ===== */}
           <div className="card shadow-sm border-0 mb-4 fade-up">
-            <div className="card-body p-4 d-flex gap-4">
+            <div className="card-body p-3 p-md-4 d-flex flex-column flex-md-row gap-4 align-items-center align-items-md-start text-center text-md-start">
 
               {/* PHOTO */}
               {/* PHOTO */}
@@ -147,11 +147,12 @@ export default function Profile() {
 
 
 
-              <div className="flex-grow-1">
+              <div className="flex-grow-1 w-100">
 
                 {/* SOCIAL + LINKS */}
-                <div className="d-flex justify-content-between mb-3">
-                  <div className="d-flex gap-3 fs-4 text-secondary">
+                <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3 gap-3 gap-md-0">
+                  {/* Desktop Social Links */}
+                  <div className="social-links d-none d-md-flex justify-content-md-start gap-3 fs-4 text-secondary order-2 order-md-1">
                     {personal?.research_links?.map((link, idx) => (
                       <a key={idx} href={link.url} target="_blank" rel="noreferrer">
                         <i className="ri-links-line"></i>
@@ -159,20 +160,10 @@ export default function Profile() {
                     ))}
 
                     {personal?.linkedin && (
-                      <a href={personal.linkedin} target="_blank" rel="noreferrer">
+                      <a href={personal.linkedin} target="_blank" rel="noreferrer" className="">
                         <i className="ri-linkedin-box-fill"></i>
                       </a>
                     )}
-
-                    {/* {personal?.linkedin && (
-                      <a
-                        href={`https://www.linkedin.com/in/${personal.linkedin}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <i className="ri-linkedin-box-fill"></i>
-                      </a>
-                    )} */}
 
                     {personal?.x_handle && (
                       <a href={`https://x.com/${personal.x_handle}`} target="_blank" rel="noreferrer">
@@ -182,7 +173,7 @@ export default function Profile() {
                   </div>
 
 
-                  <Link to="/user/profile/edit" className="btn btn-dark rounded-pill">
+                  <Link to="/user/profile/edit" className="btn btn-dark rounded-pill px-4 order-1 order-md-2 align-self-stretch align-self-md-auto text-center">
                     Edit Profile
                   </Link>
                 </div>
@@ -193,18 +184,39 @@ export default function Profile() {
                   {user.first_name} {user.middle_name} {user.last_name}
                 </h3>
 
-                <h6 className="text-muted">
+                <h6 className="text-muted mb-0">
                   {professional?.current_role}
                   {professional?.current_organization && (
                     <> · {professional.current_organization}</>
                   )}
                 </h6>
 
+                {/* Mobile Social Links */}
+                <div className="social-links d-flex d-md-none justify-content-center gap-3 fs-4 text-secondary mt-3">
+                  {personal?.research_links?.map((link, idx) => (
+                    <a key={idx} href={link.url} target="_blank" rel="noreferrer">
+                      <i className="ri-links-line"></i>
+                    </a>
+                  ))}
+
+                  {personal?.linkedin && (
+                    <a href={personal.linkedin} target="_blank" rel="noreferrer" className="">
+                      <i className="ri-linkedin-box-fill"></i>
+                    </a>
+                  )}
+
+                  {personal?.x_handle && (
+                    <a href={`https://x.com/${personal.x_handle}`} target="_blank" rel="noreferrer">
+                      <i className="ri-twitter-x-fill"></i>
+                    </a>
+                  )}
+                </div>
+
                 {/* LOCATION */}
                 {(personal?.city || personal?.country) && (
-                  <div className="mt-3 text-secondary">
+                  <div className="mt-3 text-secondary d-flex align-items-center justify-content-center justify-content-md-start">
                     <i className="ri-map-pin-line me-1"></i>
-                    {personal?.city}, {personal?.country}
+                    <span>{personal?.city}, {personal?.country}</span>
                   </div>
                 )}
               </div>

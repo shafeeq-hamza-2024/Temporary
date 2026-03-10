@@ -1560,9 +1560,15 @@ export default function EditProfile() {
                 <div className="col-md-6">
                   <label>Contact Number</label>
                   <input
+                    minLength={10}
+                    maxLength={10}
+                    type="tel"
                     className="form-control"
                     value={professional.contact_number || ""}
-                    onChange={(e) => handleProfessionalChange("contact_number", e.target.value)}
+                    onChange={(e) => {
+                      const onlyNums = e.target.value.replace(/[^0-9]/g, "");
+                      handleProfessionalChange("contact_number", onlyNums);
+                    }}
                   />
                 </div>
                 <div className="col-md-6">
