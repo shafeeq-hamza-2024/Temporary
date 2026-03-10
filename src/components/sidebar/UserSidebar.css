@@ -156,9 +156,11 @@
 /* DESKTOP */
 @media (min-width: 992px) {
   .sidebar {
-    position: relative;
+    position: sticky;
+    top: 70px;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
     transform: none;
-    height: auto;
   }
 
   .sidebar-overlay,
