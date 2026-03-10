@@ -1,8 +1,12 @@
 .user-topbar {
   background: #fff;
-  height: 60px;
+  height: 70px;
   display: flex;
   align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1030;
 }
 
 .user-topbar .search-box {
@@ -121,4 +125,81 @@
   padding: 12px 14px;
   font-size: 13px;
   color: #6c757d;
+}
+
+.icon-btn {
+  position: relative;
+}
+
+.message-badge {
+  position: absolute;
+  top: 4px;          /* move down slightly */
+  right: 4px;        /* move inside button */
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 50px;
+  background: #dc3545;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== RESPONSIVE TOPBAR ===== */
+@media (max-width: 992px) {
+  .user-topbar .container-fluid {
+    padding-left: 55px !important;
+  }
+
+  .user-topbar .search-box {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-topbar {
+    height: 60px;
+  }
+
+  .user-topbar .navbar-brand img {
+    width: 140px !important;
+    height: 40px !important;
+  }
+
+  .user-topbar .container-fluid {
+    padding-left: 55px !important;
+    padding-right: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .user-topbar {
+    height: 56px;
+  }
+
+  .user-topbar .navbar-brand img {
+    width: 120px !important;
+    height: 35px !important;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-btn i {
+    font-size: 18px;
+  }
+
+  .dropdown .avatar {
+    width: 32px;
+    height: 32px;
+  }
 }

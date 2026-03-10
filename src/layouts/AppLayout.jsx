@@ -30,7 +30,7 @@ export default function AppLayout() {
 
       <div className="app-body">
         <Sidebar />
-        <main className="content">
+        <main className="content overflow-y-auto">
           <Outlet />
         </main>
       </div>

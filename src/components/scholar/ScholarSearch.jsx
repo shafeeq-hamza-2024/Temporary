@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
-import "./ScholarSearch.css";
-import ScholarSearchFilter from "./ScholarSearchFilter";
+import { useEffect, useState } from "react";
 import pdfIcon from "../../assets/pdf-icon.png";
 import { usePubMedSearch } from "../../hooks/usePubMedSearch";
 import AddToShelfModal from "../add-to-bookshelf/AddToShelfModal";
+import "./ScholarSearch.css";
 
 export default function ScholarSearch() {
   const [queryInput, setQueryInput] = useState("");
@@ -16,14 +15,11 @@ export default function ScholarSearch() {
 
   const { data, isLoading, isError } = usePubMedSearch(query, page, PAGE_SIZE);
 
-
   useEffect(() => {
     if (page > 0) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [page]);
-
-
 
   const [filters, setFilters] = useState({
     textAvailability: "all",
@@ -80,11 +76,9 @@ export default function ScholarSearch() {
     journal: art.journal || "Unknown Journal",
     year: art.year || "",
     abstract: art.abstract,
-    pdf: art.pdf,        // already set in hook
-    pubmed: art.pubmed,  // already set in hook
+    pdf: art.pdf, // already set in hook
+    pubmed: art.pubmed, // already set in hook
   }));
-
-
 
   const getPaginationPages = (current, total) => {
     const pages = [];
@@ -97,47 +91,40 @@ export default function ScholarSearch() {
       } else if (current >= total - 3) {
         pages.push(1, "...", total - 3, total - 2, total - 1, total);
       } else {
-        pages.push(
-          1,
-          "...",
-          current - 1,
-          current,
-          current + 1,
-          "...",
-          total
-        );
+        pages.push(1, "...", current - 1, current, current + 1, "...", total);
       }
     }
 
     return pages;
   };
 
-
-
-
   return (
     <div className="container py-5 scholar-page">
       <div className="row">
-
         {/* LEFT */}
         <div className="col-md- left-pane">
-
           {/* SEARCH BOX */}
           <div className="search-section text-center mb-5">
             <div className="search-section text-center mb-5">
               <div className="mb-4 text-center">
-                <img
-                  src="images/plasma.jpeg"
-                  alt="PubMed Search"
-                  style={{
-                    height: "90px",
-                    objectFit: "contain"
-                  }}
-                />
+                <div className="w-full flex justify-center items-center">
+                  <img
+                    src="images/plasma.jpeg"
+                    alt="PubMed Search"
+                    style={{
+                      height: "90px",
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
 
                 <div
                   className="text-muted"
-                  style={{ fontSize: "0.9rem", marginTop: "-2px", letterSpacing: "0.8px" }}
+                  style={{
+                    fontSize: "0.9rem",
+                    marginTop: "-2px",
+                    letterSpacing: "0.8px",
+                  }}
                 >
                   Explore millions of biomedical papers
                 </div>
@@ -162,13 +149,12 @@ export default function ScholarSearch() {
             </div> */}
 
             <form
-              className="d-flex justify-content-center flex-wrap"
+              className="d-flex justify-content-center items-center flex-wrap"
               onSubmit={(e) => {
                 e.preventDefault();
                 setPage(1);
                 setQuery(queryInput);
               }}
-
             >
               <input
                 type="text"
@@ -178,23 +164,18 @@ export default function ScholarSearch() {
                 className="search-input form-control"
               />
 
-              <button
-                type="submit"
-                className="btn btn-primary ms-2 btn-search"
-              >
+              <button type="submit" className="btn btn-primary ms-2 btn-search">
                 <i className="ri-search-line"></i> Search
               </button>
             </form>
-
-
-
           </div>
-
 
           {/* LOADING / ERROR */}
           {isLoading && (
             <div className="loading-dots">
-              <span></span><span></span><span></span>
+              <span></span>
+              <span></span>
+              <span></span>
             </div>
           )}
           {isError && <p>Error fetching articles.</p>}
@@ -216,17 +197,12 @@ export default function ScholarSearch() {
           {/* RESULTS */}
           {/* ------------------------------ */}
           {formattedResults.map((r) => (
-            <div
-              key={r.id}
-              className="article-card shadow-sm p-4 mb-4 rounded"
-            >
+            <div key={r.id} className="article-card shadow-sm p-4 mb-4 rounded">
               <div className="article-row d-flex align-items-start gap-3">
-
                 {/* PDF ICON */}
                 <img src={pdfIcon} className="pdf-icon" alt="pdf" />
 
-                <div className="flex-grow-1">
-
+                <div className="grow">
                   {/* TITLE + BOOKMARK */}
                   <div className="d-flex justify-content-between">
                     <h5 className="article-title colored-title">{r.title}</h5>
@@ -240,13 +216,15 @@ export default function ScholarSearch() {
                     {r.authors} · <strong>{r.journal}</strong> ({r.year})
                   </div>
 
-
                   <p className="abstract-text">
-                    {(expanded[r.id] ? r.abstract : r.abstract?.slice(0, 150))}
+                    {expanded[r.id] ? r.abstract : r.abstract?.slice(0, 150)}
                     {r.abstract?.length > 150 && (
                       <span
                         onClick={() =>
-                          setExpanded(prev => ({ ...prev, [r.id]: !prev[r.id] }))
+                          setExpanded((prev) => ({
+                            ...prev,
+                            [r.id]: !prev[r.id],
+                          }))
                         }
                         style={{ color: "#007bff", cursor: "pointer" }}
                       >
@@ -255,34 +233,43 @@ export default function ScholarSearch() {
                     )}
                   </p>
 
+                  {/* BUTTONS CONTAINER */}
+                  <div className="d-grid gap-2 d-md-flex justify-content-md-start mt-3">
+                    {/* PDF / PUBMED BUTTON */}
+                    {r.pdf ? (
+                      <a
+                        href={r.pdf}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-sm btn-outline-primary"
+                      >
+                        <i className="ri-file-download-line me-1"></i> Download
+                        PDF
+                      </a>
+                    ) : (
+                      <a
+                        href={r.pubmed}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn btn-sm btn-outline-secondary"
+                      >
+                        <i className="ri-external-link-line me-1"></i> View on
+                        PubMed
+                      </a>
+                    )}
 
-
-                  {/* PDF BUTTON */}
-                  {/* PDF / PUBMED BUTTON */}
-                  {r.pdf ? (
-                    <a href={r.pdf} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary mt-2">
-                      <i className="ri-file-download-line me-1"></i> Download PDF
-                    </a>
-                  ) : (
-                    <a href={r.pubmed} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-secondary mt-2">
-                      <i className="ri-external-link-line me-1"></i> View on PubMed
-                    </a>
-                  )}
-
-
-
-                  {/* ADD TO SHELF */}
-                  <button
-                    className="btn btn-sm btn-outline-success mt-2 ms-2"
-                    onClick={() => {
-                      setSelectedArticle(r);
-                      setShowShelfModal(true);
-                    }}
-                  >
-                    <i className="ri-bookmark-line me-1"></i>
-                    Add to Shelf
-                  </button>
-
+                    {/* ADD TO SHELF */}
+                    <button
+                      className="btn btn-sm btn-outline-success"
+                      onClick={() => {
+                        setSelectedArticle(r);
+                        setShowShelfModal(true);
+                      }}
+                    >
+                      <i className="ri-bookmark-line me-1"></i>
+                      Add to Shelf
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -294,29 +281,46 @@ export default function ScholarSearch() {
               <ul className="pagination">
                 {/* Previous */}
                 <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
-                  <button className="page-link" onClick={() => setPage(p => p - 1)}>
+                  <button
+                    className="page-link"
+                    onClick={() => setPage((p) => p - 1)}
+                  >
                     Previous
                   </button>
                 </li>
 
                 {/* Page numbers with ellipsis */}
-                {getPaginationPages(page, Math.ceil(data.total / PAGE_SIZE)).map((p, idx) => (
-                  <li key={idx} className={`page-item ${p === page ? "active" : ""} ${p === "..." ? "disabled" : ""}`}>
-                    <button className="page-link" onClick={() => p !== "..." && setPage(p)}>{p}</button>
+                {getPaginationPages(
+                  page,
+                  Math.ceil(data.total / PAGE_SIZE),
+                ).map((p, idx) => (
+                  <li
+                    key={idx}
+                    className={`page-item ${p === page ? "active" : ""} ${p === "..." ? "disabled" : ""}`}
+                  >
+                    <button
+                      className="page-link"
+                      onClick={() => p !== "..." && setPage(p)}
+                    >
+                      {p}
+                    </button>
                   </li>
                 ))}
 
                 {/* Next */}
-                <li className={`page-item ${page >= Math.ceil(data.total / PAGE_SIZE) ? "disabled" : ""}`}>
-                  <button className="page-link" onClick={() => setPage(p => p + 1)}>Next</button>
+                <li
+                  className={`page-item ${page >= Math.ceil(data.total / PAGE_SIZE) ? "disabled" : ""}`}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => setPage((p) => p + 1)}
+                  >
+                    Next
+                  </button>
                 </li>
               </ul>
             </nav>
           )}
-
-
-
-
         </div>
 
         {/* RIGHT FILTERS */}
@@ -333,7 +337,6 @@ export default function ScholarSearch() {
           }}
         />
       )}
-
     </div>
   );
 }

@@ -31,7 +31,9 @@
 }
 
 .left-text .logo {
-  width: 450px;
+  width: 100%;
+  max-width: 450px;
+  height: auto;
   margin-bottom: 20px;
 }
 
@@ -163,11 +165,14 @@
 
 @media (max-width: 480px) {
   .left-text h1 {
-    font-size: 1.5rem;
+    font-size: 1.30rem;
   }
 
   .form-box {
     padding: 25px 20px;
+  }
+  .left-text p {
+    font-size: 1rem;
   }
 
   .btn {

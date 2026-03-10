@@ -1,29 +1,28 @@
-import { Link } from 'react-router';
-import './UserTopbar.css';
+import { Link } from "react-router";
+import "./UserTopbar.css";
 import useLogout from "../../hooks/logout";
 import { useQueryClient } from "@tanstack/react-query";
 import NotificationBell from "../notifications/NotificationBell";
 //import useAuthUser from "../../hooks/auth/useAuthUser";
 import { useUserProfile } from "../../hooks/profile/useUserProfile";
-import { siteURL } from '../../api/api';
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router';
-import { useSearchPublicUsers } from '../../hooks/publicUsers/useSearchPublicUsers';
-import useDebounce from '../../hooks/useDebounce';
+import { siteURL } from "../../api/api";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router";
+import { useSearchPublicUsers } from "../../hooks/publicUsers/useSearchPublicUsers";
+import useDebounce from "../../hooks/useDebounce";
 
-
-
-
-
-
+import { useConversations } from "../../hooks/conversation/useConversations";
 
 export default function UserTopbar() {
-
-
+  const { data: conversations = [] } = useConversations();
   const [search, setSearch] = useState("");
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const navigate = useNavigate();
 
   const searchRef = useRef(null);
+  const totalUnreadConversations = conversations.filter(
+    (c) => c.unread_count > 0,
+  ).length;
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -33,18 +32,13 @@ export default function UserTopbar() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const debouncedSearch = useDebounce(search, 400);
 
-  const {
-    data: results = [],
-    isLoading,
-  } = useSearchPublicUsers(debouncedSearch);
-
-
+  const { data: results = [], isLoading } =
+    useSearchPublicUsers(debouncedSearch);
 
   const logout = useLogout();
 
@@ -52,44 +46,57 @@ export default function UserTopbar() {
   const { data: user, isLoading: uLoading } = useUserProfile();
   // const user = JSON.parse(localStorage.getItem("user"));
 
-
   const queryClient = useQueryClient();
   const reload = () => {
     queryClient.invalidateQueries();
-  }
+  };
   return (
-    <header className="user-topbar shadow-sm">
+    <header className="user-topbar shadow-sm ">
       <div className="container-fluid d-flex align-items-center justify-content-between">
-
         {/* Left */}
-        <div className="d-flex align-items-center gap-2">
+        {!isMobileSearchOpen && (
+          <div className="d-flex align-items-center gap-2">
+            <Link
+              className="navbar-brand fw-bold"
+              to="/user"
+              style={{ fontSize: "22px" }}
+            >
+              <img
+                src="/images/MyNeuron-Logo.png"
+                style={{ width: "200px", height: "50px", objectFit: "contain" }}
+              />
+            </Link>
+          </div>
+        )}
 
-          <Link className="navbar-brand fw-bold" to="/user" style={{ "fontSize": "22px" }}>
-            <img src="/images/MyNeuron-Logo.png" style={{ width: "200px", height: "50px", objectFit: "contain" }} />
-          </Link>
-        </div>
-
-        {/* Center */}
-        {/* <div className="flex-grow-1 d-flex justify-content-center">
-          <div
-            className="search-wrapper position-relative"
-            ref={searchRef}
-          >
-
-
-            <div className="search-box d-flex align-items-center">
-              <i className="ri-search-line me-2"></i>
+        {/* Center / Search */}
+        <div className={`grow justify-content-center ${isMobileSearchOpen ? 'd-flex w-100 me-2' : 'd-none d-md-flex'}`}>
+          <div className={`search-wrapper position-relative ${isMobileSearchOpen ? 'w-100' : ''}`} ref={searchRef}>
+            <div className={`search-box d-flex align-items-center ${isMobileSearchOpen ? 'w-100' : ''}`}>
+              {isMobileSearchOpen ? (
+                <i 
+                  className="ri-arrow-left-line me-2" 
+                  onClick={() => {
+                    setIsMobileSearchOpen(false);
+                    setSearch("");
+                  }}
+                  style={{ cursor: "pointer", fontSize: "1.2rem" }}
+                ></i>
+              ) : (
+                <i className="ri-search-line me-2"></i>
+              )}
               <input
                 type="text"
                 placeholder="Search users..."
-                className="form-control border-0 shadow-none"
+                className="form-control border-0 shadow-none bg-transparent w-100"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                autoFocus={isMobileSearchOpen}
               />
             </div>
 
             {search && (
-              <div className="search-dropdown">
+              <div className="search-dropdown w-100">
                 {isLoading && (
                   <div className="search-loading d-flex align-items-center gap-2">
                     <span className="spinner-border spinner-border-sm"></span>
@@ -97,83 +104,87 @@ export default function UserTopbar() {
                   </div>
                 )}
 
-
                 {!isLoading && results.length === 0 && (
                   <div className="search-empty">No users found</div>
                 )}
 
-                {results.map((user) => (
+                {results.map((u) => (
                   <div
-                    key={user.id}
+                    key={u.id}
                     className="search-item"
                     onClick={() => {
                       setSearch("");
-                      navigate(`/public/users/${user.id}`);
+                      setIsMobileSearchOpen(false);
+                      navigate(`/public/users/${u.id}`);
                     }}
                   >
-                    {user.profile_image ? (
-                      <img src={user.profile_image} alt="avatar" />
+                    {u.profile_image ? (
+                      <img src={u.profile_image} alt="avatar" />
                     ) : (
                       <div className="search-avatar-fallback">
-                        {user.first_name?.[0]}
-                        {user.last_name?.[0]}
+                        {u.first_name?.[0]}
+                        {u.last_name?.[0]}
                       </div>
                     )}
 
                     <div>
                       <div className="search-user-name">
-                        {user.first_name} {user.middle_name} {user.last_name}
+                        {u.first_name} {u.middle_name} {u.last_name}
                       </div>
                       <div className="search-user-title">
-                        {user.profile_title}
+                        {u.profile_title}
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
             )}
-
           </div>
-        </div> */}
-
+        </div>
 
         {/* Right */}
-        <div className="d-flex align-items-center gap-3">
+        <div className={`align-items-center gap-3 ${isMobileSearchOpen ? 'd-none' : 'd-flex'}`}>
+          {/* Mobile Search Toggle Icon */}
+          <div className="d-flex d-md-none">
+            <button 
+              className="btn btn-light rounded-circle icon-btn border"
+              onClick={() => setIsMobileSearchOpen(true)}
+            >
+              <i className="ri-search-line fs-5"></i>
+            </button>
+          </div>
 
-          {/* <button
-            className="btn btn-light rounded-circle icon-btn"
-            onClick={() => {
-              reload();
-              const btn = document.querySelector(".icon-btn");
-              btn.classList.add("spin-once");
+          <div className="hidden lg:flex gap-2">
+            <Link to="/user" className="btn btn-light rounded-circle icon-btn">
+              <i className="ri-home-5-line fs-4"></i>
+            </Link>
 
-              setTimeout(() => btn.classList.remove("spin-once"), 600);
-            }}
-            title="Refresh Page"
-          >
-            <i className="ri-refresh-line"></i>
-          </button> */}
+            <Link to="/posts" className="btn btn-light rounded-circle icon-btn">
+              <i className="ri-pulse-line text-dark fs-4"></i>
+            </Link>
 
-          <Link to="/user" className="btn btn-light rounded-circle icon-btn">
-            <i className="ri-home-5-line fs-4"></i>
-          </Link>
+            <Link
+              to="/my-bookshelf"
+              className="btn btn-light rounded-circle icon-btn"
+            >
+              <i className="ri-book-open-line fs-4"></i>
+            </Link>
 
-          <Link to="/posts" className="btn btn-light rounded-circle icon-btn">
-            <i className="ri-pulse-line text-dark fs-4"></i>
-          </Link>
+            <Link
+              to="/inbox"
+              className="btn btn-light rounded-circle icon-btn position-relative"
+            >
+              <i className="ri-message-3-line fs-4"></i>
 
+              {totalUnreadConversations > 0 && (
+                <span className="message-badge">
+                  {totalUnreadConversations}
+                </span>
+              )}
+            </Link>
 
-          <Link to="/my-bookshelf" className="btn btn-light rounded-circle icon-btn">
-            <i className="ri-book-open-line fs-4"></i>
-          </Link>
-
-          <Link to="/inbox" className="btn btn-light rounded-circle icon-btn">
-            <i className="ri-message-3-line fs-4"></i>
-          </Link>
-
-
-          <NotificationBell />
-
+            <NotificationBell />
+          </div>
 
           {/* Profile + Name */}
           <div className="dropdown">
@@ -205,12 +216,12 @@ export default function UserTopbar() {
                 </div>
               )}
 
-
-
               {/* Show user name */}
-              <div className="d-flex flex-column text-start lh-1">
-                <span className="fw-semibold">{user?.first_name} {user?.last_name}</span>
-                <small className="text-muted" >{user?.profile_title}</small>
+              <div className="d-none d-md-flex flex-column text-start lh-1">
+                <span className="fw-semibold">
+                  {user?.first_name} {user?.last_name}
+                </span>
+                <small className="text-muted">{user?.profile_title}</small>
               </div>
 
               <i className="ri-arrow-down-s-line"></i>
@@ -229,7 +240,9 @@ export default function UserTopbar() {
                 </Link>
               </li>
 
-              <li><hr className="dropdown-divider" /></li>
+              <li>
+                <hr className="dropdown-divider" />
+              </li>
 
               <li>
                 <button className="dropdown-item text-danger" onClick={logout}>
@@ -237,7 +250,6 @@ export default function UserTopbar() {
                 </button>
               </li>
             </ul>
-
           </div>
         </div>
       </div>

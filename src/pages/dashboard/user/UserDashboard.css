@@ -180,3 +180,47 @@
   animation: softPulse 2.5s ease-in-out infinite;
   transform-origin: center;
 }
+
+/* ===== RESPONSIVE DASHBOARD ===== */
+@media (max-width: 768px) {
+  .card-box {
+    padding: 16px;
+  }
+
+  .stat-box {
+    padding: 14px;
+  }
+
+  .stat-icon {
+    font-size: 24px;
+  }
+
+  .recommend-box {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-box {
+    padding: 12px;
+  }
+
+  .stat-box {
+    padding: 10px;
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .session-item {
+    padding: 10px !important;
+  }
+
+  .session-icon {
+    font-size: 20px;
+  }
+
+  .dashboard-title {
+    font-size: 1.3rem;
+  }
+}

@@ -258,3 +258,42 @@
 .dropdown-list li:hover {
   background-color: #f1f1f1;
 }
+
+/* ===== RESPONSIVE PROFILE EDIT ===== */
+@media (max-width: 768px) {
+  .profile-edit-wrapper {
+    max-width: 100% !important;
+    padding: 0 8px;
+  }
+
+  .modern-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .modern-tabs .nav-link {
+    white-space: nowrap;
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .form-section {
+    padding: 16px 0;
+  }
+
+  .section-title {
+    font-size: 0.85rem;
+  }
+
+  .form-label {
+    font-size: 0.78rem;
+  }
+
+  .form-control {
+    padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+}

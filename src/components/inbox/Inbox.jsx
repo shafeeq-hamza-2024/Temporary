@@ -79,7 +79,7 @@ export default function Inbox() {
   }
 
   return (
-    <div className="inbox-container d-flex">
+    <div className={`inbox-container d-flex ${active ? 'mobile-chat-active' : ''}`}>
 
       {/* LEFT Sidebar */}
       <div className="inbox-left border-end slide-left">
@@ -135,6 +135,12 @@ export default function Inbox() {
           <>
             {/* Header */}
             <div className="p-3 border-bottom d-flex align-items-center gap-3">
+              <button
+                className="mobile-back-btn d-md-none"
+                onClick={() => nav('/inbox')}
+              >
+                <i className="ri-arrow-left-line"></i>
+              </button>
               {active.user.profile_image ? (
                 <img
                   src={active.user.profile_image}

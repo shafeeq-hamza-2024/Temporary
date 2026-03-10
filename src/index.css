@@ -69,11 +69,20 @@ button:focus-visible {
   -ms-overflow-style: none; /* IE and Edge */
 }
 
-.scroll-container::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+/* ===== RESPONSIVE FOUNDATION ===== */
+html,
+body {
+  overflow-x: clip;
 }
 
-@theme {
-  --color-primary: #70a83e;
-  --color-skin: rgb(243, 242, 239);
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 2rem;
+  }
 }

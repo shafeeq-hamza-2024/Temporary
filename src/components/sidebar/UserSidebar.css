@@ -101,11 +101,6 @@
   transition: transform 0.3s ease;
 }
 
-/* OPEN STATE */
-.sidebar.open {
-  transform: translateX(0);
-}
-
 /* OVERLAY */
 .sidebar-overlay {
   position: fixed;
@@ -125,23 +120,47 @@
 /* HAMBURGER */
 .sidebar-toggle {
   position: fixed;
-  top: 16px;
-  left: 16px;
+  top: 10px;
+  left: 10px;
   z-index: 1100;
-  background: #fff;
+  background: transparent;
+  color: #70a83e;
   border: none;
-  padding: 8px 10px;
-  font-size: 1.6rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  padding: 4px 8px;
+  font-size: 1.8rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+}
+
+@media (max-width: 576px) {
+  .sidebar-toggle {
+    top: 6px;
+    left: 8px;
+  }
+}
+
+/* MOBILE OVERRIDES */
+@media (max-width: 991px) {
+  .sidebar {
+    padding-top: 60px !important; /* Clear the hamburger menu area */
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
 }
 
 /* DESKTOP */
 @media (min-width: 992px) {
   .sidebar {
-    position: relative;
+    position: sticky;
+    top: 70px;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
     transform: none;
-    height: auto;
   }
 
   .sidebar-overlay,

@@ -6,8 +6,7 @@
 
 .app-body {
   display: flex;
-  flex: 1;
-  overflow: auto;
+  margin-top: 70px;
 }
 
 main.content {
@@ -83,4 +82,32 @@ main.content {
 
 a:hover {
   color: #70a83e;
+}
+
+/* ===== RESPONSIVE LAYOUT ===== */
+@media (max-width: 992px) {
+  .app-body {
+    flex-direction: column;
+    margin-top: 70px;
+  }
+
+  main.content {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-body {
+    margin-top: 60px;
+  }
+}
+
+@media (max-width: 576px) {
+  .app-body {
+    margin-top: 56px;
+  }
+  main.content {
+    padding: 8px;
+  }
 }

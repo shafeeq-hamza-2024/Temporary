@@ -10,7 +10,11 @@ import './AppLayout.css';
 export default function InboxLayout() {
   const user = useLoaderData(); // injected by router
 
-  
+  const Sidebar = {
+    speaker: SpeakerSidebar,
+    user: UserSidebar
+  }[user.role];
+
   const Topbar = {
     speaker: SpeakerTopbar,
     user: UserTopbarNew
@@ -27,8 +31,8 @@ export default function InboxLayout() {
       <Topbar />
       
       <div className="app-body">
-        
-        <main className="content">
+        <Sidebar />
+        <main className="content overflow-y-auto">
           <Outlet />
         </main>
       </div>

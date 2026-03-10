@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router";
-import "./UserSidebar.css";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import useLogout from "../../hooks/logout";
 import { useUser } from "../../hooks/users/useUsers";
+import "./UserSidebar.css";
 
 export default function UserSidebar() {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -10,7 +10,6 @@ export default function UserSidebar() {
 
   const { data: user, isLoading } = useUser(userId);
   const [isOpen, setIsOpen] = useState(false);
-
 
   const isVerified = user?.is_verified === true;
   const isVerifiedLite = user?.is_verified_lite == true;
@@ -25,7 +24,6 @@ export default function UserSidebar() {
   const toggle = (label) =>
     setOpenMap((old) => ({ ...old, [label]: !old[label] }));
 
-
   // MENU TREE
   const menuTree = [
     {
@@ -35,50 +33,46 @@ export default function UserSidebar() {
       path: "/user",
     },
 
-
     {
       label: "GATC",
       icon: "ri-building-4-line",
       color: "#0abde3",
       children: [
         // Always visible
-        { label: "GATC Lite (M&M)-NISER", path: "/gatclite"},
+        { label: "GATC Lite (M&M)-NISER", path: "/gatclite" },
         { label: "Programs", path: "/gatc/program" },
         { label: "Speakers", path: "/gatc/speakers" },
         { label: "My Handshakes", path: "/handshakes" },
-          // children: [
-          //   { label: "Programs", path: "/gatc/program" },
-          //   { label: "Speakers", path: "/gatc/speakers" },
-          //   { label: "My Handshakes", path: "/handshakes" },
-          // ]
-         
+        // children: [
+        //   { label: "Programs", path: "/gatc/program" },
+        //   { label: "Speakers", path: "/gatc/speakers" },
+        //   { label: "My Handshakes", path: "/handshakes" },
+        // ]
+
         ...(isVerifiedLite
           ? [
-            
-            // { label: "Dashboard", path: "/gatc/dashboard" },
-            { label: "Programs", path: "/gatc/program" },
-            { label: "Speakers", path: "/gatc/speakers" },
-            // { label: "Participants", path: "/gatc/participants" },
-            { label: "My Handshakes", path: "/handshakes" },
-          ]
+              // { label: "Dashboard", path: "/gatc/dashboard" },
+              { label: "Programs", path: "/gatc/program" },
+              { label: "Speakers", path: "/gatc/speakers" },
+              // { label: "Participants", path: "/gatc/participants" },
+              { label: "My Handshakes", path: "/handshakes" },
+            ]
           : []),
 
-  // Divider
-    { type: "divider" },
-
+        // Divider
+        { type: "divider" },
 
         { label: "GATC 2026", path: "/gatc2026" },
 
         // 🔐 Visible ONLY after payment verification
         ...(isVerified
           ? [
-            
-            { label: "Dashboard", path: "/gatc/dashboard" },
-            { label: "Programs", path: "/gatc/program" },
-            { label: "Speakers", path: "/gatc/speakers" },
-            // { label: "Participants", path: "/gatc/participants" },
-            { label: "My Handshakes", path: "/handshakes" },
-          ]
+              { label: "Dashboard", path: "/gatc/dashboard" },
+              { label: "Programs", path: "/gatc/program" },
+              { label: "Speakers", path: "/gatc/speakers" },
+              // { label: "Participants", path: "/gatc/participants" },
+              { label: "My Handshakes", path: "/handshakes" },
+            ]
           : []),
       ],
     },
@@ -128,7 +122,6 @@ export default function UserSidebar() {
 
     // GATC
 
-
     // Divider
     { type: "divider" },
 
@@ -146,7 +139,6 @@ export default function UserSidebar() {
     }
   }, [user]);
 
-
   // AUTO-OPEN ANY PARENT WHOSE CHILD MATCHES THE URL
   useEffect(() => {
     const openState = {};
@@ -154,8 +146,8 @@ export default function UserSidebar() {
     menuTree.forEach((item) => {
       if (!item.children) return;
 
-      const childMatch = item.children.some(
-        (c) => currentPath.startsWith(c.path)
+      const childMatch = item.children.some((c) =>
+        currentPath.startsWith(c.path),
       );
 
       if (childMatch) openState[item.label] = true;
@@ -172,21 +164,17 @@ export default function UserSidebar() {
     }
   }, [isOpen]);
 
-
-
   if (isLoading) return null; // or loader
-
-
 
   return (
     <>
       {/* HAMBURGER (MOBILE ONLY) */}
       <button
         className="sidebar-toggle d-lg-none"
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsOpen(!isOpen)}
         aria-label="Open menu"
       >
-        <i className="ri-menu-line"></i>
+        <i className="ri-menu-line text-primary"></i>
       </button>
 
       {/* OVERLAY */}
@@ -208,14 +196,13 @@ export default function UserSidebar() {
               openMap={openMap}
               toggle={toggle}
               currentPath={currentPath}
-              closeSidebar={() => setIsOpen(false)}   // 👈 important
+              closeSidebar={() => setIsOpen(false)} // 👈 important
             />
           ))}
         </ul>
       </aside>
     </>
   );
-
 }
 
 /* ======================================================
@@ -236,8 +223,7 @@ function MenuItem({ item, nav, openMap, toggle, currentPath, closeSidebar }) {
 
   // Active if any child matches URL prefix
   const isParentActive =
-    hasChildren &&
-    item.children.some((c) => currentPath.startsWith(c.path));
+    hasChildren && item.children.some((c) => currentPath.startsWith(c.path));
 
   return (
     <>
@@ -257,12 +243,9 @@ function MenuItem({ item, nav, openMap, toggle, currentPath, closeSidebar }) {
             toggle(item.label);
           } else {
             nav(item.path);
-            closeSidebar?.();     // ✅ close on mobile
+            closeSidebar?.(); // ✅ close on mobile
           }
         }}
-
-
-
       >
         {/* Icon */}
         <i
@@ -271,13 +254,12 @@ function MenuItem({ item, nav, openMap, toggle, currentPath, closeSidebar }) {
         ></i>
 
         {/* Label */}
-        <span className="flex-grow-1">{item.label}</span>
+        <span className="grow">{item.label}</span>
 
         {/* Dropdown Arrow */}
         {hasChildren && (
           <i
-            className={`ri-arrow-right-s-line arrow ${isOpen ? "rotate" : ""
-              }`}
+            className={`ri-arrow-right-s-line arrow ${isOpen ? "rotate" : ""}`}
           ></i>
         )}
       </li>

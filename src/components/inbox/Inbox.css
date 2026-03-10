@@ -213,3 +213,59 @@
   font-size: 14px;
   text-transform: uppercase;
 }
+
+/* ===== RESPONSIVE INBOX ===== */
+@media (max-width: 768px) {
+  .inbox-container {
+    height: 100vh;
+    flex-direction: column;
+  }
+
+  .inbox-left {
+    width: 100%;
+  }
+
+  .inbox-right {
+    width: 100%;
+  }
+
+  /* When chat is active, hide conversation list */
+  .inbox-container.mobile-chat-active .inbox-left {
+    display: none;
+  }
+
+  /* When no chat is active, hide chat panel */
+  .inbox-container:not(.mobile-chat-active) .inbox-right {
+    display: none;
+  }
+
+  .conversation-list {
+    max-height: calc(100vh - 130px);
+  }
+
+  /* Mobile back button */
+  .mobile-back-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #333;
+    padding: 4px 8px;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 576px) {
+  .inbox-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .chat-bubble {
+    max-width: 85%;
+    font-size: 0.85rem;
+  }
+
+  .chat-input-area {
+    padding: 8px !important;
+  }
+}

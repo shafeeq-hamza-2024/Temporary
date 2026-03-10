@@ -27,7 +27,6 @@
 
 .modal-header button {
   border: none;
-  background: none;
   font-size: 22px;
   cursor: pointer;
 }
@@ -82,4 +81,31 @@
   border-top: 1px solid #eee;
   display: flex;
   justify-content: space-between;
+}
+
+/* ===== RESPONSIVE ADD TO SHELF MODAL ===== */
+@media (max-width: 768px) {
+  .bookshelf-modal {
+    width: 95%;
+  }
+}
+
+@media (max-width: 576px) {
+  .bookshelf-modal {
+    width: 98%;
+    max-height: 90vh;
+  }
+
+  .bookshelf-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+  }
+
+  .modal-header {
+    padding: 10px 14px;
+  }
+
+  .modal-footer {
+    padding: 10px 14px;
+  }
 }

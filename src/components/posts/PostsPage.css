@@ -834,3 +834,86 @@
   overflow: hidden;
   background: #fff;
 }
+
+/* ===== RESPONSIVE POSTS ===== */
+@media (max-width: 992px) {
+  .profile-card,
+  .online-card,
+  .activity-card {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .post-card {
+    border-radius: 10px;
+  }
+
+  .post-media-grid.images-1 {
+    height: 280px;
+  }
+
+  .post-media-grid.images-2 img {
+    height: 180px;
+  }
+
+  .post-media-grid.images-3 {
+    height: 260px;
+  }
+
+  .follow-modal {
+    width: 90%;
+  }
+
+  .follow-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 576px) {
+  .post-avatar {
+    width: 38px;
+    height: 38px;
+  }
+
+  .post-media-grid.images-1 {
+    height: 220px;
+  }
+
+  .post-media-grid.images-2 img {
+    height: 140px;
+  }
+
+  .post-media-grid.images-3 {
+    height: 200px;
+  }
+
+  .post-media-grid.images-4 .media-wrapper {
+    height: 140px;
+  }
+
+  .chat-bubble {
+    max-width: 80%;
+  }
+
+  .viewer-nav {
+    font-size: 24px;
+    padding: 8px 12px;
+  }
+
+  .viewer-nav.left {
+    left: 8px;
+  }
+
+  .viewer-nav.right {
+    right: 8px;
+  }
+
+  .pending-item,
+  .follow-item {
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+}

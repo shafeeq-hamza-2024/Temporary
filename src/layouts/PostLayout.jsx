@@ -11,7 +11,11 @@ import UserTopbarNew from "../components/topbar/UserTopbarNew";
 export default function PostLayout() {
   const user = useLoaderData(); // injected by router
 
-  
+  const Sidebar = {
+    speaker: SpeakerSidebar,
+    user: UserSidebar
+  }[user.role];
+
   const Topbar = {
     speaker: SpeakerTopbar,
     user: UserTopbarNew
@@ -28,8 +32,8 @@ export default function PostLayout() {
       <Topbar />
       
       <div className="app-body">
-        
-        <main className="content">
+        <Sidebar />
+        <main className="content overflow-y-auto">
           <Outlet />
         </main>
       </div>
