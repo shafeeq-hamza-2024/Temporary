@@ -462,7 +462,7 @@ export default function PostsPage() {
                 {/* PROFILE IMAGE */}
                 {profile?.profile_image ? (
                   <img
-                    src={profile.profile_image}
+                    src={profile?.profile_image}
                     className="rounded-circle mb-2"
                     width="80"
                     height="80"
@@ -616,9 +616,9 @@ export default function PostsPage() {
                     {followers.map((user) => (
                       <div key={user.id} className="follow-item">
                         <div className="follow-left">
-                          {user.profile_image ? (
+                          {user?.profile_image ? (
                             <img
-                              src={user.profile_image}
+                              src={user?.profile_image}
                               className="follow-avatar"
                               alt="avatar"
                             />
@@ -698,9 +698,9 @@ export default function PostsPage() {
                     {following.map((user) => (
                       <div key={user.id} className="follow-item">
                         <div className="follow-left">
-                          {user.profile_image ? (
+                          {user?.profile_image ? (
                             <img
-                              src={user.profile_image}
+                              src={user?.profile_image}
                               className="follow-avatar"
                               alt="avatar"
                             />
@@ -770,9 +770,9 @@ export default function PostsPage() {
                     {incoming.map((req) => (
                       <div key={req.id} className="follow-item">
                         <div className="follow-left">
-                          {req.follower.profile_image ? (
+                          {req.follower?.profile_image ? (
                             <img
-                              src={req.follower.profile_image}
+                              src={req.follower?.profile_image}
                               className="follow-avatar"
                               alt="avatar"
                             />
@@ -855,9 +855,9 @@ export default function PostsPage() {
                         className="pending-item"
                       >
                         <div className="pending-left">
-                          {req.following.profile_image ? (
+                          {req.following?.profile_image ? (
                             <img
-                              src={req.following.profile_image}
+                              src={req.following?.profile_image}
                               className="pending-avatar"
                               alt="avatar"
                             />
@@ -914,7 +914,7 @@ export default function PostsPage() {
                   <div className="d-flex gap-3 mb-3">
                     {profile?.profile_image ? (
                       <img
-                        src={profile.profile_image}
+                        src={profile?.profile_image}
                         className="rounded-circle"
                         width="48"
                         height="48"
@@ -1009,9 +1009,9 @@ export default function PostsPage() {
 
                     {/* HEADER */}
                     <div className="d-flex gap-3 mb-2">
-                      {post.user.profile_image ? (
+                      {post.user?.profile_image ? (
                         <img
-                          src={post.user.profile_image}
+                          src={post.user?.profile_image}
                           className="rounded-circle post-avatar"
                           width="48"
                           height="48"
@@ -1161,9 +1161,9 @@ export default function PostsPage() {
                           <div key={comment.id} className="d-flex gap-2 mb-2">
 
                             {/* Avatar */}
-                            {comment.user.profile_image ? (
+                            {comment.user?.profile_image ? (
                               <img
-                                src={comment.user.profile_image}
+                                src={comment.user?.profile_image}
                                 className="rounded-circle"
                                 width="32"
                                 height="32"
@@ -1651,7 +1651,7 @@ export default function PostsPage() {
                     <div className="d-flex gap-3 mb-2">
                       {profile?.profile_image ? (
                         <img
-                          src={profile.profile_image}
+                          src={profile?.profile_image}
                           className="rounded-circle post-avatar"
                           width="48"
                           height="48"
