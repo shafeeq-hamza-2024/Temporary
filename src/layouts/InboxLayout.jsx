@@ -1,37 +1,33 @@
+import { useEffect } from "react";
 import { Outlet, useLoaderData } from "react-router";
 import SpeakerSidebar from "../components/sidebar/SpeakerSidebar";
 import UserSidebar from "../components/sidebar/UserSidebar";
 import SpeakerTopbar from "../components/topbar/SpeakerTopbar";
-import UserTopbar from "../components/topbar/UserTopbar";
-import { useEffect } from "react";
 import UserTopbarNew from "../components/topbar/UserTopbarNew";
-import './AppLayout.css';
+import "./AppLayout.css";
 
 export default function InboxLayout() {
   const user = useLoaderData(); // injected by router
 
   const Sidebar = {
     speaker: SpeakerSidebar,
-    user: UserSidebar
+    user: UserSidebar,
   }[user.role];
 
   const Topbar = {
     speaker: SpeakerTopbar,
-    user: UserTopbarNew
+    user: UserTopbarNew,
   }[user.role];
 
-  useEffect(()=>{
-    console.log("user",user);
+  useEffect(() => {
+    console.log("user", user);
   });
-  
 
   return (
     <div className="app-layout">
-        
       <Topbar />
-      
+
       <div className="app-body">
-        <Sidebar />
         <main className="content overflow-y-auto">
           <Outlet />
         </main>
