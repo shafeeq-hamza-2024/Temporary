@@ -109,7 +109,7 @@ export default function ScholarSearch() {
               <div className="mb-4 text-center">
                 <div className="w-full flex justify-center items-center">
                   <img
-                    src="images/plasma.jpeg"
+                    src="/images/plasma.jpeg"
                     alt="PubMed Search"
                     style={{
                       height: "90px",
