@@ -41,7 +41,8 @@ const categoryConfig: Record<
 
 const PageCard = ({ page }: { page: AllPagesItem }) => {
   const navigate = useNavigate();
-  const config = categoryConfig[page.category] ?? categoryConfig[PageCategory.GENERAL];
+  const config =
+    categoryConfig[page.category] ?? categoryConfig[PageCategory.GENERAL];
 
   const description =
     page.bio ||
@@ -50,16 +51,15 @@ const PageCard = ({ page }: { page: AllPagesItem }) => {
     page.community_details ||
     null;
 
-  const subtitle =
-    page.company_name || page.event_name || null;
+  const subtitle = page.company_name || page.event_name || null;
 
   return (
     <div
       onClick={() => navigate(`/pages/${page.id}`)}
-      className="group bg-white rounded-xl border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md hover:border-gray-300 transition-all duration-200"
+      className="group bg-white rounded-xl border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md hover:border-gray-300 transition-all duration-200 flex flex-col h-full"
     >
       {/* Cover Image */}
-      <div className="w-full h-28 bg-gradient-to-br from-primary/10 to-primary/5 relative overflow-hidden">
+      <div className="w-full h-28 bg-linear-to-br from-primary/10 to-primary/5 relative overflow-hidden">
         {page.cover_image_url ? (
           <img
             src={page.cover_image_url}
@@ -76,9 +76,9 @@ const PageCard = ({ page }: { page: AllPagesItem }) => {
       </div>
 
       {/* Content */}
-      <div className="p-4 flex flex-col gap-2.5">
+      <div className="p-4 flex flex-col gap-2.5 flex-1">
         {/* Profile + Name */}
-        <div className="flex items-start gap-3 -mt-10 relative z-10">
+        <div className="flex items-start gap-3 -mt-10 relative z-10 w-full">
           <div className="w-14 h-14 rounded-full border-2 border-white shadow-sm bg-white overflow-hidden shrink-0">
             {page.profile_image_url ? (
               <img
@@ -92,13 +92,15 @@ const PageCard = ({ page }: { page: AllPagesItem }) => {
               </div>
             )}
           </div>
-          <div className="flex flex-col mt-8 min-w-0">
+          <div className="flex flex-col mt-8 min-w-0 w-full">
             <h3 className="font-semibold text-gray-900 text-sm truncate group-hover:text-primary transition-colors">
               {page.page_name}
             </h3>
-            {subtitle && (
-              <p className="text-xs text-gray-500 truncate">{subtitle}</p>
-            )}
+            <div className="min-h-[16px] mt-0.5">
+              {subtitle && (
+                <p className="text-xs text-gray-500 truncate">{subtitle}</p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -113,14 +115,18 @@ const PageCard = ({ page }: { page: AllPagesItem }) => {
         </div>
 
         {/* Description */}
-        {description && (
-          <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
-            {description}
-          </p>
-        )}
+        <div className="h-[40px] mt-1">
+          {description ? (
+            <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed">
+              {description}
+            </p>
+          ) : (
+            <p className="text-xs text-gray-400 italic">No description provided.</p>
+          )}
+        </div>
 
         {/* Footer Metadata */}
-        <div className="flex items-center gap-3 pt-1 border-t border-gray-100 text-gray-400">
+        <div className="flex items-center gap-3 pt-3 mt-auto border-t border-gray-100 text-gray-400">
           {page.website && (
             <span className="inline-flex items-center gap-1 text-[11px] truncate max-w-[120px]">
               <MdLanguage size={12} />

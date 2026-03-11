@@ -86,3 +86,7 @@ body {
     font-size: 2rem;
   }
 }
+
+@theme {
+  --color-primary: #70a83e;
+}

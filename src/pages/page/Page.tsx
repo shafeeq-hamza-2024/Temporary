@@ -1,4 +1,3 @@
-import FilterDialog from "@/components/pages/FilterDialog";
 import PageCard from "@/components/pages/PageCard";
 import { PagesFilter, PagesSort } from "@/types/pages/basic.types";
 import { useEffect, useMemo, useState } from "react";
@@ -34,9 +33,8 @@ const Page = () => {
   console.log(typeFilter);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<PagesFilter>(PagesFilter.ALL);
-  const [openFilter, setOpenFilter] = useState<boolean>(false);
   const [openCreate, setOpenCreate] = useState<boolean>(false);
-  const [sort, setSort] = useState<PagesSort>(PagesSort.ASC);
+  const [sort] = useState<PagesSort>(PagesSort.ASC);
 
   const isMyPages = filter === PagesFilter.MY_PAGES;
   const allPagesQuery = usePages();
@@ -75,86 +73,85 @@ const Page = () => {
 
   return (
     <>
-      <div className="w-full h-full bg-skin p-2 flex flex-col gap-2">
-        <AllPagesHeader
-          search={search}
-          setSearch={setSearch}
-          sort={sort}
-          setSort={(value: PagesSort) => setSort(value)}
-          setOpenFilter={setOpenFilter}
-          setOpenCreate={setOpenCreate}
-        />
+      <div className="w-full h-full bg-gray-50/50 flex flex-col items-center">
+        <div className="w-full max-w-7xl h-full flex flex-col p-3 sm:p-5 lg:p-6 pb-20">
+          <AllPagesHeader
+            search={search}
+            setSearch={setSearch}
+            filter={filter}
+            setFilter={setFilter}
+            setOpenCreate={setOpenCreate}
+          />
 
-        <div className="w-full flex-1 overflow-y-auto">
-          {/* Loading State */}
-          {isLoading && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-2">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <PageSkeleton key={i} />
-              ))}
-            </div>
-          )}
-
-          {/* Error State */}
-          {isError && (
-            <div className="flex flex-col items-center justify-center py-20 gap-3">
-              <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center">
-                <span className="text-red-500 text-2xl">!</span>
+          <div className="w-full flex-1 mt-2">
+            {/* Loading State */}
+            {isLoading && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-2">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <PageSkeleton key={i} />
+                ))}
               </div>
-              <p className="text-gray-600 font-medium">Failed to load pages</p>
-              <p className="text-sm text-gray-400">
-                {error?.message || "Something went wrong"}
-              </p>
-              <button
-                onClick={() => refetch()}
-                className="mt-2 px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary/90 transition-colors"
-              >
-                Try Again
-              </button>
-            </div>
-          )}
+            )}
 
-          {/* Empty State */}
-          {!isLoading && !isError && filteredPages.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 gap-3">
-              <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
-                <span className="text-gray-400 text-2xl">📄</span>
-              </div>
-              <p className="text-gray-600 font-medium">
-                {search.trim() ? "No pages match your search" : "No pages yet"}
-              </p>
-              <p className="text-sm text-gray-400">
-                {search.trim()
-                  ? "Try a different search term"
-                  : "Create your first page to get started"}
-              </p>
-              {!search.trim() && (
+            {/* Error State */}
+            {isError && (
+              <div className="flex flex-col items-center justify-center py-20 gap-3">
+                <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center">
+                  <span className="text-red-500 text-2xl">!</span>
+                </div>
+                <p className="text-gray-600 font-medium">
+                  Failed to load pages
+                </p>
+                <p className="text-sm text-gray-400">
+                  {error?.message || "Something went wrong"}
+                </p>
                 <button
-                  onClick={() => setOpenCreate(true)}
+                  onClick={() => refetch()}
                   className="mt-2 px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary/90 transition-colors"
                 >
-                  Create Page
+                  Try Again
                 </button>
-              )}
-            </div>
-          )}
+              </div>
+            )}
 
-          {/* Pages Grid */}
-          {!isLoading && !isError && filteredPages.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-2">
-              {filteredPages.map((page) => (
-                <PageCard key={page.id} page={page} />
-              ))}
-            </div>
-          )}
+            {/* Empty State */}
+            {!isLoading && !isError && filteredPages.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-20 gap-3">
+                <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
+                  <span className="text-gray-400 text-2xl">📄</span>
+                </div>
+                <p className="text-gray-600 font-medium">
+                  {search.trim()
+                    ? "No pages match your search"
+                    : "No pages yet"}
+                </p>
+                <p className="text-sm text-gray-400">
+                  {search.trim()
+                    ? "Try a different search term"
+                    : "Create your first page to get started"}
+                </p>
+                {!search.trim() && (
+                  <button
+                    onClick={() => setOpenCreate(true)}
+                    className="mt-2 px-4 py-2 bg-primary text-white rounded-lg text-sm hover:bg-primary/90 transition-colors"
+                  >
+                    Create Page
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* Pages Grid */}
+            {!isLoading && !isError && filteredPages.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 py-2">
+                {filteredPages.map((page) => (
+                  <PageCard key={page.id} page={page} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-      <FilterDialog
-        open={openFilter}
-        setOpen={(value: boolean) => setOpenFilter(value)}
-        value={filter}
-        setValue={(value: PagesFilter) => setFilter(value)}
-      />
       <CreateNewPage open={openCreate} setOpen={setOpenCreate} />
     </>
   );
