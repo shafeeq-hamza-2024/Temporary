@@ -42,6 +42,7 @@ export default function UserSidebar() {
         { label: "GATC Lite (M&M)-NISER", path: "/gatclite" },
         { label: "Programs", path: "/gatc/program" },
         { label: "Speakers", path: "/gatc/speakers" },
+        { label: "Participants", path: "/gatc/participants" },
         { label: "My Handshakes", path: "/handshakes" },
         // children: [
         //   { label: "Programs", path: "/gatc/program" },
@@ -54,7 +55,7 @@ export default function UserSidebar() {
             // { label: "Dashboard", path: "/gatc/dashboard" },
             { label: "Programs", path: "/gatc/program" },
             { label: "Speakers", path: "/gatc/speakers" },
-            // { label: "Participants", path: "/gatc/participants" },
+            { label: "Participants", path: "/gatc/participants" },
             { label: "My Handshakes", path: "/handshakes" },
           ]
           : []),
@@ -70,7 +71,7 @@ export default function UserSidebar() {
             { label: "Dashboard", path: "/gatc/dashboard" },
             { label: "Programs", path: "/gatc/program" },
             { label: "Speakers", path: "/gatc/speakers" },
-            // { label: "Participants", path: "/gatc/participants" },
+            { label: "Participants", path: "/gatc/participants" },
             { label: "My Handshakes", path: "/handshakes" },
           ]
           : []),

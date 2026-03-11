@@ -19,7 +19,7 @@ api.interceptors.request.use(
     if (config.method?.toLowerCase() === "get") {
       config.params = {
         ...(config.params || {}),
-        _t: Date.now(),
+        // _t: Date.now(),
       };
     }
 
