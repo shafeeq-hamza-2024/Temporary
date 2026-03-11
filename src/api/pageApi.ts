@@ -7,12 +7,25 @@ import {
 
 // -------------------------------------
 // CREATE PAGE
-// POST /pages/
+// POST /pages/ (multipart/form-data for image uploads)
 // -------------------------------------
 export const createPage = async (
   payload: CreatePagePayload,
 ): Promise<AllPagesItem> => {
-  const res = await api.post("/pages/", payload);
+  const formData = new FormData();
+
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    if (value instanceof File) {
+      formData.append(key, value);
+    } else {
+      formData.append(key, String(value));
+    }
+  });
+
+  const res = await api.post("/pages/", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return res.data;
 };
 

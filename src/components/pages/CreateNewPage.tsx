@@ -172,6 +172,9 @@ const CreateNewPage = ({
       if (data.communityDetails?.trim()) payload.community_details = data.communityDetails.trim();
     }
 
+    if (data.coverImage) payload.cover_image = data.coverImage;
+    if (data.profileImage) payload.profile_image = data.profileImage;
+
     return payload;
   };
 

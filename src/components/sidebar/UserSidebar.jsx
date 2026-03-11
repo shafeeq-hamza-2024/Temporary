@@ -51,12 +51,12 @@ export default function UserSidebar() {
 
         ...(isVerifiedLite
           ? [
-            // { label: "Dashboard", path: "/gatc/dashboard" },
-            { label: "Programs", path: "/gatc/program" },
-            { label: "Speakers", path: "/gatc/speakers" },
-            // { label: "Participants", path: "/gatc/participants" },
-            { label: "My Handshakes", path: "/handshakes" },
-          ]
+              // { label: "Dashboard", path: "/gatc/dashboard" },
+              { label: "Programs", path: "/gatc/program" },
+              { label: "Speakers", path: "/gatc/speakers" },
+              // { label: "Participants", path: "/gatc/participants" },
+              { label: "My Handshakes", path: "/handshakes" },
+            ]
           : []),
 
         // Divider
@@ -67,12 +67,12 @@ export default function UserSidebar() {
         // 🔐 Visible ONLY after payment verification
         ...(isVerified
           ? [
-            { label: "Dashboard", path: "/gatc/dashboard" },
-            { label: "Programs", path: "/gatc/program" },
-            { label: "Speakers", path: "/gatc/speakers" },
-            // { label: "Participants", path: "/gatc/participants" },
-            { label: "My Handshakes", path: "/handshakes" },
-          ]
+              { label: "Dashboard", path: "/gatc/dashboard" },
+              { label: "Programs", path: "/gatc/program" },
+              { label: "Speakers", path: "/gatc/speakers" },
+              // { label: "Participants", path: "/gatc/participants" },
+              { label: "My Handshakes", path: "/handshakes" },
+            ]
           : []),
       ],
     },
@@ -271,7 +271,7 @@ function MenuItem({ item, nav, openMap, toggle, currentPath, closeSidebar }) {
           <div className="submenu-inner">
             {item.children.map((child) => (
               <MenuItem
-                key={child.label}
+                key={`${item.label}-${child.label}`}
                 item={child}
                 nav={nav}
                 openMap={openMap}

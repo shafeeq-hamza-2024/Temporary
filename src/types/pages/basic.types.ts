@@ -61,6 +61,8 @@ export type CreatePagePayload = {
   event_description?: string;
   tags?: string;
   community_details?: string;
+  cover_image?: File;
+  profile_image?: File;
 };
 
 export type CreatePageFormErrors = {

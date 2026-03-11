@@ -3,7 +3,6 @@ import SpeakerSidebar from "../components/sidebar/SpeakerSidebar";
 import UserSidebar from "../components/sidebar/UserSidebar";
 import SpeakerTopbar from "../components/topbar/SpeakerTopbar";
 import UserTopbar from "../components/topbar/UserTopbar";
-import { useEffect } from "react";
 
 import "./AppLayout.css";
 
@@ -19,10 +18,6 @@ export default function AppLayout() {
     speaker: SpeakerTopbar,
     user: UserTopbar,
   }[user.role];
-
-  useEffect(() => {
-    console.log("user", user);
-  });
 
   return (
     <div className="app-layout">
