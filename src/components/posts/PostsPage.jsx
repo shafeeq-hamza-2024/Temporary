@@ -918,9 +918,9 @@ export default function PostsPage() {
                     <div className="card-body">
                       {/* HEADER */}
                       <div className="d-flex gap-3 mb-2">
-                        {post.user.profile_image ? (
+                        {post.user.profile_image_url ? (
                           <img
-                            src={post.user.profile_image}
+                            src={post.user.profile_image_url}
                             className="rounded-circle post-avatar"
                             width="48"
                             height="48"

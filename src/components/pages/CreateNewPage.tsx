@@ -5,7 +5,9 @@ import {
   PageCategory,
   CreatePageFormData,
   CreatePageFormErrors,
+  CreatePagePayload,
 } from "@/types/pages/basic.types";
+import { useCreatePage } from "@/hooks/pages/useCreatePage";
 
 const CreateNewPage = ({
   open,
@@ -34,7 +36,8 @@ const CreateNewPage = ({
 
   const [formData, setFormData] = useState<CreatePageFormData>(defaultState);
   const [errors, setErrors] = useState<CreatePageFormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const createPageMutation = useCreatePage();
+  const isSubmitting = createPageMutation.isPending;
 
   const validateForm = (): boolean => {
     const newErrors: CreatePageFormErrors = {};
@@ -139,37 +142,57 @@ const CreateNewPage = ({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const mapFormToPayload = (data: CreatePageFormData): CreatePagePayload => {
+    const payload: CreatePagePayload = {
+      page_name: data.name.trim(),
+      category: data.category as PageCategory,
+    };
+
+    if (data.bio?.trim()) payload.bio = data.bio.trim();
+    if (data.website?.trim()) payload.website = data.website.trim();
+    if (data.state?.trim()) payload.state = data.state.trim();
+    if (data.zip?.trim()) payload.zip = data.zip.trim();
+    if (data.country?.trim()) payload.country = data.country.trim();
+
+    if (data.category === PageCategory.COMPANY) {
+      if (data.companyName?.trim()) payload.company_name = data.companyName.trim();
+      if (data.officialWebsite?.trim()) payload.official_website = data.officialWebsite.trim();
+      if (data.companyBio?.trim()) payload.company_bio = data.companyBio.trim();
+      if (data.cin?.trim()) payload.cin = data.cin.trim();
+    }
+
+    if (data.category === PageCategory.EVENT) {
+      if (data.eventName?.trim()) payload.event_name = data.eventName.trim();
+      if (data.description?.trim()) payload.event_description = data.description.trim();
+      if (data.tags?.trim()) payload.tags = data.tags.trim();
+    }
+
+    if (data.category === PageCategory.COMMUNITY) {
+      if (data.communityDetails?.trim()) payload.community_details = data.communityDetails.trim();
+    }
+
+    return payload;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    setIsSubmitting(true);
-    // Setup a toast promise to show loading, success, and error states natively
-    toast
-      .promise(
-        new Promise((resolve, reject) => {
-          // Simulate API call
-          setTimeout(() => {
-            // You can simulate an error by changing this logic
-            resolve(formData);
-          }, 1500);
-        }),
-        {
-          loading: "Creating page...",
-          success: (data: any) => `Successfully created page "${data.name}"!`,
-          error: "Failed to create page. Please try again.",
-        },
-      )
-      .then(() => {
-        setOpen(false);
-        setFormData(defaultState);
-      })
-      .catch((error) => {
-        console.error("Error creating page:", error);
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    const payload = mapFormToPayload(formData);
+
+    toast.promise(
+      createPageMutation.mutateAsync(payload),
+      {
+        loading: "Creating page...",
+        success: (data) => `Successfully created page "${data.page_name}"!`,
+        error: "Failed to create page. Please try again.",
+      },
+    ).then(() => {
+      setOpen(false);
+      setFormData(defaultState);
+    }).catch((error) => {
+      console.error("Error creating page:", error);
+    });
   };
 
   const renderInput = (
