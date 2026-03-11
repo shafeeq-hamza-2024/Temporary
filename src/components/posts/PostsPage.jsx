@@ -308,6 +308,7 @@ export default function PostsPage() {
         setEditingPost(null);
         setForm({ title: "", content: "", files: [] });
         setOgPreview(null);
+        fileRef.current.value = null;
 
         showAlert(
           editingPost
@@ -918,9 +919,9 @@ export default function PostsPage() {
                     <div className="card-body">
                       {/* HEADER */}
                       <div className="d-flex gap-3 mb-2">
-                        {post.user.profile_image_url ? (
+                        {post.data.user?.profile_image_url ? (
                           <img
-                            src={post.user.profile_image_url}
+                            src={post.data.user?.profile_image_url}
                             className="rounded-circle post-avatar"
                             width="48"
                             height="48"
@@ -931,22 +932,23 @@ export default function PostsPage() {
                             className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
                             style={{ width: 48, height: 48 }}
                           >
-                            {post.user.first_name?.[0]}
-                            {post.user.last_name?.[0]}
+                            {post.data.user?.first_name?.[0]}
+                            {post.data.user?.last_name?.[0]}
                           </div>
                         )}
 
                         <div className="d-flex justify-content-between align-items-start w-100">
                           <div>
                             <div className="fw-semibold">
-                              {post.user.first_name} {post.user.last_name}
+                              {post.data.user?.first_name}{" "}
+                              {post.data.user?.last_name}
                             </div>
                             <small className="text-muted">
                               {new Date(post.created_at).toLocaleString()}
                             </small>
                           </div>
 
-                          {post.user.id === profile?.id && (
+                          {post.data.user.id === profile?.id && (
                             <div className="dropdown">
                               <button
                                 className="btn btn-sm btn-light"
@@ -959,7 +961,7 @@ export default function PostsPage() {
                                 <li>
                                   <button
                                     className="dropdown-item"
-                                    onClick={() => handleEditPost(post)}
+                                    onClick={() => handleEditPost(post.data)}
                                   >
                                     ✏️ Edit
                                   </button>
@@ -967,7 +969,9 @@ export default function PostsPage() {
                                 <li>
                                   <button
                                     className="dropdown-item text-danger"
-                                    onClick={() => handleDeletePost(post.id)}
+                                    onClick={() =>
+                                      handleDeletePost(post.data.id)
+                                    }
                                   >
                                     🗑 Delete
                                   </button>
@@ -979,13 +983,15 @@ export default function PostsPage() {
                       </div>
 
                       {/* TITLE */}
-                      {post.title && <h6 className="mt-3">{post.title}</h6>}
+                      {post.data.title && (
+                        <h6 className="mt-3">{post.data.title}</h6>
+                      )}
 
                       {/* CONTENT */}
                       <div
                         className="text-secondary mt-2"
                         dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(post.content || ""),
+                          __html: DOMPurify.sanitize(post.data.content || ""),
                         }}
                       />
 
@@ -1010,20 +1016,20 @@ export default function PostsPage() {
 
                       {/* MEDIA */}
                       {/* MEDIA GRID - LinkedIn style */}
-                      {post.media?.length > 0 && (
+                      {post.data.media?.length > 0 && (
                         <div
                           className={`post-media-grid images-${Math.min(
-                            post.media.length,
+                            post.data.media.length,
                             4,
                           )} mt-3`}
                         >
-                          {post.media.slice(0, 4).map((m, idx) => (
+                          {post.data.media.slice(0, 4).map((m, idx) => (
                             <div
                               key={m.id}
                               className="media-wrapper"
                               onClick={() => {
                                 setViewerImages(
-                                  post.media.map((i) => i.file_url),
+                                  post.data.media.map((i) => i.file_url),
                                 );
                                 setCurrentIndex(idx);
                                 setViewerOpen(true);
@@ -1035,9 +1041,9 @@ export default function PostsPage() {
                                 alt=""
                               />
 
-                              {idx === 3 && post.media.length > 4 && (
+                              {idx === 3 && post.data.media.length > 4 && (
                                 <div className="media-overlay">
-                                  +{post.media.length - 4}
+                                  +{post.data.media.length - 4}
                                 </div>
                               )}
                             </div>
@@ -1049,20 +1055,21 @@ export default function PostsPage() {
                     {/* FOOTER */}
                     <div className="card-body pt-2">
                       <div className="small text-muted mb-2">
-                        {post.like_count} likes · {post.comment_count} comments
+                        {post.data.like_count} likes · {post.data.comment_count}{" "}
+                        comments
                       </div>
 
-                      {post.comments?.length > 0 && (
+                      {post.data.comments?.length > 0 && (
                         <div className="mt-3 comments-box">
-                          {(expandedComments[post.id]
-                            ? post.comments
-                            : post.comments.slice().reverse().slice(0, 2)
+                          {(expandedComments[post.data.id]
+                            ? post.data.comments
+                            : post.data.comments.slice().reverse().slice(0, 2)
                           ).map((comment) => (
                             <div key={comment.id} className="d-flex gap-2 mb-2">
                               {/* Avatar */}
-                              {comment.user.profile_image ? (
+                              {comment.user.profile_image_url ? (
                                 <img
-                                  src={comment.user.profile_image}
+                                  src={comment.user.profile_image_url}
                                   className="rounded-circle"
                                   width="32"
                                   height="32"
@@ -1095,14 +1102,14 @@ export default function PostsPage() {
                           ))}
 
                           {/* SHOW MORE / LESS */}
-                          {post.comments.length > 2 && (
+                          {post.data.comments.length > 2 && (
                             <button
                               className="btn btn-link btn-sm p-0"
-                              onClick={() => toggleComments(post.id)}
+                              onClick={() => toggleComments(post.data.id)}
                             >
-                              {expandedComments[post.id]
+                              {expandedComments[post.data.id]
                                 ? "Show less comments"
-                                : `Show more comments (${post.comments.length - 2})`}
+                                : `Show more comments (${post.data.comments.length - 2})`}
                             </button>
                           )}
                         </div>
@@ -1111,25 +1118,25 @@ export default function PostsPage() {
                       <div className="d-flex border-top pt-2">
                         <button
                           className={`btn btn-sm w-100 ${
-                            post.is_liked ? "btn-primary" : "btn-light"
+                            post.data.is_liked ? "btn-primary" : "btn-light"
                           }`}
-                          onClick={() => likePost.mutate(post.id)}
+                          onClick={() => likePost.mutate(post.data.id)}
                         >
                           <i
                             className={`me-1 ${
-                              post.is_liked
+                              post.data.is_liked
                                 ? "ri-thumb-up-fill"
                                 : "ri-thumb-up-line"
                             }`}
                           ></i>
-                          {post.like_count}
+                          {post.data.like_count}
                         </button>
 
                         <button
                           className="btn btn-light btn-sm w-100"
                           onClick={() =>
                             document
-                              .getElementById(`comment-${post.id}`)
+                              .getElementById(`comment-${post.data.id}`)
                               ?.focus()
                           }
                         >
@@ -1143,12 +1150,12 @@ export default function PostsPage() {
                         <i className="ri-bookmark-line me-1"></i> Save
                       </button> */}
 
-                        <Link
-                          to={`/posts/${post.id}`}
-                          className="btn btn-light btn-sm w-100"
-                        >
-                          <i className="ri-eye-line me-1"></i> View
-                        </Link>
+                        {/* <Link
+                        to={`/posts/${post.id}`}
+                        className="btn btn-light btn-sm w-100"
+                      >
+                        <i className="ri-eye-line me-1"></i> View
+                      </Link> */}
                       </div>
                       {/* COMMENTS LIST */}
 
@@ -1156,24 +1163,25 @@ export default function PostsPage() {
                       <div className="mt-3">
                         <div className="d-flex gap-2">
                           <input
-                            id={`comment-${post.id}`}
+                            id={`comment-${post.data.id}`}
                             type="text"
                             className="form-control form-control-sm"
                             placeholder="Add a comment..."
-                            value={commentText[post.id] || ""}
+                            value={commentText[post.data.id] || ""}
                             onChange={(e) =>
                               setCommentText((p) => ({
                                 ...p,
-                                [post.id]: e.target.value,
+                                [post.data.id]: e.target.value,
                               }))
                             }
                             onKeyDown={(e) =>
-                              e.key === "Enter" && handleCommentSubmit(post.id)
+                              e.key === "Enter" &&
+                              handleCommentSubmit(post.data.id)
                             }
                           />
                           <button
                             className="btn btn-sm btn-primary"
-                            onClick={() => handleCommentSubmit(post.id)}
+                            onClick={() => handleCommentSubmit(post.data.id)}
                           >
                             Post
                           </button>
@@ -1489,7 +1497,9 @@ export default function PostsPage() {
                     editingPost
                       ? updatePost.isLoading
                       : createPost.isLoading ||
-                        (!form.content?.trim() && form.files.length === 0)
+                        (!form.content?.trim() &&
+                          form.files.length === 0 &&
+                          !ogPreview)
                   }
                   onClick={handleCreatePost}
                 >
