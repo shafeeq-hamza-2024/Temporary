@@ -1,7 +1,6 @@
 import { PagesSort } from "@/types/pages/basic.types";
-import { GrAdd, GrFilter } from "react-icons/gr";
+import { GrAdd } from "react-icons/gr";
 import { MdSearch } from "react-icons/md";
-import { RiSortAlphabetAsc, RiSortAlphabetDesc } from "react-icons/ri";
 const AllPagesHeader = ({
   search,
   setSearch,
@@ -19,7 +18,7 @@ const AllPagesHeader = ({
 }) => {
   return (
     <div className="w-full border bg-white p-2 grid grid-cols-12 rounded-lg gap-1">
-      <div className="col-span-9 md:col-span-6 flex justify-start items-center gap-2 border rounded-lg px-2">
+      <div className="col-span-8 lg:col-span-10 flex justify-start items-center gap-2 border rounded-lg px-2">
         <MdSearch />
         <input
           type="text"
@@ -30,14 +29,14 @@ const AllPagesHeader = ({
         />
       </div>
 
-      <button
-        className="col-span-1 md:col-span-2 border rounded-lg px-2 bg-primary text-white flex justify-center items-center gap-2"
+      {/* <button
+        className="col-span-4  border rounded-lg px-2 bg-primary text-white flex justify-center items-center gap-2"
         onClick={() => setOpenFilter(true)}
       >
         <GrFilter /> Filter
       </button>
       <button
-        className="col-span-1 md:col-span-2 border rounded-lg px-2 bg-primary text-white flex justify-center items-center gap-2"
+        className="col-span-4  border rounded-lg px-2 bg-primary text-white flex justify-center items-center gap-2"
         onClick={() =>
           setSort(sort === PagesSort.ASC ? PagesSort.DESC : PagesSort.ASC)
         }
@@ -48,12 +47,14 @@ const AllPagesHeader = ({
           <RiSortAlphabetDesc />
         )}
         Sort
-      </button>
+      </button> */}
       <button
-        className="col-span-1 md:col-span-2 border rounded-lg px-2 bg-primary text-white flex justify-center items-center gap-2"
+        className="col-span-4 lg:col-span-2 border rounded-lg px-2 bg-primary text-white flex justify-center items-center gap-2"
         onClick={() => setOpenCreate(true)}
       >
-        <GrAdd /> Add Page
+        <GrAdd />
+        Add
+        <div className="hidden sm:block"> Page</div>
       </button>
     </div>
   );

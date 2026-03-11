@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/Dialog";
 import {
   PageCategory,
@@ -185,7 +186,7 @@ const CreateNewPage = ({
       {
         loading: "Creating page...",
         success: (data) => `Successfully created page "${data.page_name}"!`,
-        error: "Failed to create page. Please try again.",
+        error: (err: Error) => getApiErrorMessage(err, "Failed to create page"),
       },
     ).then(() => {
       setOpen(false);

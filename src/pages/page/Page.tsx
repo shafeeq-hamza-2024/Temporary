@@ -1,12 +1,14 @@
 import FilterDialog from "@/components/pages/FilterDialog";
 import PageCard from "@/components/pages/PageCard";
 import { PagesFilter, PagesSort } from "@/types/pages/basic.types";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { getApiErrorMessage } from "@/utils/getApiErrorMessage";
+import toast from "react-hot-toast";
 
 import { useSearchParams } from "react-router";
 import CreateNewPage from "@/components/pages/CreateNewPage";
 import AllPagesHeader from "@/components/pages/AllPagesHeader";
-import { usePages } from "@/hooks/pages/usePages";
+import { usePages, useMyPages } from "@/hooks/pages/usePages";
 
 const PageSkeleton = () => (
   <div className="bg-white rounded-xl border border-gray-200 overflow-hidden animate-pulse">
@@ -36,7 +38,18 @@ const Page = () => {
   const [openCreate, setOpenCreate] = useState<boolean>(false);
   const [sort, setSort] = useState<PagesSort>(PagesSort.ASC);
 
-  const { data: pages, isLoading, isError, error, refetch } = usePages();
+  const isMyPages = filter === PagesFilter.MY_PAGES;
+  const allPagesQuery = usePages();
+  const myPagesQuery = useMyPages();
+
+  const activeQuery = isMyPages ? myPagesQuery : allPagesQuery;
+  const { data: pages, isLoading, isError, error, refetch } = activeQuery;
+
+  useEffect(() => {
+    if (isError && error) {
+      toast.error(getApiErrorMessage(error, "Failed to load pages"));
+    }
+  }, [isError, error]);
 
   const filteredPages = useMemo(() => {
     if (!pages) return [];

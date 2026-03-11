@@ -124,3 +124,32 @@ export type PageDetails = {
   country: string | null;
   created_at: string;
 };
+
+export type PagePostUser = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  profile_image_url: string | null;
+  is_following: boolean;
+};
+
+export type PagePost = {
+  id: number;
+  page: number;
+  created_by: PagePostUser;
+  content: string;
+  media: string[];
+  created_at: string;
+};
+
+export type CreatePagePostPayload = {
+  page: number;
+  content: string;
+  files?: File[];
+};
+
+export type FollowPagePayload = {
+  page: number;
+};
+
