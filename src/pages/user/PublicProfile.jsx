@@ -83,10 +83,11 @@ export default function PublicProfile() {
                 <div className="col-lg-8">
 
                     {/* ===== PROFILE HEADER ===== */}
-                    <div className="card shadow-sm border-0 mb-4 fade-up">
-                        <div className="card-body p-4 d-flex gap-4">
 
-                            {/* PHOTO */}
+                    <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start py-4 gap-4 w-100">
+
+                        {/* PHOTO */}
+                        <div className="flex-shrink-0">
                             <img
                                 src={
                                     profile_image
@@ -102,51 +103,26 @@ export default function PublicProfile() {
                                     e.currentTarget.src = DEFAULT_AVATAR;
                                 }}
                             />
+                        </div>
 
 
-                            <div className="flex-grow-1">
+                        <div className="flex-grow-1 text-center text-md-start w-100">
 
-                                <div className="d-flex align-items-center justify-content-between mb-3">
+                            <div className="d-flex flex-column flex-md-row align-items-center justify-content-between mb-3 gap-3">
 
-                                    {/* SOCIAL LINKS */}
-                                    <div className="d-flex gap-3 fs-4 text-secondary">
-                                        {personal_detail?.research_links?.map((link, idx) => (
-                                            <a key={idx} href={link.url} target="_blank" rel="noreferrer">
-                                                <i className="ri-links-line"></i>
-                                            </a>
-                                        ))}
+                                {/* NAME */}
+                                <div className="d-flex flex-column gap-2">
+                                    <h3 className="mb-0">
+                                        {title && `${title}.`} {first_name} {middle_name} {last_name}
+                                    </h3>
 
-                                        {personal_detail?.linkedin && (
-                                            <a href={personal_detail.linkedin} target="_blank" rel="noreferrer">
-                                                <i className="ri-linkedin-box-fill"></i>
-                                            </a>
-                                        )}
-
-                                        {personal_detail?.x_handle && (
-                                            <a
-                                                href={`https://x.com/${personal_detail.x_handle}`}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                            >
-                                                <i className="ri-twitter-x-fill"></i>
-                                            </a>
-                                        )}
-                                    </div>
-
-                                    {/* <Link
-                                        to={`/inbox/${id}`}
-                                        className="btn btn-dark rounded-pill px-3 d-flex align-items-center gap-1"
-                                    >
-                                        <i className="ri-send-plane-line me-2"></i>
-                                        Message
-                                    </Link> */}
                                     {!isOwnProfile && (
-                                        <div className="d-flex gap-2">
+                                        <div className="d-flex flex-wrap justify-content-center justify-content-md-start gap-2">
                                             <Link
                                                 to={`/inbox/${id}`}
                                                 className="btn btn-dark rounded-pill px-3 d-flex align-items-center gap-1"
                                             >
-                                                <i className="ri-send-plane-line me-2"></i>
+                                                <i className="ri-send-plane-line me-1"></i>
                                                 Message
                                             </Link>
 
@@ -179,35 +155,57 @@ export default function PublicProfile() {
                                             )}
                                         </div>
                                     )}
-
-
                                 </div>
 
-                                {/* NAME */}
-                                <h3>
-                                    {title && `${title}.`} {first_name} {middle_name} {last_name}
-                                </h3>
+                                {/* SOCIAL LINKS */}
+                                <div className="d-flex flex-wrap justify-content-center justify-content-md-end gap-3 fs-4 text-secondary">
+                                    {personal_detail?.research_links?.map((link, idx) => (
+                                        <a key={idx} href={link.url} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+                                            <i className="ri-links-line"></i>
+                                        </a>
+                                    ))}
 
-                                <h6 className="text-muted">{profile_title}</h6>
-
-                                {/* ROLE */}
-                                <h6 className="text-muted">
-                                    {professional_detail?.current_role}
-                                    {professional_detail?.current_organization && (
-                                        <> · {professional_detail.current_organization}</>
+                                    {personal_detail?.linkedin && (
+                                        <a href={personal_detail.linkedin} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }} >
+                                            <i className="ri-linkedin-box-fill"></i>
+                                        </a>
                                     )}
-                                </h6>
 
-                                {/* LOCATION */}
-                                {(personal_detail?.city || personal_detail?.country) && (
-                                    <div className="text-secondary mt-2">
-                                        <i className="ri-map-pin-line me-1"></i>
-                                        {personal_detail.city}, {personal_detail.country}
-                                    </div>
-                                )}
+                                    {personal_detail?.x_handle && (
+                                        <a
+                                            href={`https://x.com/${personal_detail.x_handle}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            style={{ textDecoration: "none" }}
+                                        >
+                                            <i className="ri-twitter-x-fill"></i>
+                                        </a>
+                                    )}
+                                </div>
+
+
                             </div>
+
+                            <h6 className="text-muted mb-1">{profile_title}</h6>
+
+                            {/* ROLE */}
+                            <h6 className="text-muted mb-2">
+                                {professional_detail?.current_role}
+                                {professional_detail?.current_organization && (
+                                    <> · {professional_detail.current_organization}</>
+                                )}
+                            </h6>
+
+                            {/* LOCATION */}
+                            {(personal_detail?.city || personal_detail?.country) && (
+                                <div className="text-secondary mt-2">
+                                    <i className="ri-map-pin-line me-1"></i>
+                                    {personal_detail.city}, {personal_detail.country}
+                                </div>
+                            )}
                         </div>
                     </div>
+
 
                     {/* ===== ABOUT ===== */}
                     <div className="card shadow-sm border-0 fade-up mb-4">
