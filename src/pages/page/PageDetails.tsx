@@ -197,12 +197,12 @@ const PageDetails = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* Sidebar - Quick info */}
-            <aside className="lg:col-span-4 lg:sticky lg:top-6 space-y-6 order-2 lg:order-1">
+            <aside className="lg:col-span-4 lg:sticky lg:top-6 space-y-6">
               <PageAboutSection page={page} />
             </aside>
 
             {/* Main Content - Feed */}
-            <main className="lg:col-span-8 space-y-6 order-1 lg:order-2">
+            <main className="lg:col-span-8 space-y-6">
               {/* Creator Section */}
               {is_owner && (
                 <div className="transform hover:-translate-y-0.5 transition-transform duration-300">
