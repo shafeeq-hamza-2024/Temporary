@@ -29,10 +29,11 @@ const PageSkeleton = () => (
 
 const Page = () => {
   const [searchParams, _] = useSearchParams();
-  const typeFilter = searchParams.get("type");
-  console.log(typeFilter);
+  const typeFilter = searchParams.get("type") as PagesFilter;
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<PagesFilter>(PagesFilter.ALL);
+  const [filter, setFilter] = useState<PagesFilter>(
+    typeFilter || PagesFilter.ALL,
+  );
   const [openCreate, setOpenCreate] = useState<boolean>(false);
   const [sort] = useState<PagesSort>(PagesSort.ASC);
 

@@ -8,9 +8,9 @@ export type PageSectionItem = {
 
 export enum PagesFilter {
   ALL = "all",
-  MY_PAGES = "my_pages",
-  MANAGED_PAGES = "managed_pages",
-  FOLLOWED_PAGES = "followed_pages",
+  MY_PAGES = "my",
+  // MANAGED_PAGES = "managed_pages",
+  // FOLLOWED_PAGES = "followed_pages",
 }
 
 export enum PagesSort {
@@ -139,10 +139,23 @@ export type PagePostUser = {
 export type PagePost = {
   id: number;
   page: number;
-  created_by: PagePostUser;
+  created_by: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    profile_image_url: string | null;
+    is_following: boolean;
+  };
   content: string;
-  media: string[];
+  media: PagePostMedia[];
   created_at: string;
+};
+
+export type PagePostMedia = {
+  id: number;
+  file_url: string;
+  is_video: boolean;
 };
 
 export type CreatePagePostPayload = {
@@ -154,4 +167,3 @@ export type CreatePagePostPayload = {
 export type FollowPagePayload = {
   page: number;
 };
-

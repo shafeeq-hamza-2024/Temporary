@@ -911,9 +911,9 @@ export default function PostsPage() {
 
               {/* POSTS */}
               {!isPostsLoading &&
-                posts.map((post) => (
+                posts.map((post, index) => (
                   <div
-                    key={post.id}
+                    key={post.data?.id || post.id || index}
                     className="card border-0 shadow-sm rounded-4 mb-4"
                   >
                     <div className="card-body">
@@ -948,7 +948,7 @@ export default function PostsPage() {
                             </small>
                           </div>
 
-                          {post.data.user.id === profile?.id && (
+                          {post.data.user?.id === profile?.id && (
                             <div className="dropdown">
                               <button
                                 className="btn btn-sm btn-light"
@@ -1067,7 +1067,7 @@ export default function PostsPage() {
                           ).map((comment) => (
                             <div key={comment.id} className="d-flex gap-2 mb-2">
                               {/* Avatar */}
-                              {comment.user.profile_image_url ? (
+                              {comment.user?.profile_image_url ? (
                                 <img
                                   src={comment.user.profile_image_url}
                                   className="rounded-circle"
@@ -1084,15 +1084,15 @@ export default function PostsPage() {
                                     fontSize: 12,
                                   }}
                                 >
-                                  {comment.user.first_name?.[0]}
+                                  {comment.user?.first_name?.[0]}
                                 </div>
                               )}
 
                               {/* Comment bubble */}
                               <div className="comment-bubble">
                                 <div className="fw-semibold small">
-                                  {comment.user.first_name}{" "}
-                                  {comment.user.last_name}
+                                  {comment.user?.first_name}{" "}
+                                  {comment.user?.last_name}
                                 </div>
                                 <div className="small text-secondary">
                                   {comment.c_content}

@@ -156,20 +156,24 @@ const CreateNewPage = ({
     if (data.country?.trim()) payload.country = data.country.trim();
 
     if (data.category === PageCategory.COMPANY) {
-      if (data.companyName?.trim()) payload.company_name = data.companyName.trim();
-      if (data.officialWebsite?.trim()) payload.official_website = data.officialWebsite.trim();
+      if (data.companyName?.trim())
+        payload.company_name = data.companyName.trim();
+      if (data.officialWebsite?.trim())
+        payload.official_website = data.officialWebsite.trim();
       if (data.companyBio?.trim()) payload.company_bio = data.companyBio.trim();
       if (data.cin?.trim()) payload.cin = data.cin.trim();
     }
 
     if (data.category === PageCategory.EVENT) {
       if (data.eventName?.trim()) payload.event_name = data.eventName.trim();
-      if (data.description?.trim()) payload.event_description = data.description.trim();
+      if (data.description?.trim())
+        payload.event_description = data.description.trim();
       if (data.tags?.trim()) payload.tags = data.tags.trim();
     }
 
     if (data.category === PageCategory.COMMUNITY) {
-      if (data.communityDetails?.trim()) payload.community_details = data.communityDetails.trim();
+      if (data.communityDetails?.trim())
+        payload.community_details = data.communityDetails.trim();
     }
 
     if (data.coverImage) payload.cover_image = data.coverImage;
@@ -184,19 +188,19 @@ const CreateNewPage = ({
 
     const payload = mapFormToPayload(formData);
 
-    toast.promise(
-      createPageMutation.mutateAsync(payload),
-      {
+    toast
+      .promise(createPageMutation.mutateAsync(payload), {
         loading: "Creating page...",
         success: (data) => `Successfully created page "${data.page_name}"!`,
         error: (err: Error) => getApiErrorMessage(err, "Failed to create page"),
-      },
-    ).then(() => {
-      setOpen(false);
-      setFormData(defaultState);
-    }).catch((error) => {
-      console.error("Error creating page:", error);
-    });
+      })
+      .then(() => {
+        setOpen(false);
+        setFormData(defaultState);
+      })
+      .catch((error) => {
+        console.error("Error creating page:", error);
+      });
   };
 
   const renderInput = (
@@ -442,7 +446,7 @@ const CreateNewPage = ({
           <button
             type="button"
             onClick={() => setOpen(false)}
-            className="px-5 py-2.5 rounded-xl font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+            className="bg-white border border-primary px-5 py-2.5 rounded-xl font-medium text-primary transition-colors"
           >
             Cancel
           </button>
@@ -453,7 +457,7 @@ const CreateNewPage = ({
             className={`px-5 py-2.5 rounded-xl font-medium text-white transition-all flex items-center justify-center min-w-[120px] ${
               isSubmitting
                 ? "bg-primary/70 cursor-not-allowed"
-                : "bg-primary hover:bg-primary/90 shadow-sm hover:shadow"
+                : "bg-primary hover:bg-primary/90"
             }`}
           >
             {isSubmitting ? (
