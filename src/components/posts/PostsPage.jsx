@@ -1,31 +1,30 @@
 // @ts-nocheck
 import { useState, useRef } from "react";
 
-import { Link } from "react-router";
-import DOMPurify from "dompurify";
-import { useNavigate } from "react-router";
-import { usePosts } from "../../hooks/posts/usePosts";
-import { useLikePost } from "../../hooks/posts/useLikePost";
-import { useBookmarkPost } from "../../hooks/posts/useBookmarkPost";
-import { useCommentPost } from "../../hooks/posts/useCommentPost";
-import { useCreatePost } from "../../hooks/posts/useCreatePost";
 import { Editor } from "@tinymce/tinymce-react";
-import { useUserProfile } from "../../hooks/profile/useUserProfile";
-import { useResearchNews } from "../../hooks/news/useResearchNews";
-import { useUpdatePost } from "../../hooks/posts/useUpdatePost";
-import { useDeletePost } from "../../hooks/posts/useDeletePost";
+import DOMPurify from "dompurify";
+import { Link, useNavigate } from "react-router";
+import { getOgiMeta } from "../../api/ogiApi";
+import {
+  useAcceptFollow,
+  useRejectFollow,
+  useRemoveFollower,
+  useUnfollow,
+} from "../../hooks/follow/useFollowActions";
 import { useIncomingFollowRequests } from "../../hooks/follow/useIncomingFollowRequests";
 import { useOutgoingFollowRequests } from "../../hooks/follow/useOutgoingFollowRequests";
 import { useUserFollowers } from "../../hooks/follow/useUserFollowers";
 import { useUserFollowing } from "../../hooks/follow/useUserFollowing";
-import { useAcceptFollow } from "../../hooks/follow/useFollowActions";
-import { useRejectFollow } from "../../hooks/follow/useFollowActions";
-import { useUnfollow } from "../../hooks/follow/useFollowActions";
-import { useRemoveFollower } from "../../hooks/follow/useFollowActions";
-import { getOgiMeta } from "../../api/ogiApi";
+import { useResearchNews } from "../../hooks/news/useResearchNews";
+import { useBookmarkPost } from "../../hooks/posts/useBookmarkPost";
+import { useCommentPost } from "../../hooks/posts/useCommentPost";
+import { useCreatePost } from "../../hooks/posts/useCreatePost";
+import { useDeletePost } from "../../hooks/posts/useDeletePost";
+import { useLikePost } from "../../hooks/posts/useLikePost";
+import { usePosts } from "../../hooks/posts/usePosts";
+import { useUpdatePost } from "../../hooks/posts/useUpdatePost";
+import { useUserProfile } from "../../hooks/profile/useUserProfile";
 import "./PostsPage.css";
-import { useArticles } from "../../hooks/articles/useArticles";
-import { useArticleRatings } from "../../hooks/ratings/useRatings";
 import PageSection from "../pages/PageSection";
 
 export default function PostsPage() {
@@ -408,33 +407,26 @@ export default function PostsPage() {
           {/* ================= LEFT SIDEBAR ================= */}
           <div className="col-lg-3 d-none d-lg-block">
             <div className="card border-0 shadow-sm rounded-4 mb-3 profile-card">
-              <div className="card-body text-center">
-                {/* PROFILE IMAGE */}
-                {profile?.profile_image ? (
+              <div className="card-body">
+                <div className="profile-info-wrapper">
+                  {/* PROFILE IMAGE */}
+
                   <img
-                    src={profile.profile_image}
-                    className="rounded-circle mb-2"
-                    width="80"
-                    height="80"
-                    style={{ objectFit: "cover" }}
+                    src={
+                      profile?.profile_image ||
+                      `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.first_name + " " + profile?.last_name)}`
+                    }
+                    className="rounded-circle mb-2 avatar"
                     alt="Profile"
                   />
-                ) : (
-                  <div
-                    className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-2"
-                    style={{ width: 80, height: 80, fontSize: 28 }}
-                  >
-                    {profile?.first_name?.[0]}
-                    {profile?.last_name?.[0]}
-                  </div>
-                )}
 
-                {/* FULL NAME */}
-                <h6 className="fw-semibold mb-1 fs-6">
-                  {profileLoading
-                    ? "Loading..."
-                    : `${profile?.first_name || ""} ${profile?.middle_name || ""} ${profile?.last_name || ""}`}
-                </h6>
+                  {/* FULL NAME */}
+                  <h6 className="fw-semibold mb-1 fs-6">
+                    {profileLoading
+                      ? "Loading..."
+                      : `${profile?.first_name || ""} ${profile?.middle_name || ""} ${profile?.last_name || ""}`}
+                  </h6>
+                </div>
 
                 {/* PROFILE TITLE */}
                 {profile?.profile_title && (
@@ -911,9 +903,9 @@ export default function PostsPage() {
 
               {/* POSTS */}
               {!isPostsLoading &&
-                posts.map((post, index) => (
+                posts.map((post) => (
                   <div
-                    key={post.data?.id || post.id || index}
+                    key={post.id}
                     className="card border-0 shadow-sm rounded-4 mb-4"
                   >
                     <div className="card-body">
@@ -948,7 +940,7 @@ export default function PostsPage() {
                             </small>
                           </div>
 
-                          {post.data.user?.id === profile?.id && (
+                          {post.data.user.id === profile?.id && (
                             <div className="dropdown">
                               <button
                                 className="btn btn-sm btn-light"
@@ -1067,7 +1059,7 @@ export default function PostsPage() {
                           ).map((comment) => (
                             <div key={comment.id} className="d-flex gap-2 mb-2">
                               {/* Avatar */}
-                              {comment.user?.profile_image_url ? (
+                              {comment.user.profile_image_url ? (
                                 <img
                                   src={comment.user.profile_image_url}
                                   className="rounded-circle"
@@ -1084,15 +1076,15 @@ export default function PostsPage() {
                                     fontSize: 12,
                                   }}
                                 >
-                                  {comment.user?.first_name?.[0]}
+                                  {comment.user.first_name?.[0]}
                                 </div>
                               )}
 
                               {/* Comment bubble */}
                               <div className="comment-bubble">
                                 <div className="fw-semibold small">
-                                  {comment.user?.first_name}{" "}
-                                  {comment.user?.last_name}
+                                  {comment.user.first_name}{" "}
+                                  {comment.user.last_name}
                                 </div>
                                 <div className="small text-secondary">
                                   {comment.c_content}
