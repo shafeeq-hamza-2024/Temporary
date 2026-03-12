@@ -903,9 +903,107 @@ export default function PostsPage() {
 
               {/* POSTS */}
               {!isPostsLoading &&
-                posts.map((post) => (
+                posts.map((post) => {
+                  /* ---- PAGE POST ---- */
+                  if (post.type === "page_post") {
+                    const author = post.data.created_by;
+                    return (
+                      <div
+                        key={`page-${post.id}`}
+                        className="card border-0 shadow-sm rounded-4 mb-4"
+                      >
+                        <div className="card-body">
+                          {/* HEADER */}
+                          <div className="d-flex gap-3 mb-2">
+                            {author?.profile_image_url ? (
+                              <img
+                                src={author.profile_image_url}
+                                className="rounded-circle post-avatar"
+                                width="48"
+                                height="48"
+                                style={{ objectFit: "cover" }}
+                                alt="Profile"
+                              />
+                            ) : (
+                              <div
+                                className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+                                style={{ width: 48, height: 48 }}
+                              >
+                                {author?.first_name?.[0]}
+                                {author?.last_name?.[0]}
+                              </div>
+                            )}
+
+                            <div>
+                              <div className="fw-semibold">
+                                {author?.first_name} {author?.last_name}
+                              </div>
+                              <div className="d-flex align-items-center gap-2">
+                                <span className="badge bg-info text-white" style={{ fontSize: "0.7rem" }}>
+                                  Page Post
+                                </span>
+                                <small className="text-muted">
+                                  {new Date(post.created_at).toLocaleString()}
+                                </small>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* CONTENT */}
+                          {post.data.content && (
+                            <div
+                              className="text-secondary mt-2"
+                              dangerouslySetInnerHTML={{
+                                __html: DOMPurify.sanitize(post.data.content),
+                              }}
+                            />
+                          )}
+
+                          {/* MEDIA */}
+                          {post.data.media?.length > 0 && (
+                            <div
+                              className={`post-media-grid images-${Math.min(
+                                post.data.media.length,
+                                4,
+                              )} mt-3`}
+                            >
+                              {post.data.media.slice(0, 4).map((m, idx) => (
+                                <div
+                                  key={m.id}
+                                  className="media-wrapper"
+                                  onClick={() => {
+                                    setViewerImages(
+                                      post.data.media.map((i) => i.file_url),
+                                    );
+                                    setCurrentIndex(idx);
+                                    setViewerOpen(true);
+                                  }}
+                                >
+                                  <img
+                                    src={m.file_url}
+                                    className="post-media-img"
+                                    alt=""
+                                  />
+                                  {idx === 3 && post.data.media.length > 4 && (
+                                    <div className="media-overlay">
+                                      +{post.data.media.length - 4}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  /* ---- USER POST (existing behaviour) ---- */
+                  if (post.type !== "user_post") return null;
+
+                  return (
                   <div
-                    key={post.id}
+                    key={`user-${post.id}`}
                     className="card border-0 shadow-sm rounded-4 mb-4"
                   >
                     <div className="card-body">
@@ -940,7 +1038,7 @@ export default function PostsPage() {
                             </small>
                           </div>
 
-                          {post.data.user.id === profile?.id && (
+                          {post.data.user?.id === profile?.id && (
                             <div className="dropdown">
                               <button
                                 className="btn btn-sm btn-light"
@@ -987,26 +1085,6 @@ export default function PostsPage() {
                         }}
                       />
 
-                      {/* 🔗 LINK PREVIEW (YouTube)
-                    {post.link_preview?.type === "youtube" && (
-                      <a
-                        href={post.link_preview.watch_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="youtube-preview-card mt-3 text-decoration-none"
-                      >
-                        <div className="youtube-thumb-wrapper">
-                          <img
-                            src={post.link_preview.thumbnail}
-                            alt="YouTube preview"
-                            className="youtube-thumb"
-                          />
-                          <div className="youtube-play-btn">▶</div>
-                        </div>
-                      </a>
-                    )} */}
-
-                      {/* MEDIA */}
                       {/* MEDIA GRID - LinkedIn style */}
                       {post.data.media?.length > 0 && (
                         <div
@@ -1134,23 +1212,7 @@ export default function PostsPage() {
                         >
                           <i className="ri-chat-1-line me-1"></i> Comment
                         </button>
-
-                        {/* <button
-                        className="btn btn-light btn-sm w-100"
-                        onClick={() => bookmarkPost.mutate(post.id)}
-                      >
-                        <i className="ri-bookmark-line me-1"></i> Save
-                      </button> */}
-
-                        {/* <Link
-                        to={`/posts/${post.id}`}
-                        className="btn btn-light btn-sm w-100"
-                      >
-                        <i className="ri-eye-line me-1"></i> View
-                      </Link> */}
                       </div>
-                      {/* COMMENTS LIST */}
-
                       {/* COMMENTS */}
                       <div className="mt-3">
                         <div className="d-flex gap-2">
@@ -1181,7 +1243,8 @@ export default function PostsPage() {
                       </div>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
             </div>
           </div>
 
