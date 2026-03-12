@@ -408,24 +408,15 @@ export default function PostsPage() {
               <div className="card-body">
                 <div className="profile-info-wrapper">
                   {/* PROFILE IMAGE */}
-                  {profile?.profile_image ? (
-                    <img
-                      src={profile.profile_image}
-                      className="rounded-circle mb-2"
-                      width="80"
-                      height="80"
-                      style={{ objectFit: "cover" }}
-                      alt="Profile"
-                    />
-                  ) : (
-                    <div
-                      className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-2"
-                      style={{ width: 80, height: 80, fontSize: 28 }}
-                    >
-                      {profile?.first_name?.[0]}
-                      {profile?.last_name?.[0]}
-                    </div>
-                  )}
+
+                  <img
+                    src={
+                      profile?.profile_image ||
+                      `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.first_name + " " + profile?.last_name)}`
+                    }
+                    className="rounded-circle mb-2 avatar"
+                    alt="Profile"
+                  />
 
                   {/* FULL NAME */}
                   <h6 className="fw-semibold mb-1 fs-6">
